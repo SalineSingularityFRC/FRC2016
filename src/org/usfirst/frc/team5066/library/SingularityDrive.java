@@ -140,7 +140,7 @@ public class SingularityDrive {
 		rotationVelocity = rotation * rotationMultiplier;
 
 		// Use trigonometry to find the direction of travel
-		direction = Math.PI / 4 + Math.atan2(-vertical, horizontal);
+		direction = Math.PI / 4 + Math.atan2(vertical, horizontal);
 
 		// Guard against illegal inputs
 		maximum = Math.max(Math.max(Math.abs(Math.sin(direction)), Math.abs(Math.cos(direction))) * translationSpeed

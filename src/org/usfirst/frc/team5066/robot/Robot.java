@@ -95,7 +95,7 @@ public class Robot extends IterativeRobot {
 	 */
 	public void testPeriodic() {
 		if (recorder != null) {
-			Object[] input = new Object[] { js.getRawAxis(0), js.getRawAxis(1), js.getRawAxis(4) };
+			Object[] input = new Object[] { js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4) };
 			
 			drive.mecanum((double) input[0], (double) input[1], (double) input[2]); 
 			recorder.appendData(input);
