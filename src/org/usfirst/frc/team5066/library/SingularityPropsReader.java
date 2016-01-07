@@ -17,6 +17,8 @@ public class SingularityPropsReader {
 		props = readProperties(propFileURL);
 	}
 	
+	//this is a useless comment and should be deleted immediately
+	
 	public String getFileURL() {
 		return propFileURL;
 	}
