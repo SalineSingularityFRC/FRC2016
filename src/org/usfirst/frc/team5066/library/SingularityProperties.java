@@ -7,6 +7,7 @@ import java.util.Properties;
 
 /**
  * Class for reading and writing to properties files.
+ * 
  * @author Saline Singularity 5066
  *
  */
@@ -16,8 +17,11 @@ public class SingularityProperties {
 
 	/**
 	 * Constructor for SingularityPropsReader
-	 * @param propFileURL Which file to use as the properties file
-	 * @throws IOException If the file is invalid or lacks read access
+	 * 
+	 * @param propFileURL
+	 *            Which file to use as the properties file
+	 * @throws IOException
+	 *             If the file is invalid or lacks read access
 	 */
 	public SingularityProperties(String propFileURL) throws IOException {
 		this.propFileURL = propFileURL;
@@ -25,6 +29,7 @@ public class SingularityProperties {
 	}
 
 	/**
+	 * Used to get the file URL
 	 * 
 	 * @return Which file is being read
 	 */
@@ -34,7 +39,9 @@ public class SingularityProperties {
 
 	/**
 	 * Rereads file properties
-	 * @throws IOException If the file is invalid or lacks read access
+	 * 
+	 * @throws IOException
+	 *             If the file is invalid or lacks read access
 	 */
 	public void reloadProperties() throws IOException {
 		props = readProperties(propFileURL);
@@ -42,18 +49,19 @@ public class SingularityProperties {
 
 	/**
 	 * Actually reads the property file
-	 * @param propFileURL Which file to read
-	 * @return An object which encapsulates the properties found in the given file
-	 * @throws IOException If the file lacks read access
+	 * 
+	 * @param propFileURL
+	 *            Which file to read
+	 * @return An object which encapsulates the properties found in the given
+	 *         file
+	 * @throws IOException
+	 *             If the file lacks read access
 	 */
 	private Properties readProperties(String propFileURL) throws IOException {
-
 		Properties prop = new Properties();
 		String propURL = propFileURL;
 		FileInputStream fileInputStream;
 
-		// loads properties file. Tutorial found on :
-		// http://stackoverflow.com/questions/8775303/read-properties-file-outside-jar-file
 		fileInputStream = new FileInputStream(propURL);
 		prop.load(fileInputStream);
 		fileInputStream.close();
@@ -63,15 +71,17 @@ public class SingularityProperties {
 
 	/**
 	 * Sets a certain property in the file to a certain object
-	 * @param propName Which property to change
-	 * @param o What to change it to (uses the {@code .toString()} method)
-	 * @throws IOException If file is not valid or does not allow write access
+	 * 
+	 * @param propName
+	 *            Which property to change
+	 * @param o
+	 *            What to change it to (uses the {@code .toString()} method)
+	 * @throws IOException
+	 *             If file is not valid or does not allow write access
 	 */
 	public void setProperty(String propName, Object o) throws IOException {
-
-		// TODO test to see if this works
-
 		FileOutputStream out = new FileOutputStream(propFileURL);
+		
 		props.setProperty(propName, o.toString());
 		props.store(out, null);
 		out.close();
@@ -79,8 +89,21 @@ public class SingularityProperties {
 	}
 
 	/**
+	 * Method to find access a certain string in the properties file
+	 * 
+	 * @param name
+	 *            Which string to get
+	 * @return The value of the string
+	 */
+	public String getString(String name) {
+		return props.getProperty("name");
+	}
+
+	/**
 	 * Method to find access a certain integer in the properties file
-	 * @param name Which integer to get
+	 * 
+	 * @param name
+	 *            Which integer to get
 	 * @return The value of the integer
 	 */
 	public int getInt(String name) {
@@ -89,7 +112,9 @@ public class SingularityProperties {
 
 	/**
 	 * Method to find access a certain float in the properties file
-	 * @param name Which float to get
+	 * 
+	 * @param name
+	 *            Which float to get
 	 * @return The value of the float
 	 */
 	public float getFloat(String name) {
@@ -98,7 +123,9 @@ public class SingularityProperties {
 
 	/**
 	 * Method to find access a certain double in the properties file
-	 * @param name Which double to get
+	 * 
+	 * @param name
+	 *            Which double to get
 	 * @return The value of the double
 	 */
 	public double getDouble(String name) {
@@ -106,17 +133,10 @@ public class SingularityProperties {
 	}
 
 	/**
-	 * Method to find access a certain string in the properties file
-	 * @param name Which string to get
-	 * @return The value of the string
-	 */
-	public String getString(String name) {
-		return props.getProperty("name");
-	}
-
-	/**
 	 * Method to find access a certain boolean in the properties file
-	 * @param name Which boolean to get
+	 * 
+	 * @param name
+	 *            Which boolean to get
 	 * @return The value of the boolean
 	 */
 	public boolean getBoolean(String name) {
