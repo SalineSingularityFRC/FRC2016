@@ -74,10 +74,8 @@ public class Robot extends IterativeRobot {
 				initialTime = System.currentTimeMillis();
 			} catch (FileNotFoundException fnfe) {
 				reader = null;
-				fnfe.printStackTrace();
 			} catch (ParseException pe) {
 				reader = null;
-				pe.printStackTrace();
 			}
 		}
 	}
@@ -97,7 +95,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		drive.mecanum(js.getRawAxis(0), js.getRawAxis(1), js.getRawAxis(4), true);
+		drive.mecanum(js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4), true);
 	}
 
 	public void testInit() {
@@ -115,6 +113,8 @@ public class Robot extends IterativeRobot {
 
 			drive.mecanum((double) input[0], (double) input[1], (double) input[2]);
 			recorder.appendData(input);
+		} else {
+			drive.mecanum(js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4), true);
 		}
 	}
 
