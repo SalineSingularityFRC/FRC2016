@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5066.robot;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -23,8 +24,9 @@ import org.usfirst.frc.team5066.library.playback.Recorder;
  */
 public class Robot extends IterativeRobot {
 	boolean record, play;
-	Joystick js;
+	CameraServer cameraServer;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
+	Joystick js;
 	long initialTime;
 	Reader reader;
 	Recorder recorder;
@@ -37,6 +39,10 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
+		cameraServer = CameraServer.getInstance();
+		cameraServer.setQuality(50);
+		cameraServer.startAutomaticCapture();
+		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 			loadProperties();
