@@ -41,6 +41,7 @@ public class SingularityArm {
 					left.set(-1);
 					right.set(1);
 				} else {
+					//HIIIIIIII!!!!!!!!!! This is a test.
 					// sets both motor speeds to move in the same direction
 					left.set(-speed);
 					right.set(speed);
