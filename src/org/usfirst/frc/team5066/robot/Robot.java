@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-
+import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
 import org.usfirst.frc.team5066.library.playback.Reader;
@@ -34,6 +34,8 @@ public class Robot extends IterativeRobot {
 	SingularityProperties properties;
 	String recordURL, playURL;
 
+	ControlScheme currentScheme;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.

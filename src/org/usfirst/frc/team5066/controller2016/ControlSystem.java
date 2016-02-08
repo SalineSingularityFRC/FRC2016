@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5066.controller2016;
 
-public class ControlSystem implements ControlScheme{
+public class ControlSystem// implements ControlScheme
+{
 	//public enum controlScheme = ;
 	//this enum 
 	

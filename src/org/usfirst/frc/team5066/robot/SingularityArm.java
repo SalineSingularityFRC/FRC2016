@@ -14,6 +14,12 @@ public class SingularityArm {
 	private SpeedController left, right;
 	
 	/**
+	 * When true, limit switches will not automatically stop the arm from moving. 
+	 * The input and effect of the switches must coded elsewhere.
+	 */
+	private boolean limitSwitchesOverride;
+	
+	/**
 	 * Constructor for singularity conveyer.
 	 * 
 	 * @param l
@@ -24,6 +30,7 @@ public class SingularityArm {
 	public SingularityArm(int l, int r){
 		left = new CANTalon(l);
 		right = new CANTalon(r);
+		limitSwitchesOverride = false;
 	}
 	
 	/**
