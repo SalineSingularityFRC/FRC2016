@@ -278,10 +278,10 @@ public class SingularityDrive {
 		rightVelocity /= Math.max(1, Math.abs(rightVelocity));
 
 		// Set the motors' speeds
-		m_frontLeftMotor.set(leftVelocity);
-		m_rearLeftMotor.set(leftVelocity);
-		m_frontRightMotor.set(-rightVelocity);
-		m_rearRightMotor.set(-rightVelocity);
+		m_frontLeftMotor.set(velocityMultiplier * (leftVelocity));
+		m_rearLeftMotor.set(velocityMultiplier * (leftVelocity));
+		m_frontRightMotor.set(velocityMultiplier * (-rightVelocity));
+		m_rearRightMotor.set(velocityMultiplier * (-rightVelocity));
 	}
 
 	/**
