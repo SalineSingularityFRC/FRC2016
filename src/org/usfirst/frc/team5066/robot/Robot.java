@@ -15,6 +15,9 @@ import org.usfirst.frc.team5066.library.SingularityProperties;
 import org.usfirst.frc.team5066.library.playback.Reader;
 import org.usfirst.frc.team5066.library.playback.Recorder;
 
+import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.Image;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -24,7 +27,6 @@ import org.usfirst.frc.team5066.library.playback.Recorder;
  */
 public class Robot extends IterativeRobot {
 	boolean record, play;
-	CameraServer cameraServer;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
 	Joystick js;
 	long initialTime;
@@ -33,19 +35,17 @@ public class Robot extends IterativeRobot {
 	SingularityDrive drive;
 	SingularityProperties properties;
 	String recordURL, playURL;
+	int session;
+	Image frame;
 
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
-		cameraServer = CameraServer.getInstance();
-		cameraServer.setQuality(50);
-		cameraServer.startAutomaticCapture();
-		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
-			loadProperties();
+			loadDefaultProperties();
 		} catch (IOException ioe) {
 			loadDefaultProperties();
 		} finally {
@@ -54,10 +54,17 @@ public class Robot extends IterativeRobot {
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
 
 			// Set up recordable autonomous mode
-			record = true;
-			play = true;
+			record = false;
+			play = false;
 			reader = null;
 			recorder = null;
+			
+			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+			//the camera name (ex. cam0) can be found through the roborio web interface
+			session = NIVision.IMAQdxOpenCamera("cam0",
+					 NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+			NIVision.IMAQdxConfigureGrab(session);
+			NIVision.IMAQdxStartAcquisition(session);
 		}
 	}
 
@@ -71,6 +78,8 @@ public class Robot extends IterativeRobot {
 			reader.close();
 			reader = null;
 		}
+		
+		updateCamera(session, frame);
 	}
 
 	public void autonomousInit() {
@@ -95,13 +104,17 @@ public class Robot extends IterativeRobot {
 			drive.mecanum(Double.parseDouble(current.get("x").toString()),
 					Double.parseDouble(current.get("y").toString()), Double.parseDouble(current.get("z").toString()));
 		}
+		
+		updateCamera(session, frame);
 	}
 
 	/**
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		drive.mecanum(js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4), true);
+		//drive.mecanum(js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4), true);
+		
+		updateCamera(session, frame);
 	}
 
 	public void testInit() {
@@ -122,6 +135,8 @@ public class Robot extends IterativeRobot {
 		} else {
 			drive.mecanum(js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4), true);
 		}
+		
+		updateCamera(session, frame);
 	}
 
 	private void loadProperties() {
@@ -146,5 +161,10 @@ public class Robot extends IterativeRobot {
 		play = false;
 		recordURL = "/home/lvuser/recording.json";
 		playURL = "/home/lvuser/recording.json";
+	}
+	
+	private void updateCamera(int session, Image frame) {
+		NIVision.IMAQdxGrab(session, frame, 1);
+		CameraServer.getInstance().setImage(frame);
 	}
 }
