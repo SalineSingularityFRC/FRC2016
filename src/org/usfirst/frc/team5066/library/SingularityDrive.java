@@ -18,6 +18,29 @@ public class SingularityDrive {
 
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
+	 * SingularityDrive}. Takes in integers to use for motor ports. Allows the velocityMultiplier to be changed
+	 * 
+	 * @param frontLeftMotor
+	 *            Channel for front left motor
+	 * @param rearLeftMotor
+	 *            Channel for rear left motor
+	 * @param frontRightMotor
+	 *            Channel for front right motor
+	 * @param rearRightMotor
+	 *            Channel for rear right motor
+	 * @param velocityMultiplier
+	 * 			  Limits the velocity by a factor of this.
+	 */
+	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double velocityMultiplier){
+		m_frontLeftMotor = new Talon(frontLeftMotor);
+		m_rearLeftMotor = new Talon(rearLeftMotor);
+		m_frontRightMotor = new Talon(frontRightMotor);
+		m_rearRightMotor = new Talon(rearRightMotor);
+		this.velocityMultiplier = velocityMultiplier;
+	}
+	
+	/**
+	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
 	 * SingularityDrive}. Takes in integers to use for motor ports.
 	 * 
 	 * @param frontLeftMotor
@@ -29,16 +52,6 @@ public class SingularityDrive {
 	 * @param rearRightMotor
 	 *            Channel for rear right motor
 	 */
-	
-	
-	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double velocityMultiplier){
-		m_frontLeftMotor = new Talon(frontLeftMotor);
-		m_rearLeftMotor = new Talon(rearLeftMotor);
-		m_frontRightMotor = new Talon(frontRightMotor);
-		m_rearRightMotor = new Talon(rearRightMotor);
-		this.velocityMultiplier = velocityMultiplier;
-	}
-
 	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
 		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, 1.0);
 	}
@@ -95,10 +108,10 @@ public class SingularityDrive {
 		double maximum = Math.max(1, Math.abs(translationVelocity) + Math.abs(rotationVelocity));
 
 		// Set the motors
-		m_frontLeftMotor.set((-translationVelocity + rotationVelocity) / maximum);
-		m_rearRightMotor.set((-translationVelocity + rotationVelocity) / maximum);
-		m_frontRightMotor.set((translationVelocity + rotationVelocity) / maximum);
-		m_rearRightMotor.set((translationVelocity + rotationVelocity) / maximum);
+		m_frontLeftMotor.set(velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
+		m_rearRightMotor.set(velocityMultiplier * (-translationVelocity + rotationVelocity) / maximum);
+		m_frontRightMotor.set(velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
+		m_rearRightMotor.set(velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
 	}
 
 	/**
