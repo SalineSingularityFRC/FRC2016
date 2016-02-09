@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.Talon;
  */
 public class SingularityDrive {
 	private SpeedController m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
+	
+	private double velocityMultiplier;
 
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
@@ -27,13 +29,20 @@ public class SingularityDrive {
 	 * @param rearRightMotor
 	 *            Channel for rear right motor
 	 */
-	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
+	
+	
+	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double velocityMultiplier){
 		m_frontLeftMotor = new Talon(frontLeftMotor);
 		m_rearLeftMotor = new Talon(rearLeftMotor);
 		m_frontRightMotor = new Talon(frontRightMotor);
 		m_rearRightMotor = new Talon(rearRightMotor);
+		this.velocityMultiplier = velocityMultiplier;
 	}
 
+	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, 1.0);
+	}
+	
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
 	 * SingularityDrive}. Takes in {@link edu.wpi.first.wpilibj.SpeedController
@@ -49,11 +58,17 @@ public class SingularityDrive {
 	 *            SpeedController for rear right motor
 	 */
 	public SingularityDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
-			SpeedController frontRightMotor, SpeedController rearRightMotor) {
+			SpeedController frontRightMotor, SpeedController rearRightMotor, double velocityMultiplier) {
 		m_frontLeftMotor = frontLeftMotor;
 		m_rearLeftMotor = rearLeftMotor;
 		m_frontRightMotor = frontRightMotor;
 		m_rearRightMotor = rearRightMotor;
+		this.velocityMultiplier = velocityMultiplier;
+	}
+	
+	public SingularityDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
+			SpeedController frontRightMotor, SpeedController rearRightMotor) {
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, 1.0);
 	}
 
 	/**
