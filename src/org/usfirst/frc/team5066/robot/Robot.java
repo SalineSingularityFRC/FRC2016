@@ -10,6 +10,7 @@ import java.io.IOException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
+import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxArcadeDrive;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
 import org.usfirst.frc.team5066.library.playback.Reader;
@@ -41,6 +42,9 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
+		
+		currentScheme = new OneXboxArcadeDrive(0);
+		
 		cameraServer = CameraServer.getInstance();
 		cameraServer.setQuality(50);
 		cameraServer.startAutomaticCapture();
@@ -103,7 +107,8 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		drive.mecanum(js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4), true);
+		currentScheme.arcadeDrive(new SingularityDrive(1,2,3,4), true);
+		//drive.mecanum(js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4), true);
 	}
 
 	public void testInit() {

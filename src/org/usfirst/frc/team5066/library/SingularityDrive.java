@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5066.library;
 
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 
@@ -11,8 +12,10 @@ import edu.wpi.first.wpilibj.Talon;
  * @author Saline Singularity 5066
  *
  */
-public class SingularityDrive {
+public class SingularityDrive{
 	private SpeedController m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
+	
+	RobotDrive rd;
 
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
@@ -32,6 +35,8 @@ public class SingularityDrive {
 		m_rearLeftMotor = new Talon(rearLeftMotor);
 		m_frontRightMotor = new Talon(frontRightMotor);
 		m_rearRightMotor = new Talon(rearRightMotor);
+		
+		rd = new RobotDrive(m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor);
 	}
 
 	/**
@@ -69,13 +74,15 @@ public class SingularityDrive {
 	 *            order to provide for finer motor control at lower velocities
 	 */
 	public void arcade(double translation, double rotation, boolean squaredInputs) {
+		/*
 		double translationVelocity = translation, rotationVelocity = rotation;
 		// Do squared inputs if necessary
 		if (squaredInputs) {
 			translationVelocity *= Math.abs(translation);
 			rotationVelocity *= Math.abs(rotation);
 		}
-
+		
+		
 		// Guard against illegal values
 		double maximum = Math.max(1, Math.abs(translationVelocity) + Math.abs(rotationVelocity));
 
@@ -84,6 +91,9 @@ public class SingularityDrive {
 		m_rearRightMotor.set((-translationVelocity + rotationVelocity) / maximum);
 		m_frontRightMotor.set((translationVelocity + rotationVelocity) / maximum);
 		m_rearRightMotor.set((translationVelocity + rotationVelocity) / maximum);
+		*/
+		
+		rd.arcadeDrive(translation, rotation, squaredInputs);
 	}
 
 	/**

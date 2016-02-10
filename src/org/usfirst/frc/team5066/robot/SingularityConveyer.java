@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.SpeedController;
 public class SingularityConveyer {
 
 	SpeedController left, right;
+	
+	double maxSpeed;
 
 	/**
 	 * Constructor for singularity conveyer.
@@ -20,11 +22,18 @@ public class SingularityConveyer {
 	 *            <b>int</b> The left side motor channel
 	 * @param r
 	 *            <b>int</b> The right side motor channel
+	 * @param maxSpeed
+	 *            <b>double</b> The maximum allowed speed of the conveyor. Any input values <br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	 *            outside the range from -maximum to maximum will be replaced with the maximum speed
 	 */
-	public SingularityConveyer(int l, int r) {
+	public SingularityConveyer(int l, int r, double maxSpeed) {
 
 		left = new CANTalon(l);
 		right = new CANTalon(r);
+		this.maxSpeed = maxSpeed;
+		//default maxSpeed - remove when using
+		maxSpeed = 0.2;
+		
 	}
 
 	/**
@@ -39,12 +48,12 @@ public class SingularityConveyer {
 
 		// Checks for illegal values (and deports them back to where they came,
 		// those bastards)
-		if ((speed < -1)) {
-			left.set(1);
-			right.set(-1);
-		} else if (speed > 1) {
-			left.set(-1);
-			right.set(1);
+		if ((speed < -maxSpeed)) {
+			left.set(maxSpeed);
+			right.set(-maxSpeed);
+		} else if (speed > maxSpeed) {
+			left.set(-maxSpeed);
+			right.set(maxSpeed);
 		} else {
 			// sets both motor speeds to move in the same direction
 			left.set(-speed);
