@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.Talon;
 public class SingularityDrive {
 	private SpeedController m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
 	
-	private double velocityMultiplier;
+	private static double velocityMultiplier = 1.0;
 
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
@@ -53,7 +53,7 @@ public class SingularityDrive {
 	 *            Channel for rear right motor
 	 */
 	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
-		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, 1.0);
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, velocityMultiplier);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class SingularityDrive {
 	
 	public SingularityDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
 			SpeedController frontRightMotor, SpeedController rearRightMotor) {
-		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, 1.0);
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, velocityMultiplier);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class SingularityDrive {
 	 *            Whether or not to square the magnitude of the input values in
 	 *            order to provide for finer motor control at lower velocities
 	 */
-	public void mecanum(double horizontal, double vertical, double rotation, double translationMultiplier,
+	public void mecanum(double horizontal, double vertical, double rotation,
 			double rotationMultiplier, boolean squaredInputs) {
 
 		double translationSpeed, direction, maximum, rotationVelocity;
@@ -163,7 +163,7 @@ public class SingularityDrive {
 		}
 
 		// Use the Pythagorean theorem to find the speed of translation
-		translationSpeed = translationMultiplier * Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
+		translationSpeed = velocityMultiplier * Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
 
 		rotationVelocity = rotation * rotationMultiplier;
 
@@ -203,7 +203,7 @@ public class SingularityDrive {
 	public void mecanum(double horizontal, double vertical, double rotation, double translationMultiplier,
 			double rotationMultiplier) {
 		// Just ignore squared inputs
-		this.mecanum(horizontal, vertical, rotation, translationMultiplier, rotationMultiplier, false);
+		this.mecanum(horizontal, vertical, rotation, rotationMultiplier, false);
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class SingularityDrive {
 	 */
 	public void mecanum(double horizontal, double vertical, double rotation, boolean squaredInputs) {
 		// Set default values for multipliers
-		this.mecanum(horizontal, vertical, rotation, 0.8, 0.8, squaredInputs);
+		this.mecanum(horizontal, vertical, rotation, 0.8, squaredInputs);
 	}
 
 	/**
@@ -247,7 +247,7 @@ public class SingularityDrive {
 	 */
 	public void mecanum(double horizontal, double vertical, double rotation) {
 		// Ignore squared inputs and use default values for multipliers
-		this.mecanum(horizontal, vertical, rotation, 0.8, 0.8, false);
+		this.mecanum(horizontal, vertical, rotation, 0.8, false);
 	}
 
 	/**
