@@ -14,7 +14,10 @@ import edu.wpi.first.wpilibj.Talon;
 public class SingularityDrive {
 	private SpeedController m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
 	
-	private static double velocityMultiplier = 1.0;
+	private final static double DEFAULT_VELOCITY_MULTIPLIER = 1.0;
+	private double velocityMultiplier = 1.0;
+	
+	private boolean reducedSpeed = false;
 
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
@@ -31,12 +34,12 @@ public class SingularityDrive {
 	 * @param velocityMultiplier
 	 * 			  Limits the velocity by a factor of this.
 	 */
-	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double velocityMultiplier){
+	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double m_velocityMultiplier){
 		m_frontLeftMotor = new Talon(frontLeftMotor);
 		m_rearLeftMotor = new Talon(rearLeftMotor);
 		m_frontRightMotor = new Talon(frontRightMotor);
 		m_rearRightMotor = new Talon(rearRightMotor);
-		this.velocityMultiplier = velocityMultiplier;
+		this.velocityMultiplier = m_velocityMultiplier;
 	}
 	
 	/**
@@ -53,7 +56,7 @@ public class SingularityDrive {
 	 *            Channel for rear right motor
 	 */
 	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
-		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, velocityMultiplier);
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER);
 	}
 	
 	/**
@@ -81,9 +84,37 @@ public class SingularityDrive {
 	
 	public SingularityDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
 			SpeedController frontRightMotor, SpeedController rearRightMotor) {
-		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, velocityMultiplier);
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER);
 	}
+	
+	private double clamp(double velocityMultiplier){
+		if(velocityMultiplier > 1.0){
+			return 1.0;
+		} else if(velocityMultiplier < -1.0){
+			return -1.0;
+		} else {
+			return velocityMultiplier;
+		}
+	}
+	
+	sd.reduceVelocity(js.getButton(1), 0.8);
 
+	public void setVelocityMultiplier(double velocityMultiplier){
+		this.velocityMultiplier = this.clamp(velocityMultiplier);
+	}
+	
+	public double getVelocityMultiplier(){
+		return this.velocityMultiplier;
+	}
+	
+	public void setReduceVelocity(boolean reduceVelocityButton, double velocityMultiplier){
+		if(reduceVelocityButton){
+			this.velocityMultiplier = this.clamp(velocityMultiplier);
+		} else {
+			this.velocityMultiplier = 
+		}
+	}
+	
 	/**
 	 * So called "arcade drive" method for driving a robot around. Drives much
 	 * like one would expect a vehicle to move with a joy stick.
