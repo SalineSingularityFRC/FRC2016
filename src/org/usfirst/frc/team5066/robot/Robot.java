@@ -4,16 +4,11 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
-import org.usfirst.frc.team5066.library.playback.Reader;
-import org.usfirst.frc.team5066.library.playback.Recorder;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
