@@ -23,6 +23,8 @@ import org.usfirst.frc.team5066.library.playback.Recorder;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
+
+/* Reverted to Robot.java from master tag  51a2c4c */
 public class Robot extends IterativeRobot {
 	CameraServer cameraServer;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
