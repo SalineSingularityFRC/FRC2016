@@ -13,28 +13,15 @@ import org.usfirst.frc.team5066.library.SingularityProperties;
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
- */
 public class Robot extends IterativeRobot {
-	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
+	ControlScheme currentScheme;
+	Image frame;
+	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, session;
 	Joystick js;
 	long initialTime;
 	SingularityDrive drive;
 	SingularityProperties properties;
-	int session;
-	Image frame;
 
-	ControlScheme currentScheme;
-	
-	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
-	 */
 	public void robotInit() {
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
@@ -42,15 +29,16 @@ public class Robot extends IterativeRobot {
 		} catch (IOException ioe) {
 			loadDefaultProperties();
 		} finally {
-			// Implement standard robotics things (input, drive, etc.)
+			// Implement standard robotics things (input, drive, etc.). We will
+			// need to make this use the new controller classes later.
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
-			
+
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-			
-			//the camera name (ex. cam0) can be found through the roborio web interface
-			session = NIVision.IMAQdxOpenCamera("cam0",
-					 NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+
+			// the camera name (ex. cam0) can be found through the roborio web
+			// interface
+			session = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 			NIVision.IMAQdxConfigureGrab(session);
 			NIVision.IMAQdxStartAcquisition(session);
 		}
@@ -60,32 +48,14 @@ public class Robot extends IterativeRobot {
 		updateCamera(session, frame);
 	}
 
-	public void autonomousInit() {
-		//Yep
-	}
-
-	/**
-	 * This function is called periodically during autonomous
-	 */
 	public void autonomousPeriodic() {
 		updateCamera(session, frame);
 	}
 
-	/**
-	 * This function is called periodically during operator control
-	 */
 	public void teleopPeriodic() {
-		
 		updateCamera(session, frame);
 	}
 
-	public void testInit() {
-		//Testy
-	}
-
-	/**
-	 * This function is called periodically during test mode
-	 */
 	public void testPeriodic() {
 		updateCamera(session, frame);
 	}
@@ -103,7 +73,7 @@ public class Robot extends IterativeRobot {
 		frontRightMotor = 1;
 		rearRightMotor = 3;
 	}
-	
+
 	private void updateCamera(int session, Image frame) {
 		NIVision.IMAQdxGrab(session, frame, 1);
 		CameraServer.getInstance().setImage(frame);
