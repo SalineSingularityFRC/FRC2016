@@ -4,6 +4,6 @@
 	<classpathentry kind="var" path="wpilib" sourcepath="wpilib.sources"/>
 	<classpathentry kind="var" path="networktables" sourcepath="networktables.sources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SimpleJSON"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSON.simple"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
