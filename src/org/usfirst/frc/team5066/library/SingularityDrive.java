@@ -96,8 +96,6 @@ public class SingularityDrive {
 			return velocityMultiplier;
 		}
 	}
-	
-	sd.reduceVelocity(js.getButton(1), 0.8);
 
 	public void setVelocityMultiplier(double velocityMultiplier){
 		this.velocityMultiplier = this.clamp(velocityMultiplier);
@@ -107,12 +105,8 @@ public class SingularityDrive {
 		return this.velocityMultiplier;
 	}
 	
-	public void setReduceVelocity(boolean reduceVelocityButton, double velocityMultiplier){
-		if(reduceVelocityButton){
-			this.velocityMultiplier = this.clamp(velocityMultiplier);
-		} else {
-			this.velocityMultiplier = 
-		}
+	public void setReduceVelocity(boolean reduceVelocityButton){
+		this.reducedSpeed = reduceVelocityButton;
 	}
 	
 	/**
@@ -137,7 +131,11 @@ public class SingularityDrive {
 
 		// Guard against illegal values
 		double maximum = Math.max(1, Math.abs(translationVelocity) + Math.abs(rotationVelocity));
-
+		
+		if (reducedSpeed) {
+			maximum *= 2;
+		}
+		
 		// Set the motors
 		m_frontLeftMotor.set(velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
 		m_rearRightMotor.set(velocityMultiplier * (-translationVelocity + rotationVelocity) / maximum);
@@ -204,6 +202,10 @@ public class SingularityDrive {
 		// Guard against illegal inputs
 		maximum = Math.max(Math.max(Math.abs(Math.sin(direction)), Math.abs(Math.cos(direction))) * translationSpeed
 				+ Math.abs(rotationVelocity), 1);
+		
+		if (reducedSpeed) {
+			maximum *= 2;
+		}
 
 		// Set the motors' speeds
 		m_frontLeftMotor.set((translationSpeed * Math.sin(direction) + rotationVelocity) / maximum);
@@ -307,6 +309,11 @@ public class SingularityDrive {
 		// Guard against illegal inputs
 		leftVelocity /= Math.max(1, Math.abs(leftVelocity));
 		rightVelocity /= Math.max(1, Math.abs(rightVelocity));
+		
+		if (reducedSpeed) {
+			leftVelocity /= 2;
+			rightVelocity /= 2;
+		}
 
 		// Set the motors' speeds
 		m_frontLeftMotor.set(velocityMultiplier * (leftVelocity));
