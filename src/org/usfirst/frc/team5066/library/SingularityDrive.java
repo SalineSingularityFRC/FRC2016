@@ -13,7 +13,35 @@ import edu.wpi.first.wpilibj.Talon;
  */
 public class SingularityDrive {
 	private SpeedController m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
+	
+	private final static double DEFAULT_VELOCITY_MULTIPLIER = 1.0;
+	private double velocityMultiplier = 1.0;
+	
+	private boolean reducedSpeed = false;
 
+	/**
+	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
+	 * SingularityDrive}. Takes in integers to use for motor ports. Allows the velocityMultiplier to be changed
+	 * 
+	 * @param frontLeftMotor
+	 *            Channel for front left motor
+	 * @param rearLeftMotor
+	 *            Channel for rear left motor
+	 * @param frontRightMotor
+	 *            Channel for front right motor
+	 * @param rearRightMotor
+	 *            Channel for rear right motor
+	 * @param velocityMultiplier
+	 * 			  Limits the velocity by a factor of this.
+	 */
+	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double m_velocityMultiplier){
+		m_frontLeftMotor = new Talon(frontLeftMotor);
+		m_rearLeftMotor = new Talon(rearLeftMotor);
+		m_frontRightMotor = new Talon(frontRightMotor);
+		m_rearRightMotor = new Talon(rearRightMotor);
+		this.velocityMultiplier = m_velocityMultiplier;
+	}
+	
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
 	 * SingularityDrive}. Takes in integers to use for motor ports.
@@ -28,12 +56,9 @@ public class SingularityDrive {
 	 *            Channel for rear right motor
 	 */
 	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
-		m_frontLeftMotor = new Talon(frontLeftMotor);
-		m_rearLeftMotor = new Talon(rearLeftMotor);
-		m_frontRightMotor = new Talon(frontRightMotor);
-		m_rearRightMotor = new Talon(rearRightMotor);
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER);
 	}
-
+	
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
 	 * SingularityDrive}. Takes in {@link edu.wpi.first.wpilibj.SpeedController
@@ -49,13 +74,41 @@ public class SingularityDrive {
 	 *            SpeedController for rear right motor
 	 */
 	public SingularityDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
-			SpeedController frontRightMotor, SpeedController rearRightMotor) {
+			SpeedController frontRightMotor, SpeedController rearRightMotor, double velocityMultiplier) {
 		m_frontLeftMotor = frontLeftMotor;
 		m_rearLeftMotor = rearLeftMotor;
 		m_frontRightMotor = frontRightMotor;
 		m_rearRightMotor = rearRightMotor;
+		this.velocityMultiplier = velocityMultiplier;
+	}
+	
+	public SingularityDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
+			SpeedController frontRightMotor, SpeedController rearRightMotor) {
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER);
+	}
+	
+	private double clamp(double velocityMultiplier){
+		if(velocityMultiplier > 1.0){
+			return 1.0;
+		} else if(velocityMultiplier < -1.0){
+			return -1.0;
+		} else {
+			return velocityMultiplier;
+		}
 	}
 
+	public void setVelocityMultiplier(double velocityMultiplier){
+		this.velocityMultiplier = this.clamp(velocityMultiplier);
+	}
+	
+	public double getVelocityMultiplier(){
+		return this.velocityMultiplier;
+	}
+	
+	public void setReduceVelocity(boolean reduceVelocityButton){
+		this.reducedSpeed = reduceVelocityButton;
+	}
+	
 	/**
 	 * So called "arcade drive" method for driving a robot around. Drives much
 	 * like one would expect a vehicle to move with a joy stick.
@@ -78,12 +131,16 @@ public class SingularityDrive {
 
 		// Guard against illegal values
 		double maximum = Math.max(1, Math.abs(translationVelocity) + Math.abs(rotationVelocity));
-
+		
+		if (reducedSpeed) {
+			maximum *= 2;
+		}
+		
 		// Set the motors
-		m_frontLeftMotor.set((-translationVelocity + rotationVelocity) / maximum);
-		m_rearRightMotor.set((-translationVelocity + rotationVelocity) / maximum);
-		m_frontRightMotor.set((translationVelocity + rotationVelocity) / maximum);
-		m_rearRightMotor.set((translationVelocity + rotationVelocity) / maximum);
+		m_frontLeftMotor.set(velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
+		m_rearRightMotor.set(velocityMultiplier * (-translationVelocity + rotationVelocity) / maximum);
+		m_frontRightMotor.set(velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
+		m_rearRightMotor.set(velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
 	}
 
 	/**
@@ -122,7 +179,7 @@ public class SingularityDrive {
 	 *            Whether or not to square the magnitude of the input values in
 	 *            order to provide for finer motor control at lower velocities
 	 */
-	public void mecanum(double horizontal, double vertical, double rotation, double translationMultiplier,
+	public void mecanum(double horizontal, double vertical, double rotation,
 			double rotationMultiplier, boolean squaredInputs) {
 
 		double translationSpeed, direction, maximum, rotationVelocity;
@@ -135,7 +192,7 @@ public class SingularityDrive {
 		}
 
 		// Use the Pythagorean theorem to find the speed of translation
-		translationSpeed = translationMultiplier * Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
+		translationSpeed = velocityMultiplier * Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
 
 		rotationVelocity = rotation * rotationMultiplier;
 
@@ -145,6 +202,10 @@ public class SingularityDrive {
 		// Guard against illegal inputs
 		maximum = Math.max(Math.max(Math.abs(Math.sin(direction)), Math.abs(Math.cos(direction))) * translationSpeed
 				+ Math.abs(rotationVelocity), 1);
+		
+		if (reducedSpeed) {
+			maximum *= 2;
+		}
 
 		// Set the motors' speeds
 		m_frontLeftMotor.set((translationSpeed * Math.sin(direction) + rotationVelocity) / maximum);
@@ -175,7 +236,7 @@ public class SingularityDrive {
 	public void mecanum(double horizontal, double vertical, double rotation, double translationMultiplier,
 			double rotationMultiplier) {
 		// Just ignore squared inputs
-		this.mecanum(horizontal, vertical, rotation, translationMultiplier, rotationMultiplier, false);
+		this.mecanum(horizontal, vertical, rotation, rotationMultiplier, false);
 	}
 
 	/**
@@ -198,7 +259,7 @@ public class SingularityDrive {
 	 */
 	public void mecanum(double horizontal, double vertical, double rotation, boolean squaredInputs) {
 		// Set default values for multipliers
-		this.mecanum(horizontal, vertical, rotation, 0.8, 0.8, squaredInputs);
+		this.mecanum(horizontal, vertical, rotation, 0.8, squaredInputs);
 	}
 
 	/**
@@ -219,7 +280,7 @@ public class SingularityDrive {
 	 */
 	public void mecanum(double horizontal, double vertical, double rotation) {
 		// Ignore squared inputs and use default values for multipliers
-		this.mecanum(horizontal, vertical, rotation, 0.8, 0.8, false);
+		this.mecanum(horizontal, vertical, rotation, 0.8, false);
 	}
 
 	/**
@@ -248,12 +309,17 @@ public class SingularityDrive {
 		// Guard against illegal inputs
 		leftVelocity /= Math.max(1, Math.abs(leftVelocity));
 		rightVelocity /= Math.max(1, Math.abs(rightVelocity));
+		
+		if (reducedSpeed) {
+			leftVelocity /= 2;
+			rightVelocity /= 2;
+		}
 
 		// Set the motors' speeds
-		m_frontLeftMotor.set(leftVelocity);
-		m_rearLeftMotor.set(leftVelocity);
-		m_frontRightMotor.set(-rightVelocity);
-		m_rearRightMotor.set(-rightVelocity);
+		m_frontLeftMotor.set(velocityMultiplier * (leftVelocity));
+		m_rearLeftMotor.set(velocityMultiplier * (leftVelocity));
+		m_frontRightMotor.set(velocityMultiplier * (-rightVelocity));
+		m_rearRightMotor.set(velocityMultiplier * (-rightVelocity));
 	}
 
 	/**
