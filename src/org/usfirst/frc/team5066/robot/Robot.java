@@ -21,6 +21,7 @@ public class Robot extends IterativeRobot {
 	long initialTime;
 	SingularityDrive drive;
 	SingularityProperties properties;
+	SingularityArm arm;
 
 	public void robotInit() {
 		try {
@@ -32,8 +33,9 @@ public class Robot extends IterativeRobot {
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
-			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
-
+			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, .5);
+			arm = new SingularityArm(6, 7);
+			
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
 			// the camera name (ex. cam0) can be found through the roborio web
@@ -54,6 +56,16 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 		updateCamera(session, frame);
+		
+		//currentScheme.tankDrive(drive, true);
+		
+		//drive.tank
+		
+		//drive.setReduceVelocity(js.getRawButton(6));
+		
+		
+		arm.setSpeed(js.getRawAxis(1));
+		
 	}
 
 	public void testPeriodic() {
