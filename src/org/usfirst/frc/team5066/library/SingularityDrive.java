@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5066.library;
 
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
@@ -31,10 +32,10 @@ public class SingularityDrive{
 	 *            Channel for rear right motor
 	 */
 	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
-		m_frontLeftMotor = new Talon(frontLeftMotor);
-		m_rearLeftMotor = new Talon(rearLeftMotor);
-		m_frontRightMotor = new Talon(frontRightMotor);
-		m_rearRightMotor = new Talon(rearRightMotor);
+		m_frontLeftMotor = new CANTalon(frontLeftMotor);
+		m_rearLeftMotor = new CANTalon(rearLeftMotor);
+		m_frontRightMotor = new CANTalon(frontRightMotor);
+		m_rearRightMotor = new CANTalon(rearRightMotor);
 		
 		rd = new RobotDrive(m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor);
 	}
@@ -93,7 +94,7 @@ public class SingularityDrive{
 		m_rearRightMotor.set((translationVelocity + rotationVelocity) / maximum);
 		*/
 		
-		rd.arcadeDrive(translation, rotation, squaredInputs);
+		rd.arcadeDrive(translation, -1 * rotation, squaredInputs);
 	}
 
 	/**

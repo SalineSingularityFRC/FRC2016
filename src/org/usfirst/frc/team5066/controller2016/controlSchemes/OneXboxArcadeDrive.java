@@ -31,7 +31,7 @@ public class OneXboxArcadeDrive implements ControlScheme{
 
 	@Override
 	public void arcadeDrive(SingularityDrive sd, boolean squaredInputs) {
-		sd.arcade(xbox.getLS_Y(), xbox.getLS_X(), squaredInputs);
+		sd.arcade(-1 * xbox.getLS_Y(), xbox.getLS_X(), squaredInputs);
 	}
 
 	@Override

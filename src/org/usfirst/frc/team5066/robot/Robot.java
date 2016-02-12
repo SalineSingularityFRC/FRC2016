@@ -24,16 +24,12 @@ import org.usfirst.frc.team5066.library.playback.Recorder;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	boolean record, play;
 	CameraServer cameraServer;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
 	Joystick js;
 	long initialTime;
-	Reader reader;
-	Recorder recorder;
+	
 	SingularityDrive drive;
-	SingularityProperties properties;
-	String recordURL, playURL;
 
 	ControlScheme currentScheme;
 	
@@ -44,30 +40,32 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		
 		currentScheme = new OneXboxArcadeDrive(0);
-		
+		/*
 		cameraServer = CameraServer.getInstance();
 		cameraServer.setQuality(50);
 		cameraServer.startAutomaticCapture();
-		
+		*/
+		/*
 		try {
-			properties = new SingularityProperties("/home/lvuser/robot.properties");
 			loadProperties();
 		} catch (IOException ioe) {
 			loadDefaultProperties();
 		} finally {
+		
+		*/
+		loadDefaultProperties();
 			// Implement standard robotics things (input, drive, etc.)
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
 
+			/*
 			// Set up recordable autonomous mode
-			record = true;
-			play = true;
-			reader = null;
-			recorder = null;
 		}
+		*/
 	}
 
 	public void disabledPeriodic() {
+		/*
 		if (recorder != null) {
 			recorder.close();
 			recorder = null;
@@ -77,61 +75,41 @@ public class Robot extends IterativeRobot {
 			reader.close();
 			reader = null;
 		}
+		*/
 	}
 
 	public void autonomousInit() {
-		if (play) {
-			try {
-				reader = new Reader(playURL);
-				initialTime = System.currentTimeMillis();
-			} catch (FileNotFoundException fnfe) {
-				reader = null;
-			} catch (ParseException pe) {
-				reader = null;
-			}
-		}
+		
 	}
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
-		if (reader != null) {
-			JSONObject current = reader.getDataAtTime(System.currentTimeMillis() - initialTime);
-			drive.mecanum(Double.parseDouble(current.get("x").toString()),
-					Double.parseDouble(current.get("y").toString()), Double.parseDouble(current.get("z").toString()));
-		}
+		
 	}
 
 	/**
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		currentScheme.arcadeDrive(new SingularityDrive(1,2,3,4), true);
+		currentScheme.arcadeDrive(drive, true);
 		//drive.mecanum(js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4), true);
 	}
 
 	public void testInit() {
-		if (record) {
-			recorder = new Recorder(new String[] { "x", "y", "z" }, new Object[] { 0, 0, 0 }, recordURL);
-		}
+		
 	}
 
 	/**
 	 * This function is called periodically during test mode
 	 */
 	public void testPeriodic() {
-		if (recorder != null) {
-			Object[] input = new Object[] { js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4) };
-
-			drive.mecanum((double) input[0], (double) input[1], (double) input[2]);
-			recorder.appendData(input);
-		} else {
-			drive.mecanum(js.getRawAxis(0), -js.getRawAxis(1), js.getRawAxis(4), true);
-		}
+		
 	}
 
 	private void loadProperties() {
+		/*
 		frontLeftMotor = properties.getInt("frontLeftMotor");
 		rearLeftMotor = properties.getInt("rearLeftMotor");
 		frontRightMotor = properties.getInt("frontRightMotor");
@@ -141,17 +119,20 @@ public class Robot extends IterativeRobot {
 		play = properties.getBoolean("play");
 		recordURL = properties.getString("recordingURL");
 		playURL = properties.getString("playURL");
+		*/
 	}
 
 	private void loadDefaultProperties() {
-		frontLeftMotor = 6;
-		rearLeftMotor = 5;
-		frontRightMotor = 7;
-		rearRightMotor = 4;
-
+		frontLeftMotor = 10;
+		rearLeftMotor = 2;
+		frontRightMotor = 1;
+		rearRightMotor = 3;
+		
+		/*
 		record = false;
 		play = false;
 		recordURL = "/home/lvuser/recording.json";
 		playURL = "/home/lvuser/recording.json";
+		*/
 	}
 }
