@@ -4,6 +4,7 @@ import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.XboxController;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.robot.SingularityArm;
+import org.usfirst.frc.team5066.robot.SingularityConveyer;
 
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -25,8 +26,8 @@ public class OneXboxArcadeDrive implements ControlScheme{
 	}
 
 	@Override
-	public void controlConveyor() {
-		
+	public void controlConveyer(SingularityConveyer conveyer) {
+		conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
 	}
 
 	@Override
