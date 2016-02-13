@@ -1,7 +1,9 @@
 package org.usfirst.frc.team5066.library;
 
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Class for driving around a simple robot. It is based on the
@@ -17,11 +19,22 @@ public class SingularityDrive {
 	private final static double DEFAULT_VELOCITY_MULTIPLIER = 1.0;
 	private double velocityMultiplier = 1.0;
 	
-	private boolean reducedSpeed = false;
+	private boolean buttonPressed = false;
+	private double reducedVelocity;
+	
+	//Talon type enum
+	public static final int CANTALON_DRIVE = 0;
+	public static final int TALON_SR_DRIVE = 1;
+	
+	private static final int DEFAULT_TALON_TYPE = CANTALON_DRIVE;
+	
+	private int talonType;
+	
 
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
-	 * SingularityDrive}. Takes in integers to use for motor ports. Allows the velocityMultiplier to be changed
+	 * SingularityDrive}. Takes in integers to use for motor ports. Allows the
+	 * velocityMultiplier to be changed
 	 * 
 	 * @param frontLeftMotor
 	 *            Channel for front left motor
@@ -32,13 +45,30 @@ public class SingularityDrive {
 	 * @param rearRightMotor
 	 *            Channel for rear right motor
 	 * @param velocityMultiplier
-	 * 			  Limits the velocity by a factor of this.
+	 *            Limits the velocity by a factor of this.
+	 * @param talonType
+	 *            takes an enum value to determine the type of talons being used
+	 *            in the drive
+	 *
 	 */
-	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double m_velocityMultiplier){
-		m_frontLeftMotor = new Talon(frontLeftMotor);
-		m_rearLeftMotor = new Talon(rearLeftMotor);
-		m_frontRightMotor = new Talon(frontRightMotor);
-		m_rearRightMotor = new Talon(rearRightMotor);
+	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double m_velocityMultiplier, int talonType){
+		this.talonType = talonType;
+
+		if (talonType == CANTALON_DRIVE) {
+			m_frontLeftMotor = new CANTalon(frontLeftMotor);
+			m_rearLeftMotor = new CANTalon(rearLeftMotor);
+			m_frontRightMotor = new CANTalon(frontRightMotor);
+			m_rearRightMotor = new CANTalon(rearRightMotor);
+		}
+		else if(talonType == TALON_SR_DRIVE) {
+			m_frontLeftMotor = new Talon(frontLeftMotor);
+			m_rearLeftMotor = new Talon(rearLeftMotor);
+			m_frontRightMotor = new Talon(frontRightMotor);
+			m_rearRightMotor = new Talon(rearRightMotor);
+		}
+		else{
+			SmartDashboard.putNumber("INVALID VALUE FOR TALON TYPE.      value=", talonType);
+		}
 		this.velocityMultiplier = m_velocityMultiplier;
 	}
 	
@@ -56,7 +86,7 @@ public class SingularityDrive {
 	 *            Channel for rear right motor
 	 */
 	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
-		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER);
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER, DEFAULT_TALON_TYPE);
 	}
 	
 	/**
@@ -105,8 +135,12 @@ public class SingularityDrive {
 		return this.velocityMultiplier;
 	}
 	
-	public void setReduceVelocity(boolean reduceVelocityButton){
-		this.reducedSpeed = reduceVelocityButton;
+	public void reduceVelocity(boolean reduceVelocityButton){
+		this.buttonPressed = reduceVelocityButton;
+	}
+	
+	public void setReducedVelocity(double reducedVelocity){
+		this.reducedVelocity = reducedVelocity;
 	}
 	
 	/**
@@ -132,15 +166,15 @@ public class SingularityDrive {
 		// Guard against illegal values
 		double maximum = Math.max(1, Math.abs(translationVelocity) + Math.abs(rotationVelocity));
 		
-		if (reducedSpeed) {
-			maximum *= 2;
+		if (buttonPressed) {
+			maximum *= 1/reducedVelocity;
 		}
 		
 		// Set the motors
-		m_frontLeftMotor.set(velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
-		m_rearRightMotor.set(velocityMultiplier * (-translationVelocity + rotationVelocity) / maximum);
-		m_frontRightMotor.set(velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
-		m_rearRightMotor.set(velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
+		m_frontLeftMotor.set(this.velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
+		m_rearLeftMotor.set(this.velocityMultiplier * (-translationVelocity + rotationVelocity) / maximum);
+		m_frontRightMotor.set(this.velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
+		m_rearRightMotor.set(this.velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
 	}
 
 	/**
@@ -192,9 +226,9 @@ public class SingularityDrive {
 		}
 
 		// Use the Pythagorean theorem to find the speed of translation
-		translationSpeed = velocityMultiplier * Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
+		translationSpeed = this.velocityMultiplier * Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
 
-		rotationVelocity = rotation * rotationMultiplier;
+		rotationVelocity = this.velocityMultiplier * rotation * rotationMultiplier;
 
 		// Use trigonometry to find the direction of travel
 		direction = Math.PI / 4 + Math.atan2(vertical, horizontal);
@@ -203,8 +237,8 @@ public class SingularityDrive {
 		maximum = Math.max(Math.max(Math.abs(Math.sin(direction)), Math.abs(Math.cos(direction))) * translationSpeed
 				+ Math.abs(rotationVelocity), 1);
 		
-		if (reducedSpeed) {
-			maximum *= 2;
+		if (buttonPressed) {
+			maximum *= 1/reducedVelocity;
 		}
 
 		// Set the motors' speeds
@@ -305,21 +339,32 @@ public class SingularityDrive {
 			leftVelocity *= Math.abs(left);
 			rightVelocity *= Math.abs(right);
 		}
+		SmartDashboard.putNumber("Post-sqaring inputs - Left Velocity", leftVelocity);
+		SmartDashboard.putNumber("Post-sqaring inputs - Right Velocity", rightVelocity);
 
+		
 		// Guard against illegal inputs
 		leftVelocity /= Math.max(1, Math.abs(leftVelocity));
 		rightVelocity /= Math.max(1, Math.abs(rightVelocity));
 		
-		if (reducedSpeed) {
-			leftVelocity /= 2;
-			rightVelocity /= 2;
+		SmartDashboard.putNumber("Clamped Value - Left Velocity", leftVelocity);
+		SmartDashboard.putNumber("Clamped Value - Right Velocity", rightVelocity);
+
+		
+		if (buttonPressed) {
+			leftVelocity *= reducedVelocity;
+			rightVelocity *= reducedVelocity;
 		}
+		
+		SmartDashboard.putNumber("Reduced Velocity - Left", leftVelocity);
+		SmartDashboard.putNumber("Reduced Velocity - Right", rightVelocity);
+		
 
 		// Set the motors' speeds
-		m_frontLeftMotor.set(velocityMultiplier * (leftVelocity));
-		m_rearLeftMotor.set(velocityMultiplier * (leftVelocity));
-		m_frontRightMotor.set(velocityMultiplier * (-rightVelocity));
-		m_rearRightMotor.set(velocityMultiplier * (-rightVelocity));
+		m_frontLeftMotor.set(this.velocityMultiplier * leftVelocity);
+		m_rearLeftMotor.set(this.velocityMultiplier * leftVelocity);
+		m_frontRightMotor.set(this.velocityMultiplier * -rightVelocity);
+		m_rearRightMotor.set(this.velocityMultiplier * -rightVelocity);
 	}
 
 	/**

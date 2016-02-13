@@ -2,6 +2,7 @@ package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * A class that represents our conveyer belt from the 2016 year.
@@ -11,7 +12,7 @@ import edu.wpi.first.wpilibj.SpeedController;
  */
 public class SingularityConveyer {
 
-	SpeedController left, right;
+	CANTalon left, right;
 
 	/**
 	 * Constructor for singularity conveyer.
@@ -25,6 +26,29 @@ public class SingularityConveyer {
 
 		left = new CANTalon(l);
 		right = new CANTalon(r);
+		
+	    
+		left.getPosition();
+		left.getSpeed();
+		left.set(0.0);
+		
+		right.getPosition();
+		right.getSpeed();
+		right.setPosition(0.0);
+		
+		
+		
+		SmartDashboard.getNumber(" left get Position" ,left.getPosition() );
+		SmartDashboard.getNumber(" left get Speed" ,left.getSpeed() );
+		
+		SmartDashboard.getNumber(" right get Position" ,left.getPosition() );
+		SmartDashboard.getNumber(" right get Speed" ,left.getSpeed() );
+		
+		
+		
+		
+		
+		
 	}
 
 	/**
@@ -57,6 +81,8 @@ public class SingularityConveyer {
 	 * @return The current speed of the conveyer motors (right motor)
 	 */
 	public double getSpeed() {
+		
+		
 		return right.get();
 	}
 
