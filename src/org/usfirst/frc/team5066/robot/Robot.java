@@ -24,6 +24,7 @@ public class Robot extends IterativeRobot {
 	SingularityDrive drive;
 	SingularityProperties properties;
 	SingularityArm arm;
+	SingularityConveyer conveyer;
 
 	public void robotInit() {
 		try {
@@ -47,6 +48,9 @@ public class Robot extends IterativeRobot {
 			session = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 			NIVision.IMAQdxConfigureGrab(session);
 			NIVision.IMAQdxStartAcquisition(session);
+			
+			conveyer = new SingularityConveyer(8, 9);
+			
 		}
 	}
 
@@ -77,7 +81,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Joystick Y", -js.getRawAxis(0));
 		SmartDashboard.putNumber("Joystick X", js.getRawAxis(1));
 		
+		conveyer.setSpeed(js.getRawAxis(3) - js.getRawAxis(2));
+		
 		//drive.setReduceVelocity(js.getRawButton(6));
+		
 		
 		
 		//arm.setSpeed(js.getRawAxis(1));
