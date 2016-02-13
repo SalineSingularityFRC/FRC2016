@@ -22,11 +22,19 @@ public class SingularityDrive {
 	private boolean buttonPressed = false;
 	private double reducedVelocity;
 	
+	//Talon type enum
+	public static final int CANTALON_DRIVE = 0;
+	public static final int TALON_SR_DRIVE = 1;
+	
+	private static final int DEFAULT_TALON_TYPE = CANTALON_DRIVE;
+	
+	private int talonType;
 	
 
 	/**
 	 * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
-	 * SingularityDrive}. Takes in integers to use for motor ports. Allows the velocityMultiplier to be changed
+	 * SingularityDrive}. Takes in integers to use for motor ports. Allows the
+	 * velocityMultiplier to be changed
 	 * 
 	 * @param frontLeftMotor
 	 *            Channel for front left motor
@@ -37,13 +45,30 @@ public class SingularityDrive {
 	 * @param rearRightMotor
 	 *            Channel for rear right motor
 	 * @param velocityMultiplier
-	 * 			  Limits the velocity by a factor of this.
+	 *            Limits the velocity by a factor of this.
+	 * @param talonType
+	 *            takes an enum value to determine the type of talons being used
+	 *            in the drive
+	 *
 	 */
-	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double m_velocityMultiplier){
-		m_frontLeftMotor = new CANTalon(frontLeftMotor);
-		m_rearLeftMotor = new CANTalon(rearLeftMotor);
-		m_frontRightMotor = new CANTalon(frontRightMotor);
-		m_rearRightMotor = new CANTalon(rearRightMotor);
+	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double m_velocityMultiplier, int talonType){
+		this.talonType = talonType;
+
+		if (talonType == CANTALON_DRIVE) {
+			m_frontLeftMotor = new CANTalon(frontLeftMotor);
+			m_rearLeftMotor = new CANTalon(rearLeftMotor);
+			m_frontRightMotor = new CANTalon(frontRightMotor);
+			m_rearRightMotor = new CANTalon(rearRightMotor);
+		}
+		else if(talonType == TALON_SR_DRIVE) {
+			m_frontLeftMotor = new Talon(frontLeftMotor);
+			m_rearLeftMotor = new Talon(rearLeftMotor);
+			m_frontRightMotor = new Talon(frontRightMotor);
+			m_rearRightMotor = new Talon(rearRightMotor);
+		}
+		else{
+			SmartDashboard.putNumber("INVALID VALUE FOR TALON TYPE.      value=", talonType);
+		}
 		this.velocityMultiplier = m_velocityMultiplier;
 	}
 	
@@ -61,7 +86,7 @@ public class SingularityDrive {
 	 *            Channel for rear right motor
 	 */
 	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
-		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER);
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER, DEFAULT_TALON_TYPE);
 	}
 	
 	/**
