@@ -22,6 +22,8 @@ public class SingularityDrive {
 	private boolean buttonPressed = false;
 	private double reducedVelocity;
 	
+	private final static double DEFAULT_MINIMUM_THRESHOLD = 0.09;
+	
 	//Talon type enum
 	public static final int CANTALON_DRIVE = 0;
 	public static final int TALON_SR_DRIVE = 1;
@@ -143,6 +145,13 @@ public class SingularityDrive {
 		this.reducedVelocity = reducedVelocity;
 	}
 	
+	private double threshold(double velocity){
+		if(Math.abs(velocity) <= DEFAULT_MINIMUM_THRESHOLD){
+			return 0;
+		}
+		return velocity;
+	}
+	
 	/**
 	 * So called "arcade drive" method for driving a robot around. Drives much
 	 * like one would expect a vehicle to move with a joy stick.
@@ -169,6 +178,9 @@ public class SingularityDrive {
 		if (buttonPressed) {
 			maximum *= 1/reducedVelocity;
 		}
+		
+		translationVelocity = threshold(translationVelocity);
+		rotationVelocity = threshold(rotationVelocity);
 		
 		// Set the motors
 		m_frontLeftMotor.set(this.velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
@@ -216,7 +228,7 @@ public class SingularityDrive {
 	public void mecanum(double horizontal, double vertical, double rotation,
 			double rotationMultiplier, boolean squaredInputs) {
 
-		double translationSpeed, direction, maximum, rotationVelocity;
+		double translationVelocity, direction, maximum, rotationVelocity;
 
 		// Do squared inputs if necessary
 		if (squaredInputs) {
@@ -226,7 +238,7 @@ public class SingularityDrive {
 		}
 
 		// Use the Pythagorean theorem to find the speed of translation
-		translationSpeed = this.velocityMultiplier * Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
+		translationVelocity = this.velocityMultiplier * Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
 
 		rotationVelocity = this.velocityMultiplier * rotation * rotationMultiplier;
 
@@ -234,18 +246,21 @@ public class SingularityDrive {
 		direction = Math.PI / 4 + Math.atan2(vertical, horizontal);
 
 		// Guard against illegal inputs
-		maximum = Math.max(Math.max(Math.abs(Math.sin(direction)), Math.abs(Math.cos(direction))) * translationSpeed
+		maximum = Math.max(Math.max(Math.abs(Math.sin(direction)), Math.abs(Math.cos(direction))) * translationVelocity
 				+ Math.abs(rotationVelocity), 1);
 		
 		if (buttonPressed) {
 			maximum *= 1/reducedVelocity;
 		}
 
+		translationVelocity = threshold(translationVelocity);
+		rotationVelocity = threshold(rotationVelocity);
+		
 		// Set the motors' speeds
-		m_frontLeftMotor.set((translationSpeed * Math.sin(direction) + rotationVelocity) / maximum);
-		m_rearLeftMotor.set((translationSpeed * -Math.cos(direction) + rotationVelocity) / maximum);
-		m_frontRightMotor.set((translationSpeed * Math.cos(direction) + rotationVelocity) / maximum);
-		m_rearRightMotor.set((translationSpeed * -Math.sin(direction) + rotationVelocity) / maximum);
+		m_frontLeftMotor.set((translationVelocity * Math.sin(direction) + rotationVelocity) / maximum);
+		m_rearLeftMotor.set((translationVelocity * -Math.cos(direction) + rotationVelocity) / maximum);
+		m_frontRightMotor.set((translationVelocity * Math.cos(direction) + rotationVelocity) / maximum);
+		m_rearRightMotor.set((translationVelocity * -Math.sin(direction) + rotationVelocity) / maximum);
 	}
 
 	/**
@@ -359,7 +374,9 @@ public class SingularityDrive {
 		SmartDashboard.putNumber("Reduced Velocity - Left", leftVelocity);
 		SmartDashboard.putNumber("Reduced Velocity - Right", rightVelocity);
 		
-
+		leftVelocity = threshold(leftVelocity);
+		rightVelocity = threshold(rightVelocity);
+		
 		// Set the motors' speeds
 		m_frontLeftMotor.set(this.velocityMultiplier * leftVelocity);
 		m_rearLeftMotor.set(this.velocityMultiplier * leftVelocity);

@@ -1,15 +1,6 @@
-<<<<<<< HEAD
-/bin/
-/build/
-/dist/
-.classpath
-
-/sysProps.xml
-=======
 /bin/
 /build/
 /dist/
 .classpath
 .gitignore
-
->>>>>>> branch 'master' of https://github.com/SalineSingularityFRC/FRC2016.git
+/sysProps.xml
