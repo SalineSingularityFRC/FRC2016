@@ -12,11 +12,9 @@ public interface ControlScheme {
 	
 	public void controlConveyor();
 	
-	public void arcadeDrive(SingularityDrive sd, boolean squaredInputs);
+	public void drive(SingularityDrive sd, boolean squaredInputs);
 	
-	public void tankDrive(SingularityDrive sd, boolean squaredInputs);
-
 	public void controlArm(SingularityArm arm);
 	
-	SingularityDrive sd = new SingularityDrive(1,2,3,4);
+	//SingularityDrive sd = new SingularityDrive(1,2,3,4);
 }

@@ -30,14 +30,10 @@ public class OneXboxArcadeDrive implements ControlScheme{
 	}
 
 	@Override
-	public void arcadeDrive(SingularityDrive sd, boolean squaredInputs) {
+	public void drive(SingularityDrive sd, boolean squaredInputs) {
 		sd.arcade(xbox.getLS_Y(), xbox.getLS_X(), squaredInputs);
 	}
 
-	@Override
-	public void tankDrive(SingularityDrive sd, boolean squaredInputs) {
-		sd.tank(xbox.getLS_Y(), xbox.getRS_Y(), squaredInputs);
-	}
 
 	
 	
