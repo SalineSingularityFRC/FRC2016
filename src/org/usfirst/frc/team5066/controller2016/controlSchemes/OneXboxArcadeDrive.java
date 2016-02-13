@@ -12,7 +12,7 @@ public class OneXboxArcadeDrive implements ControlScheme{
 	XboxController xbox;
 	
 	public OneXboxArcadeDrive(Joystick j) {
-		xbox = (XboxController)j;
+		xbox = (XboxController) j;
 	}
 	
 	public OneXboxArcadeDrive(int port) {
