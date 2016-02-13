@@ -3,10 +3,12 @@ package org.usfirst.frc.team5066.robot;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;
 
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
+import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxArcadeDrive;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
 
@@ -38,6 +40,8 @@ public class Robot extends IterativeRobot {
 			
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
+			//currentScheme = new OneXboxArcadeDrive(js);
+			
 			// the camera name (ex. cam0) can be found through the roborio web
 			// interface
 			session = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
@@ -59,12 +63,24 @@ public class Robot extends IterativeRobot {
 		
 		//currentScheme.tankDrive(drive, true);
 		
-		//drive.tank
+		drive.setReducedVelocity(0.5);
+		drive.reduceVelocity(js.getRawButton(6));
+		
+		if(js.getRawButton(1)){
+			drive.setVelocityMultiplier(.8);
+		}
+		else {
+			drive.setVelocityMultiplier(1);
+		}
+		
+		drive.tank(-js.getRawAxis(1), -js.getRawAxis(5), true);
+		SmartDashboard.putNumber("Joystick Y", -js.getRawAxis(0));
+		SmartDashboard.putNumber("Joystick X", js.getRawAxis(1));
 		
 		//drive.setReduceVelocity(js.getRawButton(6));
 		
 		
-		arm.setSpeed(js.getRawAxis(1));
+		//arm.setSpeed(js.getRawAxis(1));
 		
 	}
 
