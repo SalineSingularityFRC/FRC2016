@@ -86,6 +86,7 @@ public class Robot extends IterativeRobot {
 
 	public void testPeriodic() {
 		updateCamera(session, frame);
+		
 	}
 
 	private void loadProperties() {
