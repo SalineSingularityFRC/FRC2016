@@ -64,6 +64,13 @@ public class XboxController extends Joystick{
 		return this.getRawAxis(3);
 	}
 	
+	public double getTriggerRight() {
+		return this.getRawAxis(3);
+	}
+	public double getTriggerLeft() {
+		return this.getRawAxis(2);
+	}
+	
 	
 	
 	
