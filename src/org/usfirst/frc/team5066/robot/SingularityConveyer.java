@@ -59,5 +59,21 @@ public class SingularityConveyer {
 	public double getSpeed() {
 		return right.get();
 	}
+	//same as the setSpeed method above, but with two different speeds for inputs
+	public void setSpeed(double leftspeed, double rightspeed) {
+		if (leftspeed < -1) {
+			left.set(-1);
+		} else if (leftspeed > 1) {
+			left.set(1);
+		} else {
+			left.set(leftspeed);
+		} if (rightspeed < -1) {
+			right.set(-1);
+		} else if (rightspeed > 1) {
+			right.set(1);
+		} else {
+			right.set(rightspeed);
+		}
+	}
 
 }

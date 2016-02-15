@@ -52,6 +52,10 @@ public class SingularityArm {
 					left.set(-speed);
 					right.set(speed);
 				}
+				// code for limit switches
+				if (limitSwitchesOverride) {
+					if (speed > 0) speed = 0;
+				}
 	}
 	
 	/**
