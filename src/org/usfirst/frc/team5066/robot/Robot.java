@@ -25,11 +25,15 @@ public class Robot extends IterativeRobot {
 	SingularityProperties properties;
 	SingularityArm arm;
 	SingularityConveyer conveyer;
+	int driveControllerType;
 
 	public void robotInit() {
+		
+		//TODO change this so that default properties are loaded first and then the other properties are applied one by one. If one of them encounters an error, it just keeps the default value and moves on to the next property
+		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
-			loadDefaultProperties();
+			loadProperties();
 		} catch (IOException ioe) {
 			loadDefaultProperties();
 		} finally {
@@ -51,6 +55,7 @@ public class Robot extends IterativeRobot {
 			
 			conveyer = new SingularityConveyer(8, 9);
 			
+			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
 		}
 	}
 
@@ -97,13 +102,26 @@ public class Robot extends IterativeRobot {
 	}
 
 	private void loadProperties() {
+		SmartDashboard.putString("DB/String 0", "No");
+		
+		//Ports
 		frontLeftMotor = properties.getInt("frontLeftMotor");
 		rearLeftMotor = properties.getInt("rearLeftMotor");
 		frontRightMotor = properties.getInt("frontRightMotor");
 		rearRightMotor = properties.getInt("rearRightMotor");
+		
+		//CANTalon or Talon drive?
+		driveControllerType = properties.getInt("driveControllerType");
+
 	}
 
 	private void loadDefaultProperties() {
+		SmartDashboard.putString("DB/String 0", "Yes");
+		
+		//CANTalon or Talon drive?
+		driveControllerType = SingularityDrive.CANTALON_DRIVE;
+		
+		//Ports
 		frontLeftMotor = 10;
 		rearLeftMotor = 2;
 		frontRightMotor = 1;

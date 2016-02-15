@@ -96,7 +96,7 @@ public class SingularityProperties {
 	 * @return The value of the string
 	 */
 	public String getString(String name) {
-		return props.getProperty("name");
+		return props.getProperty(name);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class SingularityProperties {
 	 * @return The value of the integer
 	 */
 	public int getInt(String name) {
-		return Integer.parseInt(props.getProperty("name"));
+		return Integer.parseInt(props.getProperty(name));
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class SingularityProperties {
 	 * @return The value of the float
 	 */
 	public float getFloat(String name) {
-		return Float.parseFloat(props.getProperty("name"));
+		return Float.parseFloat(props.getProperty(name));
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class SingularityProperties {
 	 * @return The value of the double
 	 */
 	public double getDouble(String name) {
-		return Double.parseDouble(props.getProperty("name"));
+		return Double.parseDouble(props.getProperty(name));
 	}
 
 	/**
@@ -140,6 +140,6 @@ public class SingularityProperties {
 	 * @return The value of the boolean
 	 */
 	public boolean getBoolean(String name) {
-		return Boolean.parseBoolean(props.getProperty("name"));
+		return Boolean.parseBoolean(props.getProperty(name));
 	}
 }
