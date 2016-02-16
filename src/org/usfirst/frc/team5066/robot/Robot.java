@@ -27,6 +27,18 @@ public class Robot extends IterativeRobot {
 	SingularityConveyer conveyer;
 	int driveControllerType;
 
+	/*NOTE
+	 * 
+	 * Xbox Controller is always port 0
+	 * Big Joystick is always port 1
+	 * Little joystick is always port 2
+	*/
+	
+	//enum for controller ports
+	final int XBOX_PORT = 0;
+	final int BIG_JOYSTICK_PORT = 1;
+	final int SMALL_JOYSTICK_PORT = 2;
+	
 	public void robotInit() {
 		
 		//TODO change this so that default properties are loaded first and then the other properties are applied one by one. If one of them encounters an error, it just keeps the default value and moves on to the next property
@@ -45,7 +57,7 @@ public class Robot extends IterativeRobot {
 			
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
-			//currentScheme = new OneXboxArcadeDrive(js);
+			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
 			
 			// the camera name (ex. cam0) can be found through the roborio web
 			// interface
@@ -70,8 +82,10 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		updateCamera(session, frame);
 		
-		//currentScheme.tankDrive(drive, true);
-		
+		currentScheme.drive(drive, true);
+		currentScheme.controlArm(arm);
+		currentScheme.controlConveyer(conveyer);	
+		/*
 		drive.setReducedVelocity(0.5);
 		drive.reduceVelocity(js.getRawButton(6));
 		
@@ -93,6 +107,10 @@ public class Robot extends IterativeRobot {
 		
 		
 		//arm.setSpeed(js.getRawAxis(1));
+		 * 
+		 * 
+		 */
+		
 		
 	}
 
