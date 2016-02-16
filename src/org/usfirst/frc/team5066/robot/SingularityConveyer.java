@@ -2,6 +2,7 @@ package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * A class that represents our conveyer belt from the 2016 year.
@@ -11,7 +12,7 @@ import edu.wpi.first.wpilibj.SpeedController;
  */
 public class SingularityConveyer {
 
-	SpeedController left, right;
+	CANTalon left, right;
 
 	/**
 	 * Constructor for singularity conveyer.
@@ -50,6 +51,9 @@ public class SingularityConveyer {
 			left.set(-speed);
 			right.set(speed);
 		}
+		
+		SmartDashboard.putNumber("left encoder speed", left.getSpeed());
+		SmartDashboard.putNumber("right Encoder speed", right.getSpeed());
 	}
 
 	/**

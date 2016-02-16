@@ -45,27 +45,32 @@ public class Robot extends IterativeRobot {
 		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
-			loadProperties();
-		} catch (IOException ioe) {
 			loadDefaultProperties();
+		} catch (Exception e) {
+			loadDefaultProperties();
+			e.printStackTrace();
 		} finally {
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, .5, SingularityDrive.CANTALON_DRIVE);
-			arm = new SingularityArm(6, 7);
-			
+			arm = new SingularityArm(9, 7);
+			try{
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
-			
 			// the camera name (ex. cam0) can be found through the roborio web
 			// interface
 			session = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 			NIVision.IMAQdxConfigureGrab(session);
 			NIVision.IMAQdxStartAcquisition(session);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
 			
-			conveyer = new SingularityConveyer(8, 9);
+			
+			
+			conveyer = new SingularityConveyer(8, 6);
 			
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
 		}
@@ -141,13 +146,17 @@ public class Robot extends IterativeRobot {
 		
 		//Ports
 		frontLeftMotor = 10;
-		rearLeftMotor = 2;
+		rearLeftMotor = 4;
 		frontRightMotor = 1;
 		rearRightMotor = 3;
 	}
 
 	private void updateCamera(int session, Image frame) {
+		try{
 		NIVision.IMAQdxGrab(session, frame, 1);
 		CameraServer.getInstance().setImage(frame);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
