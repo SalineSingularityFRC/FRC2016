@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxArcadeDrive;
+import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxTankDrive;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
 
@@ -49,7 +50,7 @@ public class Robot extends IterativeRobot {
 			NIVision.IMAQdxConfigureGrab(session);
 			NIVision.IMAQdxStartAcquisition(session);
 			
-			conveyer = new SingularityConveyer(8, 9);
+			conveyer = new SingularityConveyer(8, 6);
 			
 		}
 	}
@@ -81,10 +82,16 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Joystick Y", -js.getRawAxis(0));
 		SmartDashboard.putNumber("Joystick X", js.getRawAxis(1));
 		
-		conveyer.setSpeed(js.getRawAxis(3) - js.getRawAxis(2));
+		//the conveyer for tank drive:
+		conveyer.setSpeed(js.getRawAxis(3), js.getRawAxis(2), js.getRawButton(10));
+		
+		//the conveyer for arcade:
+		//conveyer.setSpeed(xbox.getRS_Y() + xbox.getRS_X(), xbox.getRS_Y() - xbox.getRS_X(), false);
+		
+		//the conveyer for GTADrive:
+		//conveyer.setSpeed(xbox.getRS_Y() + xbox.getRS_X(), xbox.getRS_Y() - xbox.getRS_X(), false);
 		
 		//drive.setReduceVelocity(js.getRawButton(6));
-		
 		
 		
 		//arm.setSpeed(js.getRawAxis(1));
@@ -105,7 +112,7 @@ public class Robot extends IterativeRobot {
 
 	private void loadDefaultProperties() {
 		frontLeftMotor = 10;
-		rearLeftMotor = 2;
+		rearLeftMotor = 4;
 		frontRightMotor = 1;
 		rearRightMotor = 3;
 	}

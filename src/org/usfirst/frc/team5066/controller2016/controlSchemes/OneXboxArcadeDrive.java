@@ -27,7 +27,7 @@ public class OneXboxArcadeDrive implements ControlScheme{
 
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-		conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
+		conveyer.setSpeed(xbox.getRS_Y() + xbox.getRS_X(), xbox.getRS_Y() - xbox.getRS_X(), false);
 	}
 
 	@Override
