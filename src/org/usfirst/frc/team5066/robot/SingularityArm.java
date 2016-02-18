@@ -2,6 +2,7 @@ package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * A class that represents our arm from the 2016 year.
@@ -11,7 +12,7 @@ import edu.wpi.first.wpilibj.SpeedController;
  */
 public class SingularityArm {
 
-	private SpeedController left, right;
+	private CANTalon left, right;
 	
 	/**
 	 * When true, limit switches will not automatically stop the arm from moving. 
@@ -31,6 +32,28 @@ public class SingularityArm {
 		left = new CANTalon(l);
 		right = new CANTalon(r);
 		limitSwitchesOverride = false;
+		
+		
+		left.getSpeed();
+		left.getSpeed();
+		left.set(0.0);
+		
+		right.getPosition();
+		right.getSpeed();
+		right.setPosition(0.0);
+		
+		
+		
+		SmartDashboard.getNumber(" left get Position" ,left.getPosition() );
+		SmartDashboard.getNumber(" left get Speed" ,left.getSpeed() );
+		
+		SmartDashboard.getNumber(" right get Position" ,left.getPosition() );
+		SmartDashboard.getNumber(" right get Speed" ,left.getSpeed() );
+
+
+
+				
+				
 	}
 	
 	/**

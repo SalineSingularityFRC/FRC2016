@@ -28,7 +28,7 @@ public class SingularityConveyer {
 		right = new CANTalon(r);
 		
 	    
-		left.getPosition();
+		left.getSpeed();
 		left.getSpeed();
 		left.set(0.0);
 		
@@ -41,8 +41,8 @@ public class SingularityConveyer {
 		SmartDashboard.getNumber(" left get Position" ,left.getPosition() );
 		SmartDashboard.getNumber(" left get Speed" ,left.getSpeed() );
 		
-		SmartDashboard.getNumber(" right get Position" ,left.getPosition() );
-		SmartDashboard.getNumber(" right get Speed" ,left.getSpeed() );
+		SmartDashboard.getNumber(" right get Position" ,right.getPosition() );
+		SmartDashboard.getNumber(" right get Speed" ,right.getSpeed() );
 		
 		
 		

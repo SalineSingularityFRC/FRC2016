@@ -33,20 +33,24 @@ public class Robot extends IterativeRobot {
 	SingularityProperties properties;
 	SingularityArm arm;
 	SingularityConveyer sc;
-
+	
+	
+    
+    
 	public void robotInit() {
 		//    setup auto chooser in SmartDashboard 
-		autochooser = new SendableChooser();
-		autochooser.addDefault("default programm",  object);
-		autochooser.addObject("object programm111", object);
-		autochooser.addObject("object programm222", object);
-		autochooser.addObject("object programm333", object);
-		autochooser.addObject("object programm444", object);
-		autochooser.addObject("object programm555", object);
-		autochooser.addObject("object programm666", object);
-		autochooser.addObject("object programm777", object);
-		
-		SmartDashboard.putData("Autonomou Chooser", autochooser);
+//	autochooser = new SendableChooser();
+//	autochooser.addDefault("default programm",  object);
+//	autochooser.addObject("object programm111", object);
+//	autochooser.addObject("object programm222", object);
+//	autochooser.addObject("object programm333", object);
+//	autochooser.addObject("object programm444", object);
+//	autochooser.addObject("object programm555", object);
+//	autochooser.addObject("object programm666", object);
+//	autochooser.addObject("object programm777", object);
+//		
+	//	SmartDashboard.putData("Autonomou Chooser", autochooser);
+	
 		
 	
 		try {
@@ -92,11 +96,12 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		
 		
-		Scheduler.getInstance(); 
-		// Schedule all the autonomous for SmartDashboard
 		
 		
+		//Autonomous part
 		
+		
+		Scheduler.getInstance(); // Schedule all the autonomous for SmartDashboard
 		
 		updateCamera(session, frame);
 	}
@@ -116,7 +121,7 @@ public class Robot extends IterativeRobot {
 			drive.setVelocityMultiplier(1);
 		}
 		
-		drive.tank(-js.getRawAxis(1), -js.getRawAxis(5), true);
+		drive.tank(-js.getRawAxis(1), -js.getRawAxis(0), true);
 		SmartDashboard.putNumber("Joystick Y", -js.getRawAxis(0));
 		SmartDashboard.putNumber("Joystick X", js.getRawAxis(1));
 		

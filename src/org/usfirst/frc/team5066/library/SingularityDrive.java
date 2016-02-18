@@ -59,6 +59,8 @@ public class SingularityDrive {
 			m_rearLeftMotor = new CANTalon(rearLeftMotor);
 			m_frontRightMotor = new CANTalon(frontRightMotor);
 			m_rearRightMotor = new CANTalon(rearRightMotor);
+			
+			
 		}
 		else if(talonType == TALON_SR_DRIVE) {
 			m_frontLeftMotor = new Talon(frontLeftMotor);
@@ -190,6 +192,9 @@ public class SingularityDrive {
 	public void arcade(double translation, double rotation) {
 		// Just do the arcade without squared inputs
 		this.arcade(translation, rotation, false);
+		
+	
+
 	}
 
 	/**
