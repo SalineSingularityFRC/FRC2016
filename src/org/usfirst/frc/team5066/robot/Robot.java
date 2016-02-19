@@ -19,10 +19,9 @@ public class Robot extends IterativeRobot {
 	ControlScheme currentScheme;
 	Image frame;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
-	int leftArmMotor, rightArmMotor;
+	int armLeftWorm, armLeftPlanetary, armRightWorm, armRightPlanetary;
 	int leftConveyerMotor, rightConveyerMotor;
-	int session;
-	
+	int session;	
 	
 	Joystick js;
 	long initialTime;
@@ -59,7 +58,7 @@ public class Robot extends IterativeRobot {
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, .5, SingularityDrive.CANTALON_DRIVE);
-			arm = new SingularityArm(9, 7);
+			arm = new SingularityArm(2, 9, 7, 5);
 			try{
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 			// the camera name (ex. cam0) can be found through the roborio web
@@ -114,13 +113,8 @@ public class Robot extends IterativeRobot {
 		conveyer.setSpeed(js.getRawAxis(3) - js.getRawAxis(2));
 		
 		//drive.setReduceVelocity(js.getRawButton(6));
+		*/
 		
-		
-		
-		//arm.setSpeed(js.getRawAxis(1));
-		 * 
-		 * 
-		 */
 		
 		
 	}
@@ -141,6 +135,11 @@ public class Robot extends IterativeRobot {
 		
 		//CANTalon or Talon drive?
 		driveControllerType = properties.getInt("driveControllerType");
+		
+		armLeftWorm = properties.getInt("armLeftWorm");
+		armLeftPlanetary = properties.getInt("armLeftPlanetary");
+		armRightWorm = properties.getInt("armRightWorm");
+		armRightPlanetary = properties.getInt("armRightPlanetary");
 
 	}
 
@@ -155,12 +154,17 @@ public class Robot extends IterativeRobot {
 		rearLeftMotor = 4;
 		frontRightMotor = 1;
 		rearRightMotor = 3;
-		
+
+		//TODO add arm motors
+		armLeftWorm = 2;
+		armLeftPlanetary = 9;
+		armRightWorm = 7;
+		armRightPlanetary = 5;
+
+		//TODO add these variables to the initialization of the conveyer and arm objects
 		leftConveyerMotor = 8;
 		rightConveyerMotor = 6;
 		
-		//TODO add arm motors
-		//TODO add these variables to the initialization of the conveyer and arm objects
 	}
 
 	private void updateCamera(int session, Image frame) {
