@@ -19,11 +19,10 @@ public class Robot extends IterativeRobot {
 	ControlScheme currentScheme;
 	Image frame;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
-	int leftArmMotor, rightArmMotor;
-	int leftConveyerMotor, rightConveyerMotor;
-	int session;
 	int armLeftWorm, armLeftPlanetary, armRightWorm, armRightPlanetary;
-
+	int leftConveyerMotor, rightConveyerMotor;
+	int session;	
+	
 	Joystick js;
 	long initialTime;
 	SingularityDrive drive;
@@ -95,10 +94,11 @@ public class Robot extends IterativeRobot {
 		currentScheme.drive(drive, true);
 		currentScheme.controlArm(arm);
 		currentScheme.controlConveyer(conveyer);	
-		/*
+		
 		drive.setReducedVelocity(0.5);
 		drive.reduceVelocity(js.getRawButton(6));
 		
+		/*
 		if(js.getRawButton(1)){
 			drive.setVelocityMultiplier(.8);
 		}
