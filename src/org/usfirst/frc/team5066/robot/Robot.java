@@ -18,8 +18,12 @@ import com.ni.vision.NIVision.Image;
 public class Robot extends IterativeRobot {
 	ControlScheme currentScheme;
 	Image frame;
-	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, session;
+	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
+	int leftArmMotor, rightArmMotor;
+	int leftConveyerMotor, rightConveyerMotor;
+	int session;
 	int armLeftWorm, armLeftPlanetary, armRightWorm, armRightPlanetary;
+
 	Joystick js;
 	long initialTime;
 	SingularityDrive drive;
@@ -150,11 +154,17 @@ public class Robot extends IterativeRobot {
 		rearLeftMotor = 4;
 		frontRightMotor = 1;
 		rearRightMotor = 3;
-		
+
+		//TODO add arm motors
 		armLeftWorm = 2;
 		armLeftPlanetary = 9;
 		armRightWorm = 7;
 		armRightPlanetary = 5;
+
+		//TODO add these variables to the initialization of the conveyer and arm objects
+		leftConveyerMotor = 8;
+		rightConveyerMotor = 6;
+		
 	}
 
 	private void updateCamera(int session, Image frame) {
