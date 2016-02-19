@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class SingularityDrive {
+	
+	private double slowSpeedConstant, normalSpeedConstant, fastSpeedConstant;
+	
 	private SpeedController m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
 	
 	private final static double DEFAULT_VELOCITY_MULTIPLIER = 1.0;
@@ -29,6 +32,9 @@ public class SingularityDrive {
 	public static final int TALON_SR_DRIVE = 1;
 	
 	private static final int DEFAULT_TALON_TYPE = CANTALON_DRIVE;
+	private final static double DEFAULT_SLOW_SPEED_CONSTANT = 0.4;
+	private final static double DEFAULT_NORMAL_SPEED_CONSTANT = 0.8;
+	private final static double DEFAULT_FAST_SPEED_CONSTANT = 1.0;
 	
 	private int talonType;
 	
@@ -51,10 +57,10 @@ public class SingularityDrive {
 	 * @param talonType
 	 *            takes an enum value to determine the type of talons being used
 	 *            in the drive
+	 * 
 	 *
 	 */
-	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double m_velocityMultiplier, int talonType){
-		this.talonType = talonType;
+	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor, double m_velocityMultiplier, int talonType, double slowSpeedConstant, double normalSpeedConstant, double fastSpeedConstant){
 
 		if (talonType == CANTALON_DRIVE) {
 			m_frontLeftMotor = new CANTalon(frontLeftMotor);
@@ -71,7 +77,12 @@ public class SingularityDrive {
 		else{
 			SmartDashboard.putNumber("INVALID VALUE FOR TALON TYPE.      value=", talonType);
 		}
+		
 		this.velocityMultiplier = m_velocityMultiplier;
+		this.talonType = talonType;
+		this.slowSpeedConstant = slowSpeedConstant;
+		this.normalSpeedConstant = normalSpeedConstant;
+		this.fastSpeedConstant = fastSpeedConstant;
 	}
 	
 	/**
@@ -88,7 +99,7 @@ public class SingularityDrive {
 	 *            Channel for rear right motor
 	 */
 	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor) {
-		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER, DEFAULT_TALON_TYPE);
+		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER, DEFAULT_TALON_TYPE, DEFAULT_SLOW_SPEED_CONSTANT, DEFAULT_NORMAL_SPEED_CONSTANT, DEFAULT_FAST_SPEED_CONSTANT);
 	}
 	
 	/**
@@ -105,6 +116,7 @@ public class SingularityDrive {
 	 * @param rearRightMotor
 	 *            SpeedController for rear right motor
 	 */
+	/*
 	public SingularityDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
 			SpeedController frontRightMotor, SpeedController rearRightMotor, double velocityMultiplier) {
 		m_frontLeftMotor = frontLeftMotor;
@@ -114,10 +126,12 @@ public class SingularityDrive {
 		this.velocityMultiplier = velocityMultiplier;
 	}
 	
+	
 	public SingularityDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
 			SpeedController frontRightMotor, SpeedController rearRightMotor) {
 		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER);
 	}
+	*/
 	
 	private double clamp(double velocityMultiplier){
 		if(velocityMultiplier > 1.0){

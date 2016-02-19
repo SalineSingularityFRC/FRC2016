@@ -23,6 +23,9 @@ public class Robot extends IterativeRobot {
 	int leftConveyerMotor, rightConveyerMotor;
 	int session;
 	
+	double slowSpeedConstant;
+	double normalSpeedConstant;
+	double fastSpeedConstant;
 	
 	Joystick js;
 	long initialTime;
@@ -50,7 +53,7 @@ public class Robot extends IterativeRobot {
 		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
-			loadDefaultProperties();
+			loadProperties();
 		} catch (Exception e) {
 			loadDefaultProperties();
 			e.printStackTrace();
@@ -58,7 +61,7 @@ public class Robot extends IterativeRobot {
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
-			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, .5, SingularityDrive.CANTALON_DRIVE);
+			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, .5, this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(9, 7);
 			try{
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
@@ -142,10 +145,19 @@ public class Robot extends IterativeRobot {
 		//CANTalon or Talon drive?
 		driveControllerType = properties.getInt("driveControllerType");
 
+		slowSpeedConstant = properties.getDouble("slowSpeedConstant");
+		normalSpeedConstant = properties.getDouble("normalSpeedConstant");
+		fastSpeedConstant = properties.getDouble("fastSpeedConstant");
+		
+
+		SmartDashboard.putString("DB/String 9", "slow: " + slowSpeedConstant + " | normal: " + normalSpeedConstant + " | fast: " + fastSpeedConstant);
+
 	}
 
 	private void loadDefaultProperties() {
 		SmartDashboard.putString("DB/String 0", "Yes");
+		SmartDashboard.putString("DB/String 9", "Defaults loaded");
+
 		
 		//CANTalon or Talon drive?
 		driveControllerType = SingularityDrive.CANTALON_DRIVE;
@@ -158,6 +170,10 @@ public class Robot extends IterativeRobot {
 		
 		leftConveyerMotor = 8;
 		rightConveyerMotor = 6;
+		
+		slowSpeedConstant = 0.4;
+		normalSpeedConstant = 0.8;
+		fastSpeedConstant = 1.0;
 		
 		//TODO add arm motors
 		//TODO add these variables to the initialization of the conveyer and arm objects
