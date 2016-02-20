@@ -12,12 +12,13 @@ public class OneXboxArcadeDrive implements ControlScheme{
 
 	XboxController xbox;
 	
-	public OneXboxArcadeDrive(Joystick j) {
+	public OneXboxArcadeDrive(Joystick j) { //This method causes a casting error... so don't use it
 		xbox = (XboxController) j;
 	}
 	
 	public OneXboxArcadeDrive(int port) {
 		xbox = new XboxController(port);
+		
 	}
 	
 	@Override

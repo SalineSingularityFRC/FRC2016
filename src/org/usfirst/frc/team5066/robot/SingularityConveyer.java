@@ -57,12 +57,19 @@ public class SingularityConveyer {
 	}
 
 	/**
-	 *
+	 * 			
 	 * @return The current speed of the conveyer motors (right motor)
 	 */
 	public double getSpeed() {
 		return right.get();
 	}
+	 /**  @param leftspeed
+		 *            <b>double</b> The desired analog speed of the left motor. [-1.0,
+		 *            1.0]
+		 *             @param rightspeed
+		 *            <b>double</b> The desired analog speed of the right motor. [-1.0,
+		 *            1.0]
+		 **/
 	//same as the setSpeed method above, but with two different speeds for inputs
 	public void setSpeed(double leftspeed, double rightspeed) {
 		if (leftspeed < -1) {

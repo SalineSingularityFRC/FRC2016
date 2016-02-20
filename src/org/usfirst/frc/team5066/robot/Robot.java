@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxArcadeDrive;
+import org.usfirst.frc.team5066.controller2016.controlSchemes.TwoJoystickTankXboxAssist;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
 
@@ -71,7 +72,8 @@ public class Robot extends IterativeRobot {
 			catch(Exception e){
 				e.printStackTrace();
 			}
-			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
+			
+			currentScheme = new TwoJoystickTankXboxAssist(this.XBOX_PORT, this.BIG_JOYSTICK_PORT, this.SMALL_JOYSTICK_PORT);
 			
 			
 			
