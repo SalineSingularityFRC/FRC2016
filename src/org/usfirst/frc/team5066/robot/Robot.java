@@ -35,7 +35,7 @@ public class Robot extends IterativeRobot {
 		} catch (IOException ioe) {
 			loadDefaultProperties();
 		} finally {
-			
+			  
 			CameraServer server = CameraServer.getInstance();
 			server.setQuality(50);
 			server.startAutomaticCapture("cam0");
@@ -44,7 +44,7 @@ public class Robot extends IterativeRobot {
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, 1, SingularityDrive.CANTALON_DRIVE);
-			arm = new SingularityArm(2, 9, 7, 5, 1.0);
+			arm = new SingularityArm(2, 9, 7, 5, .25);
 			//TODO add this to properties.
 			
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
