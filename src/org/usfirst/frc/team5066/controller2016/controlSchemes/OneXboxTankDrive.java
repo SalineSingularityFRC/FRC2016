@@ -9,8 +9,12 @@ import org.usfirst.frc.team5066.robot.SingularityConveyer;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class OneXboxTankDrive implements ControlScheme{
-
+	
 	XboxController xbox;
+	
+	boolean isreversed = false;
+	
+	double armSpeed = 1;
 	
 	public OneXboxTankDrive(Joystick j) {
 		xbox = (XboxController) j;
@@ -22,16 +26,37 @@ public class OneXboxTankDrive implements ControlScheme{
 	
 	@Override
 	public void controlArm(SingularityArm arm) {
-		arm.setSpeed(xbox.getRS_Y());
+		if (xbox.getAButton()) {
+			arm.setSpeed(armSpeed);
+		} else if (xbox.getYButton()) {
+			arm.setSpeed(-1 * armSpeed);
+		} else {
+			arm.setSpeed(0);
+		}
 	}
-
+	
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-		conveyer.setSpeed(xbox.getTriggerRight(), xbox.getTriggerLeft(), xbox.getR3());
+		if (isreversed == false) {
+			conveyer.setSpeed(xbox.getTriggerRight(), xbox.getTriggerLeft(), xbox.getR3());
+		} else {
+			conveyer.setSpeed(xbox.getTriggerLeft(), xbox.getTriggerRight(), !xbox.getR3());
+		}
 	}
 
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
-		sd.tank(-1 * xbox.getLS_Y(), -1 * xbox.getRS_Y(), squaredInputs);
+		
+		if (xbox.getPOV() == 180) {
+			isreversed = true;
+		} else if (xbox.getPOV() == 0) {
+			isreversed = false;
+		}
+		
+		if (isreversed == false) {
+			sd.tank(-1 * xbox.getLS_Y(), -1 * xbox.getRS_Y(), squaredInputs);
+		} else {
+			sd.tank(xbox.getLS_Y(), xbox.getRS_Y(), squaredInputs);
+		}
 	}
 }

@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxArcadeDrive;
+import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxGTADrive;
 import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxTankDrive;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
@@ -34,15 +35,22 @@ public class Robot extends IterativeRobot {
 		} catch (IOException ioe) {
 			loadDefaultProperties();
 		} finally {
+			
+			CameraServer server = CameraServer.getInstance();
+			server.setQuality(50);
+			server.startAutomaticCapture("cam0");
+			
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
-			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, .5, SingularityDrive.CANTALON_DRIVE);
+			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, 1, SingularityDrive.CANTALON_DRIVE);
 			arm = new SingularityArm(6, 7);
 			
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
-			//currentScheme = new OneXboxArcadeDrive(js);
+			currentScheme = new OneXboxArcadeDrive(0);
+			//currentScheme = new OneXboxTankDrive(0);
+			//currentScheme = new OneXboxGTADrive(0);
 			
 			// the camera name (ex. cam0) can be found through the roborio web
 			// interface
@@ -51,6 +59,7 @@ public class Robot extends IterativeRobot {
 			NIVision.IMAQdxStartAcquisition(session);
 			
 			conveyer = new SingularityConveyer(8, 6);
+
 			
 		}
 	}
@@ -64,8 +73,10 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
-		updateCamera(session, frame);
 		
+		
+		updateCamera(session, frame);
+		/*
 		//currentScheme.tankDrive(drive, true);
 		
 		drive.setReducedVelocity(0.5);
@@ -85,13 +96,20 @@ public class Robot extends IterativeRobot {
 		//the conveyer for tank drive:
 		conveyer.setSpeed(js.getRawAxis(3), js.getRawAxis(2), js.getRawButton(10));
 		
+		OLD*/
+		
+		currentScheme.drive(drive, true);
+		currentScheme.controlArm(arm);
+		currentScheme.controlConveyer(conveyer);
+		
 		//the conveyer for arcade:
 		//conveyer.setSpeed(xbox.getRS_Y() + xbox.getRS_X(), xbox.getRS_Y() - xbox.getRS_X(), false);
 		
 		//the conveyer for GTADrive:
 		//conveyer.setSpeed(xbox.getRS_Y() + xbox.getRS_X(), xbox.getRS_Y() - xbox.getRS_X(), false);
 		
-		//drive.setReduceVelocity(js.getRawButton(6));
+		drive.setReducedVelocity(0.5);
+		drive.reduceVelocity(js.getRawButton(6));
 		
 		
 		//arm.setSpeed(js.getRawAxis(1));

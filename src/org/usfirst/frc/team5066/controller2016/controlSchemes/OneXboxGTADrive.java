@@ -12,6 +12,10 @@ public class OneXboxGTADrive implements ControlScheme{
 
 	XboxController xbox;
 	
+	boolean isreversed = false;
+	
+	double armSpeed;
+	
 	public OneXboxGTADrive(Joystick j) {
 		xbox = (XboxController) j;
 	}
@@ -22,17 +26,36 @@ public class OneXboxGTADrive implements ControlScheme{
 	
 	@Override
 	public void controlArm(SingularityArm arm) {
-		arm.setSpeed(xbox.getRS_Y());
+		if (xbox.getAButton()) {
+			arm.setSpeed(armSpeed);
+		} else if (xbox.getYButton()) {
+			arm.setSpeed(-1 * armSpeed);
+		} else {
+			arm.setSpeed(0);
+		}
 	}
 
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-		conveyer.setSpeed(xbox.getRS_Y() + xbox.getRS_X(), xbox.getRS_Y() - xbox.getRS_X(), false);
+		if (isreversed == true) {
+			conveyer.setSpeed(xbox.getRS_Y() + xbox.getRS_X(), xbox.getRS_Y() - xbox.getRS_X(), false);
+		} else {
+			conveyer.setSpeed(xbox.getRS_Y() + xbox.getRS_X(), xbox.getRS_Y() - xbox.getRS_X(), true);
+		}
 	}
 
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
-		sd.arcade(xbox.getTriggerRight() - xbox.getTriggerLeft(), xbox.getLS_X(), squaredInputs);
+		if (xbox.getPOV() == 180) {
+			isreversed = true;
+		} else if (xbox.getPOV() == 0) {
+			isreversed = false;
+		}
+		if (isreversed) {
+			sd.arcade(xbox.getTriggerRight() - xbox.getTriggerLeft(), xbox.getLS_X(), squaredInputs);
+		} else {
+			sd.arcade(xbox.getTriggerLeft() - xbox.getTriggerRight(), -1 * xbox.getLS_X(), squaredInputs);
+		}
 	}
 
 }
