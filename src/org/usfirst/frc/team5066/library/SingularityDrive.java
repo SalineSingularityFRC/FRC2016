@@ -119,6 +119,15 @@ public class SingularityDrive {
 		this(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER);
 	}
 	
+	/*Possible methods to use:
+	 * configEncoderCodesPerRev()
+	 * getP / setP
+	 * getI / setI
+	 * getD / setD
+	 * pidGet
+	 */
+	
+	
 	private double clamp(double velocityMultiplier){
 		if(velocityMultiplier > 1.0){
 			return 1.0;

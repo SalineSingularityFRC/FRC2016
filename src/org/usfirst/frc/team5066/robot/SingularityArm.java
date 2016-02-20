@@ -60,7 +60,7 @@ public class SingularityArm {
 		leftWorm.set(speed);
 		leftPlanet.set(speed);
 		rightWorm.set(speed);
-		rightPlanet.set(-speed);		
+		rightPlanet.set(speed);		
 
 		// code for limit switches
 		if (limitSwitchesOverride) {

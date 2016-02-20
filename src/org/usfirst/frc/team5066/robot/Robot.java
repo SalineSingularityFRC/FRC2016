@@ -91,12 +91,18 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		updateCamera(session, frame);
 		
-		currentScheme.drive(drive, true);
-		currentScheme.controlArm(arm);
-		currentScheme.controlConveyer(conveyer);	
+		//currentScheme.drive(drive, true);
+		//currentScheme.controlArm(arm);
+		//currentScheme.controlConveyer(conveyer);	
 		
 		drive.setReducedVelocity(0.5);
 		drive.reduceVelocity(js.getRawButton(6));
+		
+		drive.arcade(js.getRawAxis(1), js.getRawAxis(0));
+		
+		arm.setSpeed(-js.getRawAxis(5));
+		
+		conveyer.setSpeed(js.getRawAxis(3) - js.getRawAxis(2));
 		
 		/*
 		if(js.getRawButton(1)){
