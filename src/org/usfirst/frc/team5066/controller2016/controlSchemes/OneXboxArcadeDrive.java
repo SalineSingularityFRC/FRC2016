@@ -8,20 +8,21 @@ import org.usfirst.frc.team5066.robot.SingularityArm;
 import org.usfirst.frc.team5066.robot.SingularityConveyer;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class OneXboxArcadeDrive implements ControlScheme{
+public class OneXboxArcadeDrive implements ControlScheme {
 
 	XboxController xbox;
 	SpeedMode speedMode;
-	
+
 	public OneXboxArcadeDrive(Joystick j) {
 		xbox = (XboxController) j;
 	}
-	
+
 	public OneXboxArcadeDrive(int port) {
 		xbox = new XboxController(port);
 	}
-	
+
 	@Override
 	public void controlArm(SingularityArm arm) {
 		arm.setSpeed(xbox.getRS_Y());
@@ -35,11 +36,18 @@ public class OneXboxArcadeDrive implements ControlScheme{
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
 		
+		if(xbox.getLB()) {
+			speedMode = SpeedMode.SLOW;
+			SmartDashboard.putString("DB/String 6", "SLOW -- LB pressed");
+		} else if(xbox.getRB()) {
+			speedMode = SpeedMode.FAST;
+			SmartDashboard.putString("DB/String 6", "FAST -- RB pressed");
+		} else {
+			speedMode = SpeedMode.NORMAL;
+			SmartDashboard.putString("DB/String 6", "NORMAL -- nothing pressed");
+		}
 		
 		sd.arcade(xbox.getLS_Y(), xbox.getLS_X(), squaredInputs, speedMode);
 	}
 
-
-	
-	
 }

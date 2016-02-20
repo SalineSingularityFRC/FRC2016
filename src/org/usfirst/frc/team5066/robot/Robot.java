@@ -76,7 +76,7 @@ public class Robot extends IterativeRobot {
 			catch(Exception e){
 				e.printStackTrace();
 			}
-			currentScheme = new OneXboxTankDrive(this.XBOX_PORT);
+			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
 			
 			conveyer = new SingularityConveyer(8, 6);
 			
@@ -100,7 +100,7 @@ public class Robot extends IterativeRobot {
 		currentScheme.controlConveyer(conveyer);	
 		
 		drive.setReducedVelocity(0.5);
-		drive.reduceVelocity(js.getRawButton(6));
+		//drive.reduceVelocity(js.getRawButton(6));
 		
 		/*
 		if(js.getRawButton(1)){

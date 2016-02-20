@@ -201,9 +201,9 @@ public class SingularityDrive {
 
 		// Set the motors
 		m_frontLeftMotor.set(this.velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
-		m_rearLeftMotor.set(this.velocityMultiplier * (-translationVelocity + rotationVelocity) / maximum);
-		m_frontRightMotor.set(this.velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
-		m_rearRightMotor.set(this.velocityMultiplier * (translationVelocity + rotationVelocity) / maximum);
+		m_rearLeftMotor.set(this.velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
+		m_frontRightMotor.set(this.velocityMultiplier * ((translationVelocity + rotationVelocity) / maximum));
+		m_rearRightMotor.set(this.velocityMultiplier * ((translationVelocity + rotationVelocity) / maximum));
 	}
 
 	private void setVelocityMultiplerBasedOnSpeedMode(SpeedMode speedMode) {
