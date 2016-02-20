@@ -14,8 +14,6 @@ public class OneXboxTankDrive implements ControlScheme{
 	
 	boolean isreversed = false;
 	
-	double armSpeed = 1;
-	
 	public OneXboxTankDrive(Joystick j) {
 		xbox = (XboxController) j;
 	}
@@ -27,9 +25,9 @@ public class OneXboxTankDrive implements ControlScheme{
 	@Override
 	public void controlArm(SingularityArm arm) {
 		if (xbox.getAButton()) {
-			arm.setSpeed(armSpeed);
+			arm.setSpeed(1);
 		} else if (xbox.getYButton()) {
-			arm.setSpeed(-1 * armSpeed);
+			arm.setSpeed(-1);
 		} else {
 			arm.setSpeed(0);
 		}

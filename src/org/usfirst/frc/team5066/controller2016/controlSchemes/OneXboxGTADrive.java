@@ -14,8 +14,6 @@ public class OneXboxGTADrive implements ControlScheme{
 	
 	boolean isreversed = false;
 	
-	double armSpeed;
-	
 	public OneXboxGTADrive(Joystick j) {
 		xbox = (XboxController) j;
 	}
@@ -27,9 +25,9 @@ public class OneXboxGTADrive implements ControlScheme{
 	@Override
 	public void controlArm(SingularityArm arm) {
 		if (xbox.getAButton()) {
-			arm.setSpeed(armSpeed);
+			arm.setSpeed(1);
 		} else if (xbox.getYButton()) {
-			arm.setSpeed(-1 * armSpeed);
+			arm.setSpeed(-1);
 		} else {
 			arm.setSpeed(0);
 		}
