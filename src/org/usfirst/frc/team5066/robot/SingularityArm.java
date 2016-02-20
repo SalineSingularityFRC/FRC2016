@@ -48,6 +48,8 @@ public class SingularityArm {
 	 *            1.0]
 	 */
 	public void setSpeed(double speed) {
+		speed *= -0.25;
+		
 		// Checks for illegal values (and deports them back to where they came,
 		// those bastards)
 		if ((speed < -1)) {
@@ -55,7 +57,7 @@ public class SingularityArm {
 		} else if (speed > 1) {
 			speed = 1;
 		}
-
+		
 		// sets both motor speeds to move in the same direction
 		leftWorm.set(speed);
 		leftPlanet.set(speed);
