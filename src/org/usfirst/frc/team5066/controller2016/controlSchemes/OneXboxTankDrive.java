@@ -24,7 +24,8 @@ public class OneXboxTankDrive implements ControlScheme {
 
 	@Override
 	public void controlArm(SingularityArm arm) {
-		arm.setSpeed(xbox.getRS_Y());
+		arm.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
+		//TODO same as conveyor
 	}
 
 	@Override
