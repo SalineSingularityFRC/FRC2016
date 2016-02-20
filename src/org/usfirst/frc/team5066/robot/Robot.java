@@ -44,7 +44,7 @@ public class Robot extends IterativeRobot {
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, 1, SingularityDrive.CANTALON_DRIVE);
-			arm = new SingularityArm(6, 7);
+			arm = new SingularityArm(2, 9, 7, 5);
 			
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
