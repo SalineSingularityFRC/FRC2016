@@ -99,11 +99,8 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
-		try {
+		
 			updateCamera(session, frame);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		// currentScheme.drive(drive, true);
 		// currentScheme.controlArm(arm);
