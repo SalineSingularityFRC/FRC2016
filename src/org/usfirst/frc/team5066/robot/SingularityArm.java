@@ -57,9 +57,9 @@ public class SingularityArm {
 		}
 
 		// sets both motor speeds to move in the same direction
-		leftWorm.set(-speed);
+		leftWorm.set(speed);
 		leftPlanet.set(speed);
-		rightWorm.set(-speed);
+		rightWorm.set(speed);
 		rightPlanet.set(-speed);		
 
 		// code for limit switches
