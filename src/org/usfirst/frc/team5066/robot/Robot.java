@@ -61,7 +61,7 @@ public class Robot extends IterativeRobot {
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
-			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, .5, this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
+			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(9, 7);
 			try{
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
