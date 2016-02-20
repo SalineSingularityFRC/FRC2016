@@ -48,7 +48,7 @@ public class SingularityArm {
 	 *            1.0]
 	 */
 	public void setSpeed(double speed) {
-		speed *= -0.25;
+		speed *= -0.2;
 		
 		// Checks for illegal values (and deports them back to where they came,
 		// those bastards)
