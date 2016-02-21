@@ -12,6 +12,8 @@ import java.util.Properties;
  *
  */
 public class SingularityProperties {
+	
+	private Properties defaultProps;
 	private Properties props;
 	private String propFileURL;
 
@@ -36,7 +38,88 @@ public class SingularityProperties {
 	public String getFileURL() {
 		return propFileURL;
 	}
-
+	
+	
+	/**
+	 * Used to add a property to the default properties.
+	 * A default property is used when a property fails
+	 * to load from the properties file. Default properties
+	 * are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 * The name of the default property. Must match the name of the property
+	 * in the properties file that this value is the default for
+	 * @param value
+	 */
+	public void addDefualtProp(String propName, int value) {
+		defaultProps.setProperty(propName, "" + value);
+	}
+	
+	
+	/**
+	 * Used to add a property to the default properties.
+	 * A default property is used when a property fails
+	 * to load from the properties file. Default properties
+	 * are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 * The name of the default property. Must match the name of the property
+	 * in the properties file that this value is the default for
+	 * @param value
+	 */
+	public void addDefualtProp(String propName, double value) {
+		defaultProps.setProperty(propName, "" + value);
+	}
+	
+	
+	/**
+	 * Used to add a property to the default properties.
+	 * A default property is used when a property fails
+	 * to load from the properties file. Default properties
+	 * are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 * The name of the default property. Must match the name of the property
+	 * in the properties file that this value is the default for
+	 * @param value
+	 */
+	public void addDefualtProp(String propName, float value) {
+		defaultProps.setProperty(propName, "" + value);
+	}
+	
+	
+	/**
+	 * Used to add a property to the default properties.
+	 * A default property is used when a property fails
+	 * to load from the properties file. Default properties
+	 * are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 * The name of the default property. Must match the name of the property
+	 * in the properties file that this value is the default for
+	 * @param value
+	 */
+	public void addDefualtProp(String propName, boolean value) {
+		defaultProps.setProperty(propName, "" + value);
+	}
+	
+	
+	/**
+	 * Used to add a property to the default properties.
+	 * A default property is used when a property fails
+	 * to load from the properties file. Default properties
+	 * are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 * The name of the default property. Must match the name of the property
+	 * in the properties file that this value is the default for
+	 * @param value
+	 */
+	public void addDefualtProp(String propName, String value) {
+		defaultProps.setProperty(propName, value);
+	}
+	
+	
 	/**
 	 * Rereads file properties
 	 * 
