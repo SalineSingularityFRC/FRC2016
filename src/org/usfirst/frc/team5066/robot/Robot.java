@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -79,15 +80,21 @@ public class Robot extends IterativeRobot {
 		//		
 		//	SmartDashboard.putData("Autonomous Chooser", autochooser);
 	
+		//This must always come before loadProperties
+		setDefaultProperties();
+		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
-			//TODO switch back to loadProperties()!!!!!!!!!!!!!!!!!!!!!!
-			loadDefaultProperties();
 		} catch (Exception e) {
-			loadDefaultProperties();
-			e.printStackTrace();
+			//TODO is getInstance() necessary?
+			//DriverStation.getInstance();
+			DriverStation.reportError("It looks like there was an error finding the properties file... probably.", true);
 		} finally {
-
+			
+			//LoadProperties should no longer throw errors.
+			//It also includes automatic fallback to default properties for each property individually if a file property is not found, as long as they have been set already.
+			loadProperties();
+			
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
@@ -192,7 +199,7 @@ public class Robot extends IterativeRobot {
 
 	}
 
-	//Soon to be deprecated
+	//TODO Soon to be deprecated
 	private void loadDefaultProperties() {
 		SmartDashboard.putString("DB/String 0", "Yes  -- Defaults were loaded");
 

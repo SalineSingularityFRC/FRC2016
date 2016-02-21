@@ -248,7 +248,7 @@ public class SingularityProperties {
 			}
 			else {
 				//Note - all messages such as the following are automatically logged by DriverStation
-				DriverStation.reportError("Failed to find defulat property: " + name + "/n - Returning null. This will most likely PREVENT CODE FROM RUNNING!", false);
+				DriverStation.reportError("Failed to find default property: " + name + "/n - Returning null. This will most likely PREVENT CODE FROM RUNNING!", false);
 				return null;
 			}
 		}
