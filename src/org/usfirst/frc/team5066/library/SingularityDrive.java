@@ -216,6 +216,10 @@ public class SingularityDrive {
 		m_rearRightMotor.set(this.velocityMultiplier * ((translationVelocity + rotationVelocity) / maximum));
 	}
 
+	public void arcade(double translation, double rotation, boolean squaredInputs) {
+		this.arcade(translation, rotation, squaredInputs, SpeedMode.NORMAL);
+	}
+	
 	private void setVelocityMultiplerBasedOnSpeedMode(SpeedMode speedMode) {
 		
 		switch(speedMode) {
@@ -445,5 +449,10 @@ public class SingularityDrive {
 	public void tank(double left, double right, SpeedMode speedMode) {
 		// Just ignore squared inputs
 		this.tank(left, right, false, speedMode);
+	}
+	
+	public void tank(double left, double right, boolean squaredInputs) {
+		// Just ignore squared speedMode
+		this.tank(left, right, true, SpeedMode.NORMAL);
 	}
 }
