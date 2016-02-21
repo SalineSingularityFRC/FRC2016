@@ -4,6 +4,8 @@ import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.robot.SingularityArm;
 import org.usfirst.frc.team5066.robot.SingularityConveyer;
 
+import edu.wpi.first.wpilibj.Joystick;
+
 public interface ControlScheme {
 	//contains all control methods that will be called in Robot.java
 	//such as moveElevator(), mecanumDrive(), etc.
@@ -16,6 +18,7 @@ public interface ControlScheme {
 	public void drive(SingularityDrive sd, boolean squaredInputs);
 	
 	public void controlArm(SingularityArm arm);
+
 	
 	//SingularityDrive sd = new SingularityDrive(1,2,3,4);
 }
