@@ -206,7 +206,6 @@ public class Robot extends IterativeRobot {
 		frontRightMotor = 1;
 		rearRightMotor = 3;
 
-		// TODO add arm motors
 		armLeftWorm = 2;
 		armLeftPlanetary = 9;
 		armRightWorm = 7;
@@ -221,9 +220,33 @@ public class Robot extends IterativeRobot {
 		normalSpeedConstant = 0.8;
 		fastSpeedConstant = 1.0;
 		
+		//TODO add armSpeedConstant and conveyerSpeedConstant
+		
 	}
 	
 	private void setDefaultProperties() {
+		
+		//Drive ports
+		properties.addDefualtProp("frontLeftMotor", 10);
+		properties.addDefualtProp("rearLeftMotor", 4);
+		properties.addDefualtProp("frontRightMotor", 1);
+		properties.addDefualtProp("rearRightMotor", 3);
+		
+		//Arm ports
+		properties.addDefualtProp("armLeftWorm", 2);
+		properties.addDefualtProp("armLeftPlanetary", 9);
+		properties.addDefualtProp("armRightWorm", 7);
+		properties.addDefualtProp("armRightPlanetary", 5);
+		
+		//Conveyer Ports
+		properties.addDefualtProp("leftConveyerMotor", 8);
+		properties.addDefualtProp("rightConveyerMotor", 6);
+		
+		//Speed Constants
+		properties.addDefualtProp("slowSpeedConstant", 0.4);
+		properties.addDefualtProp("normalSpeedConstant", 0.8);
+		properties.addDefualtProp("fastSpeedConstant", 1.0);
+		
 		
 	}
 

@@ -119,7 +119,10 @@ public class SingularityProperties {
 	 *            The value to which the default property will be set
 	 */
 	public void addDefualtProp(String propName, String value) {
-		defaultProps.setProperty(propName, value);
+		if(defaultProps.containsKey(propName)) {
+			DriverStation.reportError("Default property with name \"" + propName + "\n aready exists... Overwriting", false);
+		}
+			defaultProps.setProperty(propName, value);
 	}
 	
 	
