@@ -67,6 +67,7 @@ public class SingularityDrive {
 			m_rearLeftMotor = new CANTalon(rearLeftMotor);
 			m_frontRightMotor = new CANTalon(frontRightMotor);
 			m_rearRightMotor = new CANTalon(rearRightMotor);
+
 		} else if (talonType == TALON_SR_DRIVE) {
 			m_frontLeftMotor = new Talon(frontLeftMotor);
 			m_rearLeftMotor = new Talon(rearLeftMotor);
@@ -236,7 +237,6 @@ public class SingularityDrive {
 			SmartDashboard.putString("DB/String 8", "Using fast speed constant");
 			break;
 		}
-		
 	}
 
 	/**
@@ -250,7 +250,7 @@ public class SingularityDrive {
 	 *            Speed and direction at which to rotate clockwise
 	 */
 	public void arcade(double translation, double rotation) {
-		// Just do the arcade without squared inputs
+		// Just do the arcade without squared inputs at normal speed mode
 		this.arcade(translation, rotation, false, SpeedMode.NORMAL);
 	}
 
@@ -289,7 +289,6 @@ public class SingularityDrive {
 
 		// Use the Pythagorean theorem to find the speed of translation
 		translationVelocity = this.velocityMultiplier * Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
-		
 		rotationVelocity = this.velocityMultiplier * rotation * rotationMultiplier;
 
 		// Use trigonometry to find the direction of travel
@@ -409,17 +408,21 @@ public class SingularityDrive {
 		SmartDashboard.putNumber("Post-sqaring inputs - Left Velocity", leftVelocity);
 		SmartDashboard.putNumber("Post-sqaring inputs - Right Velocity", rightVelocity);
 
+		
 		// Guard against illegal inputs
 		leftVelocity /= Math.max(1, Math.abs(leftVelocity));
 		rightVelocity /= Math.max(1, Math.abs(rightVelocity));
 
 		SmartDashboard.putNumber("Clamped Value - Left Velocity", leftVelocity);
 		SmartDashboard.putNumber("Clamped Value - Right Velocity", rightVelocity);
-
 		if (buttonPressed) {
 			leftVelocity *= reducedVelocity;
 			rightVelocity *= reducedVelocity;
 		}
+		
+		SmartDashboard.putNumber("Reduced Velocity - Left", leftVelocity);
+		SmartDashboard.putNumber("Reduced Velocity - Right", rightVelocity);
+		
 
 		SmartDashboard.putNumber("Reduced Velocity - Left", leftVelocity);
 		SmartDashboard.putNumber("Reduced Velocity - Right", rightVelocity);

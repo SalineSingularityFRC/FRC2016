@@ -3,6 +3,10 @@ package org.usfirst.frc.team5066.robot;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;
@@ -19,6 +23,11 @@ import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
 public class Robot extends IterativeRobot {
+	
+	Command autonomousCommand;
+	SendableChooser autochooser;
+	
+	
 	ControlScheme currentScheme;
 	Image frame;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
@@ -57,6 +66,20 @@ public class Robot extends IterativeRobot {
 		// encounters an error, it just keeps the default value and moves on to
 		// the next property
 
+  
+		//    setup auto chooser in SmartDashboard 
+		//	autochooser = new SendableChooser();
+		//	autochooser.addDefault("default programm",  object);
+		//	autochooser.addObject("object programm111", object);
+		//	autochooser.addObject("object programm222", object);
+		//	autochooser.addObject("object programm333", object);
+		//	autochooser.addObject("object programm444", object);
+		//	autochooser.addObject("object programm555", object);
+		//	autochooser.addObject("object programm666", object);
+		//	autochooser.addObject("object programm777", object);
+		//		
+		//	SmartDashboard.putData("Autonomous Chooser", autochooser);
+	
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 			//TODO switch back to loadProperties()!!!!!!!!!!!!!!!!!!!!!!
@@ -100,15 +123,30 @@ public class Robot extends IterativeRobot {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
 	public void disabledPeriodic() {
 		updateCamera(session, frame);
 	}
-
+    public void autonomousInit(){
+    	
+    	// Use SmartDashboard to setup autonomous chooser
+    	
+    	autonomousCommand = (Command) autochooser.getSelected();
+		autonomousCommand.start();
+		
+    	
+    	
+    	
+    }
 	public void autonomousPeriodic() {
+		
+		//Autonomous part
+		
+		
+		Scheduler.getInstance(); // Schedule all the autonomous for SmartDashboard
+		
 		updateCamera(session, frame);
 	}
 

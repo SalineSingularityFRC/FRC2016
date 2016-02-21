@@ -2,6 +2,7 @@ package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * A class that represents our arm from the 2016 year.
@@ -77,6 +78,13 @@ public class SingularityArm {
 			if (speed > 0)
 				speed = 0;
 		}
+
+		//put arm encoder data into smartDash
+		SmartDashboard.putNumber("leftWorm Position" , leftworm.getPosition() );
+		SmartDashboard.putNumber("leftWorm Speed" , leftWorm.getSpeed() );
+		
+		SmartDashboard.putNumber("rightWorm Position" , rightWorm.getPosition() );
+		SmartDashboard.putNumber("rightWorm Speed" , rightWorm.getSpeed() );
 	}
 
 	/**
