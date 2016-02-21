@@ -19,6 +19,8 @@ public class SingularityArm {
 	 */
 	private boolean limitSwitchesOverride;
 
+	private double armSpeed;
+
 	/**
 	 * Constructor for singularity conveyer.
 	 * 
@@ -31,12 +33,15 @@ public class SingularityArm {
 	 * @param rPlanet
 	 *            <b>int</b> The right side planetary motor channel
 	 */
-	public SingularityArm(int lWorm, int lPlanet, int rWorm, int rPlanet) {
+
+	public SingularityArm(int lWorm, int lPlanet, int rWorm, int rPlanet, double armSpeed) {
+
 		leftWorm = new CANTalon(lWorm);
 		leftPlanet = new CANTalon(lPlanet);
 		rightWorm = new CANTalon(rWorm);
 		rightPlanet = new CANTalon(rPlanet);
 		limitSwitchesOverride = false;
+		this.armSpeed = armSpeed;
 	}
 
 	/**
@@ -48,17 +53,20 @@ public class SingularityArm {
 	 *            1.0]
 	 */
 	public void setSpeed(double speed) {
-		speed *= -0.2;
-		
+
 		// Checks for illegal values (and deports them back to where they came,
-		// those bastards)
+		// those bastards. It also can can take a-button and y-button as controls.
+		speed *= armSpeed;
+		
+		//clamp
 		if ((speed < -1)) {
 			speed = -1;
 		} else if (speed > 1) {
 			speed = 1;
 		}
-		
+
 		// sets both motor speeds to move in the same direction
+		//Note - becuse of the wiring, we actually tell them all to have thee same direction
 		leftWorm.set(speed);
 		leftPlanet.set(speed);
 		rightWorm.set(speed);

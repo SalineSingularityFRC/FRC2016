@@ -71,19 +71,26 @@ public class SingularityConveyer {
 		 *            1.0]
 		 **/
 	//same as the setSpeed method above, but with two different speeds for inputs
-	public void setSpeed(double leftspeed, double rightspeed) {
-		if (leftspeed < -1) {
+	public void setSpeed(double leftSpeed, double rightSpeed, boolean reverse) {
+		double leftS = leftSpeed, rightS = -rightSpeed;
+		if (reverse) {
+			leftS = -leftSpeed;
+			rightS = rightSpeed;
+		}
+		SmartDashboard.putNumber("DB/String 2", leftS);
+		SmartDashboard.putNumber("DB/String 3", rightS);
+		if (leftS < -1) {
 			left.set(-1);
-		} else if (leftspeed > 1) {
+		} else if (leftS > 1) {
 			left.set(1);
 		} else {
-			left.set(leftspeed);
-		} if (rightspeed < -1) {
+			left.set(leftS);
+		} if (rightS < -1) {
 			right.set(-1);
-		} else if (rightspeed > 1) {
+		} else if (rightS > 1) {
 			right.set(1);
 		} else {
-			right.set(rightspeed);
+			right.set(rightS);
 		}
 	}
 

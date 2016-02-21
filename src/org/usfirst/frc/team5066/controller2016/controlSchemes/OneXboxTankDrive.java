@@ -14,6 +14,9 @@ public class OneXboxTankDrive implements ControlScheme {
 	XboxController xbox;
 	SpeedMode speedMode;
 
+	boolean isreversed = false;
+
+
 	public OneXboxTankDrive(Joystick j) {
 		xbox = (XboxController) j;
 	}
@@ -24,18 +27,36 @@ public class OneXboxTankDrive implements ControlScheme {
 
 	@Override
 	public void controlArm(SingularityArm arm) {
-		arm.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
-		//TODO same as conveyor
-	}
 
+		if (xbox.getAButton()) {
+			arm.setSpeed(1);
+		} else if (xbox.getYButton()) {
+			arm.setSpeed(-1);
+		} else {
+			arm.setSpeed(0);
+		}
+	}
+	
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-		conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
+		if (isreversed == false) {
+			conveyer.setSpeed(xbox.getTriggerRight(), xbox.getTriggerLeft(), xbox.getR3());
+		} else {
+			conveyer.setSpeed(xbox.getTriggerLeft(), xbox.getTriggerRight(), !xbox.getR3());
+		}
 	}
 
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
 		
+		//Set isReversed
+		if (xbox.getPOV() == 180) {
+			isreversed = true;
+		} else if (xbox.getPOV() == 0) {
+			isreversed = false;
+		}
+
+		//Set speedMode
 		if(xbox.getLB()){
 			speedMode = SpeedMode.SLOW;
 		}
@@ -45,7 +66,12 @@ public class OneXboxTankDrive implements ControlScheme {
 		else{
 			speedMode = SpeedMode.NORMAL;
 		}
-		
-		sd.tank(-1 * xbox.getLS_Y(), -1 * xbox.getRS_Y(), squaredInputs, speedMode);
+
+		//Drive
+		if (isreversed == false) {
+			sd.tank(-1 * xbox.getLS_Y(), -1 * xbox.getRS_Y(), squaredInputs, speedMode);
+		} else {
+			sd.tank(xbox.getLS_Y(), xbox.getRS_Y(), squaredInputs, speedMode);
+		}
 	}
 }

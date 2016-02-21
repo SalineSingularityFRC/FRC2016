@@ -53,6 +53,13 @@ public class LogitechController extends Joystick{
 	public double getStickY(){
 		return this.getRawAxis(1);
 	}
+	public double getStickZ() {
+		return this.getRawAxis(2);
+	}
+	public double getBaseSlider() {
+		return this.getRawAxis(3);
+	}
+	
 	//maps raw input methods to usefully named methods
 	
 }
