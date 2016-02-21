@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.DriverStation;
  * @version 2.0
  */
 
-// Version 2.0 by Michael Wolf
 public class SingularityProperties {
 	
 	private Properties defaultProps;
