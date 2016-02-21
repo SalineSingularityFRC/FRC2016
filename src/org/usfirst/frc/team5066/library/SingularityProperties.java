@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.DriverStation;
  * Class for reading and writing to properties files.
  * 
  * @author Saline Singularity 5066
+ * 
+ * @version 2.0
+ * Version 2.0 by Michael Wolf
  *
  */
 public class SingularityProperties {
