@@ -108,16 +108,15 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
-		
-			updateCamera(session, frame);
 
-		// currentScheme.drive(drive, true);
-		// currentScheme.controlArm(arm);
-		// currentScheme.controlConveyer(conveyer);
+		//TODO try removing/ throttling this line to speed up robot response to controls
+		updateCamera(session, frame);
+
+		currentScheme.drive(drive, true);
+		currentScheme.controlArm(arm);
+		currentScheme.controlConveyer(conveyer);
 
 		drive.setReducedVelocity(0.5);
-
-		
 
 	}
 
