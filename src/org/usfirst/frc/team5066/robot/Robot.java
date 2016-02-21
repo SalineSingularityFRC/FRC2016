@@ -49,8 +49,8 @@ public class Robot extends IterativeRobot {
 			
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
-			currentScheme = new OneXboxArcadeDrive(0);
-			//currentScheme = new OneXboxTankDrive(0);
+			//currentScheme = new OneXboxArcadeDrive(0);
+			currentScheme = new OneXboxTankDrive(0);
 			//currentScheme = new OneXboxGTADrive(0);
 			
 			// the camera name (ex. cam0) can be found through the roborio web
