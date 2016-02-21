@@ -192,6 +192,7 @@ public class Robot extends IterativeRobot {
 
 	}
 
+	//Soon to be deprecated
 	private void loadDefaultProperties() {
 		SmartDashboard.putString("DB/String 0", "Yes  -- Defaults were loaded");
 
@@ -219,6 +220,10 @@ public class Robot extends IterativeRobot {
 		slowSpeedConstant = 0.4;
 		normalSpeedConstant = 0.8;
 		fastSpeedConstant = 1.0;
+		
+	}
+	
+	private void setDefaultProperties() {
 		
 	}
 
