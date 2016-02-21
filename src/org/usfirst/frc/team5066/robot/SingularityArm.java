@@ -80,7 +80,7 @@ public class SingularityArm {
 		}
 
 		//put arm encoder data into smartDash
-		SmartDashboard.putNumber("leftWorm Position" , leftworm.getPosition() );
+		SmartDashboard.putNumber("leftWorm Position" , leftWorm.getPosition() );
 		SmartDashboard.putNumber("leftWorm Speed" , leftWorm.getSpeed() );
 		
 		SmartDashboard.putNumber("rightWorm Position" , rightWorm.getPosition() );

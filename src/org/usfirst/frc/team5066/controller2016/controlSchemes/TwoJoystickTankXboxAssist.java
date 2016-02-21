@@ -23,7 +23,7 @@ public class TwoJoystickTankXboxAssist implements ControlScheme{
 	}
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-		conveyer.setSpeed(xb.getLS_Y(), xb.getRS_Y());
+		conveyer.setSpeed(xb.getLS_Y(), xb.getRS_Y(), false);
 		
 	}
 	@Override
