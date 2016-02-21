@@ -10,6 +10,8 @@ import java.io.IOException;
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxArcadeDrive;
 import org.usfirst.frc.team5066.controller2016.controlSchemes.TwoJoystickTankXboxAssist;
+import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxTankDrive;
+
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
 
@@ -23,7 +25,11 @@ public class Robot extends IterativeRobot {
 	int armLeftWorm, armLeftPlanetary, armRightWorm, armRightPlanetary;
 	int leftConveyerMotor, rightConveyerMotor;
 	int session;
-
+	
+	double slowSpeedConstant;
+	double normalSpeedConstant;
+	double fastSpeedConstant;
+	
 	Joystick js;
 	long initialTime;
 	SingularityDrive drive;
@@ -53,6 +59,7 @@ public class Robot extends IterativeRobot {
 
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
+			//TODO switch back to loadProperties()!!!!!!!!!!!!!!!!!!!!!!
 			loadDefaultProperties();
 		} catch (Exception e) {
 			loadDefaultProperties();
@@ -62,8 +69,8 @@ public class Robot extends IterativeRobot {
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
-			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, .8,
-					SingularityDrive.CANTALON_DRIVE);
+
+			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(2, 9, 7, 5);
 			try {
 
@@ -81,18 +88,11 @@ public class Robot extends IterativeRobot {
 				NIVision.IMAQdxConfigureGrab(session);
 				NIVision.IMAQdxStartAcquisition(session);
 			} catch (Exception e) {
+
 				e.printStackTrace();
 			}
-<<<<<<< HEAD
 			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
 
-=======
-			
-			currentScheme = new TwoJoystickTankXboxAssist(this.XBOX_PORT, this.BIG_JOYSTICK_PORT, this.SMALL_JOYSTICK_PORT);
-			
-			
-			
->>>>>>> ControlScheme
 			conveyer = new SingularityConveyer(8, 6);
 
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
@@ -116,26 +116,8 @@ public class Robot extends IterativeRobot {
 		// currentScheme.controlConveyer(conveyer);
 
 		drive.setReducedVelocity(0.5);
-		drive.reduceVelocity(js.getRawButton(6));
 
-		drive.arcade(js.getRawAxis(1), js.getRawAxis(0));
-
-		arm.setSpeed(js.getRawAxis(5));
-
-		conveyer.setSpeed(js.getRawAxis(3) - js.getRawAxis(2));
-
-		/*
-		 * if(js.getRawButton(1)){ drive.setVelocityMultiplier(.8); } else {
-		 * drive.setVelocityMultiplier(1); }
-		 * 
-		 * drive.tank(-js.getRawAxis(1), -js.getRawAxis(5), true);
-		 * SmartDashboard.putNumber("Joystick Y", -js.getRawAxis(0));
-		 * SmartDashboard.putNumber("Joystick X", js.getRawAxis(1));
-		 * 
-		 * conveyer.setSpeed(js.getRawAxis(3) - js.getRawAxis(2));
-		 * 
-		 * //drive.setReduceVelocity(js.getRawButton(6));
-		 */
+		
 
 	}
 
@@ -156,17 +138,25 @@ public class Robot extends IterativeRobot {
 		// CANTalon or Talon drive?
 		driveControllerType = properties.getInt("driveControllerType");
 
+
 		armLeftWorm = properties.getInt("armLeftWorm");
 		armLeftPlanetary = properties.getInt("armLeftPlanetary");
 		armRightWorm = properties.getInt("armRightWorm");
 		armRightPlanetary = properties.getInt("armRightPlanetary");
 
+		slowSpeedConstant = properties.getDouble("slowSpeedConstant");
+		normalSpeedConstant = properties.getDouble("normalSpeedConstant");
+		fastSpeedConstant = properties.getDouble("fastSpeedConstant");
+		
+		SmartDashboard.putString("DB/String 9", "slow: " + slowSpeedConstant + " | normal: " + normalSpeedConstant + " | fast: " + fastSpeedConstant);
+
 	}
 
 	private void loadDefaultProperties() {
-		SmartDashboard.putString("DB/String 0", "Yes");
+		SmartDashboard.putString("DB/String 0", "Yes  -- Defaults were loaded");
 
-		// CANTalon or Talon drive?
+		SmartDashboard.putString("DB/String 9", "Defaults loaded");
+
 		driveControllerType = SingularityDrive.CANTALON_DRIVE;
 
 		// Ports
@@ -185,7 +175,11 @@ public class Robot extends IterativeRobot {
 		// arm objects
 		leftConveyerMotor = 8;
 		rightConveyerMotor = 6;
-
+		
+		slowSpeedConstant = 0.4;
+		normalSpeedConstant = 0.8;
+		fastSpeedConstant = 1.0;
+		
 	}
 
 	private void updateCamera(int session, Image frame) {

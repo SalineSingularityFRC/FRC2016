@@ -1,3 +1,4 @@
+/*
 package org.usfirst.frc.team5066.controller2016.controlSchemes;
 
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
@@ -36,3 +37,4 @@ public class OneXboxGTADrive implements ControlScheme{
 	}
 
 }
+*/
