@@ -38,7 +38,7 @@ public class SingularityDrive {
 	public static final int CANTALON_DRIVE = 0;
 	public static final int TALON_SR_DRIVE = 1;
 
-	public static final int DEFAULT_TALON_TYPE = CANTALON_DRIVE;
+	private static final int DEFAULT_TALON_TYPE = CANTALON_DRIVE;
 	private final static double DEFAULT_SLOW_SPEED_CONSTANT = 0.4;
 	private final static double DEFAULT_NORMAL_SPEED_CONSTANT = 0.8;
 	private final static double DEFAULT_FAST_SPEED_CONSTANT = 1.0;
