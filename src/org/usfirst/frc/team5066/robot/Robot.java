@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -50,6 +50,8 @@ public class Robot extends IterativeRobot {
 	CANTalon talon;
 	
 	double position;
+	
+	Ultrasonic googleUltron;
 
 	/*
 	 * NOTE
@@ -105,6 +107,8 @@ public class Robot extends IterativeRobot {
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
 			
 			talon = new CANTalon(0);
+			
+			googleUltron = new Ultrasonic(0, 1);
 
 			//Camera setup code
 			try {
@@ -184,6 +188,9 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Velocity", talon.getSpeed());
 		
 		talon.set(position);
+		
+		SmartDashboard.putNumber("Sensor", googleUltron.getRangeInches());
+		
 	}
 	
 	public void disabledInit(){
