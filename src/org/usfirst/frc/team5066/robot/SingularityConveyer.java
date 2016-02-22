@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SingularityConveyer {
 
 	CANTalon left, right;
+	double clicksPerRevolution = right.getPosition();
+	double encoderRevolution = (clicksPerRevolution/ 4000);
+	
 
 	/**
 	 * Constructor for singularity conveyer.
@@ -22,6 +25,7 @@ public class SingularityConveyer {
 	 * @param r
 	 *            <b>int</b> The right side motor channel
 	 */
+	
 	public SingularityConveyer(int l, int r) {
 
 		left = new CANTalon(l);
@@ -55,10 +59,10 @@ public class SingularityConveyer {
 
 		// Checks for illegal values (and deports them back to where they came,
 		// those bastards)
-		if ((speed < -1)) {
+		if ((encoderRevolution < 4)) {
 			left.set(1);
 			right.set(-1);
-		} else if (speed > 1) {
+		} else if (encoderRevolution < -4) {
 			left.set(-1);
 			right.set(1);
 		} else {

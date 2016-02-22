@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -33,6 +34,9 @@ public class Robot extends IterativeRobot {
 	SingularityProperties properties;
 	SingularityArm arm;
 	SingularityConveyer sc;
+	SingularityClimb climb;
+	Encoder encoder;
+	
 	
 	
     
@@ -65,6 +69,8 @@ public class Robot extends IterativeRobot {
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, .5, SingularityDrive.CANTALON_DRIVE);
 			arm = new SingularityArm(6, 7);
 			sc = new SingularityConveyer(8,9);
+			climb = new SingularityClimb(1 , 0);
+			
 			
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
@@ -96,8 +102,6 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		
 		
-		
-		
 		//Autonomous part
 		
 		
@@ -113,6 +117,7 @@ public class Robot extends IterativeRobot {
 		
 		drive.setReducedVelocity(0.5);
 		drive.reduceVelocity(js.getRawButton(6));
+	
 		
 		if(js.getRawButton(1)){
 			drive.setVelocityMultiplier(.8);
@@ -127,9 +132,29 @@ public class Robot extends IterativeRobot {
 		
 		sc.setSpeed(js.getRawAxis(3)-js.getRawAxis(2));
 		
-		//drive.setReduceVelocity(js.getRawButton(6));
-
+		climb.setSpeed(js.getRawAxis(1));
 		
+		
+		
+		if(js.getRawButton(7)){
+			
+			climb.setSpeed(1);	
+		}
+		else{
+			climb.setSpeed(0);
+		}
+		
+        if(js.getRawButton(8)){
+			
+			climb.setSpeed(-1);	
+		}
+		else{
+			climb.setSpeed(0);
+		}
+		
+		//drive.setReduceVelocity(js.getRawButton(6));
+        //climb.setSpeed(js.getRawButton(7));
+        //climb.setSpeed(js.getRawButton(8));
 		//arm.setSpeed(js.getRawAxis(1));
 		
 	}

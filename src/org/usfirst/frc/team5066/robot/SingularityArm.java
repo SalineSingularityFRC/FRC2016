@@ -35,11 +35,13 @@ public class SingularityArm {
 		
 		
         left.setPosition(0.0);
+        
 		
 		right.setPosition(0.0);
 		
 		
-
+		limitSwitchesOverride = false;
+		
 
 
 				
@@ -65,7 +67,10 @@ public class SingularityArm {
 					left.set(-speed);
 					right.set(speed);
 				}
-				
+				if(limitSwitchesOverride){
+					
+					if(speed > 0 ) speed = 0;
+				}
 				SmartDashboard.putNumber(" left get Position" ,left.getPosition() );
 				SmartDashboard.putNumber(" left get Speed" ,left.getSpeed() );
 				
@@ -75,7 +80,7 @@ public class SingularityArm {
 	
 	/**
 	 *
-	 * @return The current speed of the conveyer motors (right motor)
+	 * @return The current speed of the arm motors (right motor)
 	 */
 	public double getSpeed(){
 		return right.get();
