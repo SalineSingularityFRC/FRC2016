@@ -38,7 +38,7 @@ public class SingularityDrive {
 	public static final int CANTALON_DRIVE = 0;
 	public static final int TALON_SR_DRIVE = 1;
 
-	private static final int DEFAULT_TALON_TYPE = CANTALON_DRIVE;
+	public static final int DEFAULT_TALON_TYPE = CANTALON_DRIVE;
 	private final static double DEFAULT_SLOW_SPEED_CONSTANT = 0.4;
 	private final static double DEFAULT_NORMAL_SPEED_CONSTANT = 0.8;
 	private final static double DEFAULT_FAST_SPEED_CONSTANT = 1.0;
@@ -180,6 +180,15 @@ public class SingularityDrive {
 		}
 		return velocity;
 	}
+	// reverse drive method for booleans. You have to hold the button to
+	// reverse. This method is used in control schemes to plug-in to SingDrive
+	public static int booleanreverse(boolean reverse) {
+		if (reverse) {
+			return 180;
+		} else {
+			return 0;
+		}
+	}
 
 	/**
 	 * So called "arcade drive" method for driving a robot around. Drives much
@@ -207,12 +216,9 @@ public class SingularityDrive {
 			rotationVelocity *= Math.abs(rotation);
 		}
 		
-		// change to reverse drive if necessary
-		if (reverse == 180) {
-			isreverse = true;
-		} else if (reverse == 0) {
-			isreverse = false;
-		}
+		//do reverse drive when necessary
+		if (reverse == 180) isreverse = true;
+		else if (reverse == 0) isreverse = false;
 		if (isreverse) {
 			translationVelocity = -translationVelocity;
 			rotationVelocity = -rotationVelocity;
@@ -235,8 +241,8 @@ public class SingularityDrive {
 		m_rearRightMotor.set(this.velocityMultiplier * ((translationVelocity + rotationVelocity) / maximum));
 	}
 
-	public void arcade(double translation, double rotation, boolean squaredInputs) {
-		this.arcade(translation, rotation, squaredInputs, SpeedMode.NORMAL, DEFAULT_REVERSE_BUTTON);
+	public void arcade(double translation, double rotation, boolean squaredInputs, int reverse) {
+		this.arcade(translation, rotation, squaredInputs, SpeedMode.NORMAL, reverse);
 	}
 	
 	private void setVelocityMultiplerBasedOnSpeedMode(SpeedMode speedMode) {
@@ -267,9 +273,9 @@ public class SingularityDrive {
 	 * @param rotation
 	 *            Speed and direction at which to rotate clockwise
 	 */
-	public void arcade(double translation, double rotation) {
+	public void arcade(double translation, double rotation, int reverse) {
 		// Just do the arcade without squared inputs at normal speed mode
-		this.arcade(translation, rotation, false, SpeedMode.NORMAL, DEFAULT_REVERSE_BUTTON);
+		this.arcade(translation, rotation, false, SpeedMode.NORMAL, reverse);
 	}
 
 	/**
