@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SingularityConveyer {
 
 	CANTalon left, right;
+	double spd;
+	boolean isreverse = false;
 
 	/**
 	 * Constructor for singularity conveyer.
@@ -36,21 +38,28 @@ public class SingularityConveyer {
 	 *            <b>double</b> The desired analog speed of the motors. [-1.0,
 	 *            1.0]
 	 */
-	public void setSpeed(double speed) {
-
+	public void setSpeed(double speed, int reverse) {
+		
 		// Checks for illegal values (and deports them back to where they came,
 		// those bastards)
 		if ((speed < -1)) {
-			left.set(1);
-			right.set(-1);
+			speed = -1;
 		} else if (speed > 1) {
-			left.set(-1);
-			right.set(1);
-		} else {
-			// sets both motor speeds to move in the same direction
-			left.set(-speed);
-			right.set(speed);
+			speed = 1;
 		}
+		
+		// sets reverse drive for conveyer when necessary
+		spd = speed;
+		if (reverse == 180) {
+			isreverse = true;
+		} else if (reverse == 0) {
+			isreverse = false;
+		} if (isreverse) {
+			spd = -spd;
+		}
+		// sets both motor speeds to move in the same direction
+		left.set(-spd);
+		right.set(spd);
 		
 		SmartDashboard.putNumber("left encoder speed", left.getSpeed());
 		SmartDashboard.putNumber("right Encoder speed", right.getSpeed());

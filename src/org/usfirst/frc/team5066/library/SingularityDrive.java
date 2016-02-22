@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5066.library;
 
+import org.usfirst.frc.team5066.controller2016.XboxController;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
@@ -14,7 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class SingularityDrive {
-
+	
+	static XboxController controller;
+	
 	private double slowSpeedConstant, normalSpeedConstant, fastSpeedConstant;
 
 	private SpeedController m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
@@ -26,6 +30,9 @@ public class SingularityDrive {
 	private double reducedVelocity;
 
 	private final static double DEFAULT_MINIMUM_THRESHOLD = 0.09;
+	
+	public static boolean isreverse = false;
+	public static final int DEFAULT_REVERSE_BUTTON = controller.getPOV();
 
 	// Talon type enum
 	public static final int CANTALON_DRIVE = 0;
@@ -189,7 +196,7 @@ public class SingularityDrive {
 	 *            The enum value corrresponding to the current speed mode: slow,
 	 *            normal, or fast
 	 */
-	public void arcade(double translation, double rotation, boolean squaredInputs, SpeedMode speedMode) {
+	public void arcade(double translation, double rotation, boolean squaredInputs, SpeedMode speedMode, int reverse) {
 		double translationVelocity = translation, rotationVelocity = rotation;
 		
 		setVelocityMultiplerBasedOnSpeedMode(speedMode);
@@ -199,7 +206,18 @@ public class SingularityDrive {
 			translationVelocity *= Math.abs(translation);
 			rotationVelocity *= Math.abs(rotation);
 		}
-
+		
+		// change to reverse drive if necessary
+		if (reverse == 180) {
+			isreverse = true;
+		} else if (reverse == 0) {
+			isreverse = false;
+		}
+		if (isreverse) {
+			translationVelocity = -translationVelocity;
+			rotationVelocity = -rotationVelocity;
+		}
+		
 		// Guard against illegal values
 		double maximum = Math.max(1, Math.abs(translationVelocity) + Math.abs(rotationVelocity));
 
@@ -218,7 +236,7 @@ public class SingularityDrive {
 	}
 
 	public void arcade(double translation, double rotation, boolean squaredInputs) {
-		this.arcade(translation, rotation, squaredInputs, SpeedMode.NORMAL);
+		this.arcade(translation, rotation, squaredInputs, SpeedMode.NORMAL, DEFAULT_REVERSE_BUTTON);
 	}
 	
 	private void setVelocityMultiplerBasedOnSpeedMode(SpeedMode speedMode) {
@@ -251,7 +269,7 @@ public class SingularityDrive {
 	 */
 	public void arcade(double translation, double rotation) {
 		// Just do the arcade without squared inputs at normal speed mode
-		this.arcade(translation, rotation, false, SpeedMode.NORMAL);
+		this.arcade(translation, rotation, false, SpeedMode.NORMAL, DEFAULT_REVERSE_BUTTON);
 	}
 
 	/**

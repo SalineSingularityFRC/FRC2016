@@ -21,7 +21,7 @@ LogitechController logitech;
 	
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-		conveyer.setSpeed(xbox.getRS_Y());
+		conveyer.setSpeed(xbox.getRS_Y(), xbox.getPOV());
 		
 		// TODO Auto-generated method stub
 	}

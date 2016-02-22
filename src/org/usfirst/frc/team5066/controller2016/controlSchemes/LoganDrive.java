@@ -20,7 +20,7 @@ public class LoganDrive implements ControlScheme{
 	
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-		conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
+		conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft(), xbox.getPOV());
 		
 		// TODO Auto-generated method stub
 		

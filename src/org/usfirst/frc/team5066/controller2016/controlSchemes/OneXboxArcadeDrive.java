@@ -33,23 +33,11 @@ public class OneXboxArcadeDrive implements ControlScheme {
 
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-
-		if (isreversed == false) {
-			conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
-		} else {
-			conveyer.setSpeed(xbox.getTriggerLeft() - xbox.getTriggerRight());
-		}
+		conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft(), xbox.getPOV());
 	}
 
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
-
-		//set isReversed
-		if (xbox.getPOV() == 180) {
-			isreversed = true;
-		} else if (xbox.getPOV() == 0) {
-			isreversed = false;
-		}
 		
 		//set speedMode
 		if(xbox.getLB()) {
@@ -64,11 +52,6 @@ public class OneXboxArcadeDrive implements ControlScheme {
 		}
 		
 		//drive based on isReversed and speedMode
-		if (isreversed == false) {
-			sd.arcade(xbox.getLS_Y(), xbox.getLS_X(), squaredInputs, speedMode);
-		} else {
-			sd.arcade(-1 * xbox.getLS_Y(), -1 * xbox.getLS_X(), squaredInputs, speedMode);
-		}
+		sd.arcade(xbox.getLS_Y(), xbox.getLS_X(), squaredInputs, speedMode, xbox.getPOV());
 	}
-
 }
