@@ -80,8 +80,7 @@ public class Robot extends IterativeRobot {
 		//		
 		//	SmartDashboard.putData("Autonomous Chooser", autochooser);
 	
-		//This must always come before loadProperties
-		setDefaultProperties();
+		DriverStation.reportError("Test error -- can you see this in driverstation?", false);
 		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
@@ -90,6 +89,8 @@ public class Robot extends IterativeRobot {
 			//DriverStation.getInstance();
 			DriverStation.reportError("It looks like there was an error finding the properties file... probably.", true);
 		} finally {
+			//This must always come before loadProperties
+			setDefaultProperties();
 			
 			//LoadProperties should no longer throw errors.
 			//It also includes automatic fallback to default properties for each property individually if a file property is not found, as long as they have been set already.
@@ -194,6 +195,8 @@ public class Robot extends IterativeRobot {
 		slowSpeedConstant = properties.getDouble("slowSpeedConstant");
 		normalSpeedConstant = properties.getDouble("normalSpeedConstant");
 		fastSpeedConstant = properties.getDouble("fastSpeedConstant");
+		
+		int errorGenerator = properties.getInt("lololol lol");
 		
 		SmartDashboard.putString("DB/String 9", "slow: " + slowSpeedConstant + " | normal: " + normalSpeedConstant + " | fast: " + fastSpeedConstant);
 

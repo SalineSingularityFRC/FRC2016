@@ -32,6 +32,7 @@ public class SingularityProperties {
 	public SingularityProperties(String propFileURL) throws IOException {
 		this.propFileURL = propFileURL;
 		props = readProperties(propFileURL);
+		defaultProps = new Properties();
 	}
 
 	/**
