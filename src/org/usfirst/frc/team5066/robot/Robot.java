@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5066.robot;
 
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -45,6 +46,10 @@ public class Robot extends IterativeRobot {
 	SingularityArm arm;
 	SingularityConveyer conveyer;
 	int driveControllerType;
+	
+	CANTalon talon;
+	
+	double position;
 
 	/*
 	 * NOTE
@@ -98,6 +103,8 @@ public class Robot extends IterativeRobot {
 			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
 
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
+			
+			talon = new CANTalon(0);
 
 			//Camera setup code
 			try {
@@ -148,17 +155,39 @@ public class Robot extends IterativeRobot {
 		
 		updateCamera(session, frame);
 	}
+	
+	public void teleopInit(){
+		
+		talon.changeControlMode(CANTalon.TalonControlMode.Position);
+		
+		talon.set(0);
+		
+		talon.reverseSensor(true);
+		
+		SmartDashboard.putNumber("Position to go to", 0);
+	}
 
 	public void teleopPeriodic() {
 
 		//TODO try removing/ throttling this line to speed up robot response to controls
-		updateCamera(session, frame);
+		/*updateCamera(session, frame);
 
 		currentScheme.drive(drive, true);
 		currentScheme.controlArm(arm);
 		currentScheme.controlConveyer(conveyer);
 
-		drive.setReducedVelocity(0.5);
+		drive.setReducedVelocity(0.5);*/
+		
+		position = SmartDashboard.getNumber("Position to go to", 0);
+		
+		SmartDashboard.putNumber("Position", talon.getPosition());
+		SmartDashboard.putNumber("Velocity", talon.getSpeed());
+		
+		talon.set(position);
+	}
+	
+	public void disabledInit(){
+		talon.set(0);
 	}
 
 	public void testPeriodic() {
