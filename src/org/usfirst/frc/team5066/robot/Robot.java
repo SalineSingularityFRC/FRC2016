@@ -91,8 +91,8 @@ public class Robot extends IterativeRobot {
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
-			drive = new SingularityDrive(10, 4, 1, 3,
-					0, .4, .8, 1);
+			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
+					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(2, 9, 7, 5, .25);
 			conveyer = new SingularityConveyer(8, 6);
 
