@@ -5,13 +5,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 /**
  * Class for reading and writing to properties files.
  * 
  * @author Saline Singularity 5066
- *
+ * 
+ * @version 2.0
  */
+
 public class SingularityProperties {
+	
+	private Properties defaultProps;
 	private Properties props;
 	private String propFileURL;
 
@@ -26,6 +32,7 @@ public class SingularityProperties {
 	public SingularityProperties(String propFileURL) throws IOException {
 		this.propFileURL = propFileURL;
 		props = readProperties(propFileURL);
+		defaultProps = new Properties();
 	}
 
 	/**
@@ -36,7 +43,92 @@ public class SingularityProperties {
 	public String getFileURL() {
 		return propFileURL;
 	}
+	
+	/**
+	 * Used to add a property to the default properties. A default property is
+	 * used when a property fails to load from the properties file. Default
+	 * properties are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 *            The name of the default property. Must match the name of the
+	 *            property in the properties file that this value is the default
+	 *            for
+	 * @param value
+	 *            The value to which the default property will be set The value
+	 *            to which the default property will be set
+	 */
+	public void addDefualtProp(String propName, int value) {
+		defaultProps.setProperty(propName, "" + value);
+	}
 
+	/**
+	 * Used to add a property to the default properties. A default property is
+	 * used when a property fails to load from the properties file. Default
+	 * properties are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 *            The name of the default property. Must match the name of the
+	 *            property in the properties file that this value is the default
+	 *            for
+	 * @param value
+	 *            The value to which the default property will be set
+	 */
+	public void addDefualtProp(String propName, double value) {
+		defaultProps.setProperty(propName, "" + value);
+	}
+
+	/**
+	 * Used to add a property to the default properties. A default property is
+	 * used when a property fails to load from the properties file. Default
+	 * properties are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 *            The name of the default property. Must match the name of the
+	 *            property in the properties file that this value is the default
+	 *            for
+	 * @param value
+	 *            The value to which the default property will be set
+	 */
+	public void addDefualtProp(String propName, float value) {
+		defaultProps.setProperty(propName, "" + value);
+	}
+
+	/**
+	 * Used to add a property to the default properties. A default property is
+	 * used when a property fails to load from the properties file. Default
+	 * properties are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 *            The name of the default property. Must match the name of the
+	 *            property in the properties file that this value is the default
+	 *            for
+	 * @param value
+	 *            The value to which the default property will be set
+	 */
+	public void addDefualtProp(String propName, boolean value) {
+		defaultProps.setProperty(propName, "" + value);
+	}
+
+	/**
+	 * Used to add a property to the default properties. A default property is
+	 * used when a property fails to load from the properties file. Default
+	 * properties are only backups in case a true property fails to load.
+	 * 
+	 * @param propName
+	 *            The name of the default property. Must match the name of the
+	 *            property in the properties file that this value is the default
+	 *            for
+	 * @param value
+	 *            The value to which the default property will be set
+	 */
+	public void addDefualtProp(String propName, String value) {
+		if(defaultProps.containsKey(propName)) {
+			DriverStation.reportError("Default property with name \"" + propName + "\n aready exists... Overwriting", false);
+		}
+			defaultProps.setProperty(propName, value);
+	}
+	
+	
 	/**
 	 * Rereads file properties
 	 * 
@@ -94,9 +186,10 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which string to get
 	 * @return The value of the string
+	 * @throws SingularityPropertyNotFoundException 
 	 */
-	public String getString(String name) {
-		return props.getProperty(name);
+	public String getString(String name) throws SingularityPropertyNotFoundException {
+		return loadProperty(name);
 	}
 
 	/**
@@ -105,9 +198,11 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which integer to get
 	 * @return The value of the integer
+	 * @throws SingularityPropertyNotFoundException 
+	 * @throws NumberFormatException 
 	 */
-	public int getInt(String name) {
-		return Integer.parseInt(props.getProperty(name));
+	public int getInt(String name) throws NumberFormatException, SingularityPropertyNotFoundException {
+		return Integer.parseInt(loadProperty(name));
 	}
 
 	/**
@@ -116,9 +211,11 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which float to get
 	 * @return The value of the float
+	 * @throws SingularityPropertyNotFoundException 
+	 * @throws NumberFormatException 
 	 */
-	public float getFloat(String name) {
-		return Float.parseFloat(props.getProperty(name));
+	public float getFloat(String name) throws NumberFormatException, SingularityPropertyNotFoundException {
+		return Float.parseFloat(loadProperty(name));
 	}
 
 	/**
@@ -127,9 +224,11 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which double to get
 	 * @return The value of the double
+	 * @throws SingularityPropertyNotFoundException 
+	 * @throws NumberFormatException 
 	 */
-	public double getDouble(String name) {
-		return Double.parseDouble(props.getProperty(name));
+	public double getDouble(String name) throws NumberFormatException, SingularityPropertyNotFoundException {
+		return Double.parseDouble(loadProperty(name));
 	}
 
 	/**
@@ -138,8 +237,35 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which boolean to get
 	 * @return The value of the boolean
+	 * @throws SingularityPropertyNotFoundException 
 	 */
-	public boolean getBoolean(String name) {
-		return Boolean.parseBoolean(props.getProperty(name));
+	public boolean getBoolean(String name) throws SingularityPropertyNotFoundException {
+		return Boolean.parseBoolean(loadProperty(name));
+	}
+	
+	
+	private String loadProperty(String name) throws SingularityPropertyNotFoundException{
+		String prop = props.getProperty(name);
+		//TODO - accomplish this better with a do{} - while()?
+		if(prop != null) {
+			return prop;
+		} 
+		else {
+			//Note - all messages such as the following are automatically logged by DriverStation
+			DriverStation.reportError("Failed to find property in file: " + name + "\n - Resorting to default property for " + name + "\n \n .", false);
+			prop = defaultProps.getProperty(name);
+			if(prop != null) {
+				return prop;
+			}
+			else {
+				//Note - all messages such as the following are automatically logged by DriverStation
+				DriverStation.reportError("Failed to find property in defaults: " + name + "\n - THROWING EXCEPTION!!! \n \n ...", false);
+				
+				SingularityPropertyNotFoundException spnfe = new SingularityPropertyNotFoundException(name);
+				throw spnfe;
+			}
+		}
+
+		// TODO make it so that all properties that are missing can be found and pointed out if using a single loadProperties() method.
 	}
 }

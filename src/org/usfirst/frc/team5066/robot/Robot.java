@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -17,6 +18,7 @@ import org.usfirst.frc.team5066.controller2016.controlSchemes.TwoJoystickTankXbo
 import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxTankDrive;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
+import org.usfirst.frc.team5066.library.SingularityPropertyNotFoundException;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
@@ -78,16 +80,21 @@ public class Robot extends IterativeRobot {
 		//	autochooser.addObject("object programm777", object);
 		//		
 		//	SmartDashboard.putData("Autonomous Chooser", autochooser);
-	
+			
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
-			//TODO switch back to loadProperties()!!!!!!!!!!!!!!!!!!!!!!
-			loadDefaultProperties();
 		} catch (Exception e) {
-			loadDefaultProperties();
-			e.printStackTrace();
+			//TODO is getInstance() necessary?
+			//DriverStation.getInstance();
+			DriverStation.reportError("It looks like there was an error finding the properties file... probably. \n", true);
 		} finally {
-
+			//This must always come before loadProperties
+			setDefaultProperties();
+			
+			//LoadProperties should no longer throw errors.
+			//It also includes automatic fallback to default properties for each property individually if a file property is not found, as long as they have been set already.
+			loadProperties();
+			
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
@@ -169,6 +176,8 @@ public class Robot extends IterativeRobot {
 	private void loadProperties() {
 		SmartDashboard.putString("DB/String 0", "No");
 
+		
+		try{
 		// Ports
 		frontLeftMotor = properties.getInt("frontLeftMotor");
 		rearLeftMotor = properties.getInt("rearLeftMotor");
@@ -187,11 +196,18 @@ public class Robot extends IterativeRobot {
 		slowSpeedConstant = properties.getDouble("slowSpeedConstant");
 		normalSpeedConstant = properties.getDouble("normalSpeedConstant");
 		fastSpeedConstant = properties.getDouble("fastSpeedConstant");
+				
+		} catch(SingularityPropertyNotFoundException e) {
+			DriverStation.reportError("The property \"" + e.getPropertyName() + " was not found --> code crashed \n _POSSIBLE CAUSES:\n - Property missing in file and defaults"
+					+ "\n - Typo in property name in code or file\n - using a different properties file than the one that actually contains the property ou are looking for", false);
+			e.printStackTrace();
+		}
 		
 		SmartDashboard.putString("DB/String 9", "slow: " + slowSpeedConstant + " | normal: " + normalSpeedConstant + " | fast: " + fastSpeedConstant);
 
 	}
 
+	//TODO Soon to be deprecated
 	private void loadDefaultProperties() {
 		SmartDashboard.putString("DB/String 0", "Yes  -- Defaults were loaded");
 
@@ -205,7 +221,6 @@ public class Robot extends IterativeRobot {
 		frontRightMotor = 1;
 		rearRightMotor = 3;
 
-		// TODO add arm motors
 		armLeftWorm = 2;
 		armLeftPlanetary = 9;
 		armRightWorm = 7;
@@ -220,6 +235,33 @@ public class Robot extends IterativeRobot {
 		normalSpeedConstant = 0.8;
 		fastSpeedConstant = 1.0;
 		
+		//TODO add armSpeedConstant and conveyerSpeedConstant
+		
+	}
+	
+	private void setDefaultProperties() {
+		
+		//Drive ports
+		properties.addDefualtProp("frontLeftMotor", 10);
+		properties.addDefualtProp("rearLeftMotor", 4);
+		properties.addDefualtProp("frontRightMotor", 1);
+		properties.addDefualtProp("rearRightMotor", 3);
+		
+		//Arm ports
+		properties.addDefualtProp("armLeftWorm", 2);
+		properties.addDefualtProp("armLeftPlanetary", 9);
+		properties.addDefualtProp("armRightWorm", 7);
+		properties.addDefualtProp("armRightPlanetary", 5);
+		
+		//Conveyer Ports
+		properties.addDefualtProp("leftConveyerMotor", 8);
+		properties.addDefualtProp("rightConveyerMotor", 6);
+		
+		//Speed Constants
+		properties.addDefualtProp("slowSpeedConstant", 0.4);
+		properties.addDefualtProp("normalSpeedConstant", 0.8);
+		properties.addDefualtProp("fastSpeedConstant", 1.0);
+				
 	}
 
 	private void updateCamera(int session, Image frame) {
@@ -227,7 +269,7 @@ public class Robot extends IterativeRobot {
 			NIVision.IMAQdxGrab(session, frame, 1);
 			CameraServer.getInstance().setImage(frame);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 	}
 }
