@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -25,6 +27,10 @@ public class Robot extends IterativeRobot {
 	SendableChooser autochooser;
 	
 	
+	
+	
+	
+	
 	ControlScheme currentScheme;
 	Image frame;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, session;
@@ -36,10 +42,10 @@ public class Robot extends IterativeRobot {
 	SingularityConveyer sc;
 	SingularityClimb climb;
 	Encoder encoder;
+    Timer timer;
 	
 	
 	
-    
     
 	public void robotInit() {
 		//    setup auto chooser in SmartDashboard 
@@ -57,6 +63,10 @@ public class Robot extends IterativeRobot {
 	
 		
 	
+        // instantiate the command used for the autonomous period
+        
+
+	
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 			loadDefaultProperties();
@@ -70,6 +80,7 @@ public class Robot extends IterativeRobot {
 			arm = new SingularityArm(6, 7);
 			sc = new SingularityConveyer(8,9);
 			climb = new SingularityClimb(1 , 0);
+			timer = new Timer();
 			
 			
 			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
@@ -84,18 +95,28 @@ public class Robot extends IterativeRobot {
 			
 		}
 	}
+	
+	
+	
 
 	public void disabledPeriodic() {
 		updateCamera(session, frame);
 	}
     public void autonomousInit(){
     	
+    	
+    	
+    	
+    	
     	// Use SmartDashboard to setup autonomous chooser
     	
     	autonomousCommand = (Command) autochooser.getSelected();
 		autonomousCommand.start();
+	    
+	    
 		
-    	
+		// schedule the autonomous command (example)
+			
     	
     	
     }
@@ -103,7 +124,6 @@ public class Robot extends IterativeRobot {
 		
 		
 		//Autonomous part
-		
 		
 		Scheduler.getInstance(); // Schedule all the autonomous for SmartDashboard
 		
