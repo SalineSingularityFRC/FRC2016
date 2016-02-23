@@ -186,8 +186,9 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which string to get
 	 * @return The value of the string
+	 * @throws SingularityPropertyNotFoundException 
 	 */
-	public String getString(String name) {
+	public String getString(String name) throws SingularityPropertyNotFoundException {
 		return loadProperty(name);
 	}
 
@@ -197,8 +198,10 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which integer to get
 	 * @return The value of the integer
+	 * @throws SingularityPropertyNotFoundException 
+	 * @throws NumberFormatException 
 	 */
-	public int getInt(String name) {
+	public int getInt(String name) throws NumberFormatException, SingularityPropertyNotFoundException {
 		return Integer.parseInt(loadProperty(name));
 	}
 
@@ -208,8 +211,10 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which float to get
 	 * @return The value of the float
+	 * @throws SingularityPropertyNotFoundException 
+	 * @throws NumberFormatException 
 	 */
-	public float getFloat(String name) {
+	public float getFloat(String name) throws NumberFormatException, SingularityPropertyNotFoundException {
 		return Float.parseFloat(loadProperty(name));
 	}
 
@@ -219,8 +224,10 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which double to get
 	 * @return The value of the double
+	 * @throws SingularityPropertyNotFoundException 
+	 * @throws NumberFormatException 
 	 */
-	public double getDouble(String name) {
+	public double getDouble(String name) throws NumberFormatException, SingularityPropertyNotFoundException {
 		return Double.parseDouble(loadProperty(name));
 	}
 
@@ -230,13 +237,14 @@ public class SingularityProperties {
 	 * @param name
 	 *            Which boolean to get
 	 * @return The value of the boolean
+	 * @throws SingularityPropertyNotFoundException 
 	 */
-	public boolean getBoolean(String name) {
+	public boolean getBoolean(String name) throws SingularityPropertyNotFoundException {
 		return Boolean.parseBoolean(loadProperty(name));
 	}
 	
 	
-	private String loadProperty(String name) {
+	private String loadProperty(String name) throws SingularityPropertyNotFoundException{
 		String prop = props.getProperty(name);
 		//TODO - accomplish this better with a do{} - while()?
 		if(prop != null) {
@@ -244,18 +252,20 @@ public class SingularityProperties {
 		} 
 		else {
 			//Note - all messages such as the following are automatically logged by DriverStation
-			DriverStation.reportError("Failed to find file property: " + name + "/n - Resorting to default properties", false);
+			DriverStation.reportError("Failed to find property in file: " + name + "\n - Resorting to default property for " + name + "\n \n .", false);
 			prop = defaultProps.getProperty(name);
 			if(prop != null) {
 				return prop;
 			}
 			else {
 				//Note - all messages such as the following are automatically logged by DriverStation
-				DriverStation.reportError("Failed to find default property: " + name + "/n - Returning null. This will most likely PREVENT CODE FROM RUNNING!", false);
-				return null;
+				DriverStation.reportError("Failed to find property in defaults: " + name + "\n - THROWING EXCEPTION!!! \n \n ...", false);
+				
+				SingularityPropertyNotFoundException spnfe = new SingularityPropertyNotFoundException(name);
+				throw spnfe;
 			}
 		}
-		
-		// TODO add logging and Driverstation console code here
+
+		// TODO make it so that all properties that are missing can be found and pointed out if using a single loadProperties() method.
 	}
 }

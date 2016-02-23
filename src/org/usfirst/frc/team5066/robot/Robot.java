@@ -18,6 +18,7 @@ import org.usfirst.frc.team5066.controller2016.controlSchemes.TwoJoystickTankXbo
 import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxTankDrive;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
+import org.usfirst.frc.team5066.library.SingularityPropertyNotFoundException;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
@@ -79,15 +80,13 @@ public class Robot extends IterativeRobot {
 		//	autochooser.addObject("object programm777", object);
 		//		
 		//	SmartDashboard.putData("Autonomous Chooser", autochooser);
-	
-		DriverStation.reportError("Test error -- can you see this in driverstation?", false);
-		
+			
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 		} catch (Exception e) {
 			//TODO is getInstance() necessary?
 			//DriverStation.getInstance();
-			DriverStation.reportError("It looks like there was an error finding the properties file... probably.", true);
+			DriverStation.reportError("It looks like there was an error finding the properties file... probably. \n", true);
 		} finally {
 			//This must always come before loadProperties
 			setDefaultProperties();
@@ -177,6 +176,8 @@ public class Robot extends IterativeRobot {
 	private void loadProperties() {
 		SmartDashboard.putString("DB/String 0", "No");
 
+		
+		try{
 		// Ports
 		frontLeftMotor = properties.getInt("frontLeftMotor");
 		rearLeftMotor = properties.getInt("rearLeftMotor");
@@ -195,8 +196,12 @@ public class Robot extends IterativeRobot {
 		slowSpeedConstant = properties.getDouble("slowSpeedConstant");
 		normalSpeedConstant = properties.getDouble("normalSpeedConstant");
 		fastSpeedConstant = properties.getDouble("fastSpeedConstant");
-		
-		int errorGenerator = properties.getInt("lololol lol");
+				
+		} catch(SingularityPropertyNotFoundException e) {
+			DriverStation.reportError("The property \"" + e.getPropertyName() + " was not found --> code crashed \n _POSSIBLE CAUSES:\n - Property missing in file and defaults"
+					+ "\n - Typo in property name in code or file\n - using a different properties file than the one that actually contains the property ou are looking for", false);
+			e.printStackTrace();
+		}
 		
 		SmartDashboard.putString("DB/String 9", "slow: " + slowSpeedConstant + " | normal: " + normalSpeedConstant + " | fast: " + fastSpeedConstant);
 
@@ -256,8 +261,7 @@ public class Robot extends IterativeRobot {
 		properties.addDefualtProp("slowSpeedConstant", 0.4);
 		properties.addDefualtProp("normalSpeedConstant", 0.8);
 		properties.addDefualtProp("fastSpeedConstant", 1.0);
-		
-		
+				
 	}
 
 	private void updateCamera(int session, Image frame) {
@@ -265,7 +269,7 @@ public class Robot extends IterativeRobot {
 			NIVision.IMAQdxGrab(session, frame, 1);
 			CameraServer.getInstance().setImage(frame);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 	}
 }
