@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5066.robot;
 
+import edu.wpi.first.wpilibj.CANSpeedController;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -23,22 +24,21 @@ import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
 public class Robot extends IterativeRobot {
-	
+
 	Command autonomousCommand;
 	SendableChooser autochooser;
-	
-	
+
 	ControlScheme currentScheme;
 	Image frame;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
 	int armLeftWorm, armLeftPlanetary, armRightWorm, armRightPlanetary;
 	int leftConveyerMotor, rightConveyerMotor;
 	int session;
-	
+
 	double slowSpeedConstant;
 	double normalSpeedConstant;
 	double fastSpeedConstant;
-	
+
 	Joystick js;
 	long initialTime;
 	SingularityDrive drive;
@@ -46,11 +46,11 @@ public class Robot extends IterativeRobot {
 	SingularityArm arm;
 	SingularityConveyer conveyer;
 	int driveControllerType;
-	
+
 	CANTalon talon;
-	
+
 	double position;
-	
+
 	Ultrasonic googleUltron;
 
 	/*
@@ -72,23 +72,22 @@ public class Robot extends IterativeRobot {
 		// encounters an error, it just keeps the default value and moves on to
 		// the next property
 
-  
-		//    setup auto chooser in SmartDashboard 
-		//	autochooser = new SendableChooser();
-		//	autochooser.addDefault("default programm",  object);
-		//	autochooser.addObject("object programm111", object);
-		//	autochooser.addObject("object programm222", object);
-		//	autochooser.addObject("object programm333", object);
-		//	autochooser.addObject("object programm444", object);
-		//	autochooser.addObject("object programm555", object);
-		//	autochooser.addObject("object programm666", object);
-		//	autochooser.addObject("object programm777", object);
-		//		
-		//	SmartDashboard.putData("Autonomous Chooser", autochooser);
-	
+		// setup auto chooser in SmartDashboard
+		// autochooser = new SendableChooser();
+		// autochooser.addDefault("default programm", object);
+		// autochooser.addObject("object programm111", object);
+		// autochooser.addObject("object programm222", object);
+		// autochooser.addObject("object programm333", object);
+		// autochooser.addObject("object programm444", object);
+		// autochooser.addObject("object programm555", object);
+		// autochooser.addObject("object programm666", object);
+		// autochooser.addObject("object programm777", object);
+		//
+		// SmartDashboard.putData("Autonomous Chooser", autochooser);
+
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
-			//TODO switch back to loadProperties()!!!!!!!!!!!!!!!!!!!!!!
+			// TODO switch back to loadProperties()!!!!!!!!!!!!!!!!!!!!!!
 			loadDefaultProperties();
 		} catch (Exception e) {
 			loadDefaultProperties();
@@ -98,19 +97,20 @@ public class Robot extends IterativeRobot {
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
-			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
+			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
+					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(2, 9, 7, 5, .25);
 			conveyer = new SingularityConveyer(8, 6);
 
 			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
 
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
-			
-			talon = new CANTalon(0);
-			
-			googleUltron = new Ultrasonic(0, 1);
 
-			//Camera setup code
+			talon = new CANTalon(0);
+
+			googleUltron = new Ultrasonic(1, 0);
+			googleUltron.setAutomaticMode(true);
+			// Camera setup code
 			try {
 
 				CameraServer server = CameraServer.getInstance();
@@ -121,14 +121,12 @@ public class Robot extends IterativeRobot {
 				// web interface
 
 				frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-				
 
 				session = NIVision.IMAQdxOpenCamera("cam0",
 						NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 
 				NIVision.IMAQdxConfigureGrab(session);
 				NIVision.IMAQdxStartAcquisition(session);
-
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -139,61 +137,60 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		updateCamera(session, frame);
 	}
-    public void autonomousInit(){
-    	
-    	// Use SmartDashboard to setup autonomous chooser
-    	
-    	autonomousCommand = (Command) autochooser.getSelected();
+
+	public void autonomousInit() {
+
+		// Use SmartDashboard to setup autonomous chooser
+
+		autonomousCommand = (Command) autochooser.getSelected();
 		autonomousCommand.start();
-		
-    	
-    	
-    	
-    }
+
+	}
+
 	public void autonomousPeriodic() {
-		
-		//Autonomous part
-		
-		
-		Scheduler.getInstance(); // Schedule all the autonomous for SmartDashboard
-		
+
+		// Autonomous part
+
+		Scheduler.getInstance(); // Schedule all the autonomous for
+									// SmartDashboard
+
 		updateCamera(session, frame);
 	}
-	
-	public void teleopInit(){
-		
-		talon.changeControlMode(CANTalon.TalonControlMode.Position);
-		
-		talon.set(0);
-		
-		talon.reverseSensor(true);
-		
+
+	public void teleopInit() {
+		//talon.changeControlMode(CANTalon.TalonControlMode.Voltage);
+
+		talon.setPosition(0);
+
+		//talon.reverseSensor(true);
+
 		SmartDashboard.putNumber("Position to go to", 0);
 	}
 
 	public void teleopPeriodic() {
 
-		//TODO try removing/ throttling this line to speed up robot response to controls
-		/*updateCamera(session, frame);
+		// TODO try removing/ throttling this line to speed up robot response to
+		// controls
+		/*
+		 * updateCamera(session, frame);
+		 * 
+		 * currentScheme.drive(drive, true); currentScheme.controlArm(arm);
+		 * currentScheme.controlConveyer(conveyer);
+		 * 
+		 * drive.setReducedVelocity(0.5);
+		 */
 
-		currentScheme.drive(drive, true);
-		currentScheme.controlArm(arm);
-		currentScheme.controlConveyer(conveyer);
-
-		drive.setReducedVelocity(0.5);*/
-		
 		position = SmartDashboard.getNumber("Position to go to", 0);
-		
+
 		SmartDashboard.putNumber("Position", talon.getPosition());
 		SmartDashboard.putNumber("Velocity", talon.getSpeed());
-		
-		talon.set(position);
-		
+
+		setCANTalonPositionWithMaxSpeed(talon, position, 0.2);
+
 		SmartDashboard.putNumber("Sensor", googleUltron.getRangeInches());
-		
 	}
-	
-	public void disabledInit(){
+
+	public void disabledInit() {
 		talon.set(0);
 	}
 
@@ -214,7 +211,6 @@ public class Robot extends IterativeRobot {
 		// CANTalon or Talon drive?
 		driveControllerType = properties.getInt("driveControllerType");
 
-
 		armLeftWorm = properties.getInt("armLeftWorm");
 		armLeftPlanetary = properties.getInt("armLeftPlanetary");
 		armRightWorm = properties.getInt("armRightWorm");
@@ -223,8 +219,9 @@ public class Robot extends IterativeRobot {
 		slowSpeedConstant = properties.getDouble("slowSpeedConstant");
 		normalSpeedConstant = properties.getDouble("normalSpeedConstant");
 		fastSpeedConstant = properties.getDouble("fastSpeedConstant");
-		
-		SmartDashboard.putString("DB/String 9", "slow: " + slowSpeedConstant + " | normal: " + normalSpeedConstant + " | fast: " + fastSpeedConstant);
+
+		SmartDashboard.putString("DB/String 9",
+				"slow: " + slowSpeedConstant + " | normal: " + normalSpeedConstant + " | fast: " + fastSpeedConstant);
 
 	}
 
@@ -251,11 +248,11 @@ public class Robot extends IterativeRobot {
 		// arm objects
 		leftConveyerMotor = 8;
 		rightConveyerMotor = 6;
-		
+
 		slowSpeedConstant = 0.4;
 		normalSpeedConstant = 0.8;
 		fastSpeedConstant = 1.0;
-		
+
 	}
 
 	private void updateCamera(int session, Image frame) {
@@ -265,5 +262,24 @@ public class Robot extends IterativeRobot {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void setCANTalonPositionWithMaxSpeed(CANTalon talon, double position, double maxSpeed) {		
+		maxSpeed /= Math.max(Math.abs(maxSpeed), 1);
+		double difference = talon.getPosition() - position, toReturn = 0;
+
+		CANTalon.TalonControlMode mode = talon.getControlMode();
+		
+		talon.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		
+		if (Math.abs(difference) > 1024) {
+			toReturn = maxSpeed * difference / Math.abs(difference);
+		} else {
+			toReturn = maxSpeed * difference / 1024;
+		}
+
+		talon.set(toReturn);
+		
+		talon.changeControlMode(mode);
 	}
 }
