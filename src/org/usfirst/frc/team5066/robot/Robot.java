@@ -53,6 +53,8 @@ public class Robot extends IterativeRobot {
 
 	Ultrasonic googleUltron;
 
+	double speed = 0;
+	
 	/*
 	 * NOTE
 	 * 
@@ -158,7 +160,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
-		talon.changeControlMode(CANTalon.TalonControlMode.Position);
+		//talon.changeControlMode(CANTalon.TalonControlMode.Speed);
 
 		talon.setPosition(0);
 
@@ -191,7 +193,12 @@ public class Robot extends IterativeRobot {
 
 //		setPositionWithMaxSpeed(talon, -js.getRawAxis(5) * 512, velocity);
 
-		talon.set(-js.getRawAxis(5) * 512);
+		talon.set(1);
+		
+		if(talon.getSpeed() > speed){
+			speed = talon.getSpeed();
+			SmartDashboard.putNumber("Speed", speed);
+		}
 		
 		SmartDashboard.putNumber("Sensor", googleUltron.getRangeInches());
 		
