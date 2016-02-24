@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -68,7 +69,7 @@ public class SingularityArm {
 
 		// sets both motor speeds to move in the same direction
 		//Note - becuse of the wiring, we actually tell them all to have thee same direction
-		leftWorm.set(speed);
+		leftWorm.set(-speed);
 		leftPlanet.set(speed);
 		rightWorm.set(speed);
 		rightPlanet.set(speed);		
@@ -86,6 +87,24 @@ public class SingularityArm {
 		SmartDashboard.putNumber("rightWorm Position" , rightWorm.getPosition() );
 		SmartDashboard.putNumber("rightWorm Speed" , rightWorm.getSpeed() );
 	}
+	
+	/*public void goToPosition(double position){
+		TalonControlMode leftWormMode = leftWorm.getControlMode();
+		TalonControlMode leftPlanetMode = leftPlanet.getControlMode();
+		TalonControlMode rightWormMode = rightWorm.getControlMode();
+		TalonControlMode rightPlanetMode = rightPlanet.getControlMode();
+		
+		
+		
+		leftWorm.changeControlMode(CANTalon.TalonControlMode.Position);
+		leftPlanet.changeControlMode(CANTalon.TalonControlMode.Position);
+		rightWorm.changeControlMode(CANTalon.TalonControlMode.Position);
+		rightPlanet.changeControlMode(CANTalon.TalonControlMode.Position);
+		
+		rightWorm.changeControlMode(CANTalon.TalonControlMode.Position);
+		
+		leftWorm.set
+	}*/
 
 	/**
 	 *

@@ -162,10 +162,18 @@ public class Robot extends IterativeRobot {
 		updateCamera(session, frame);
 
 		currentScheme.drive(drive, true);
-		currentScheme.controlArm(arm);
+		//currentScheme.controlArm(arm);
 		currentScheme.controlConveyer(conveyer);
+		
+		//drive.arcade(-js.getRawAxis(1), js.getRawAxis(0));
+		
+		arm.setSpeed(-js.getRawAxis(5));
+		
+		//conveyer.setSpeed(js.getRawAxis(3) - js.getRawAxis(2));
 
-		drive.setReducedVelocity(0.5);
+		//drive.setReducedVelocity(0.5);
+		
+		
 	}
 
 	public void testPeriodic() {

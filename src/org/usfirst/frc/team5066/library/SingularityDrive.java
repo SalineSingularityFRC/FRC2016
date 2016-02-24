@@ -17,7 +17,7 @@ public class SingularityDrive {
 
 	private double slowSpeedConstant, normalSpeedConstant, fastSpeedConstant;
 
-	private SpeedController m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
+	private CANTalon m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
 
 	private final static double DEFAULT_VELOCITY_MULTIPLIER = 1.0;
 	private double velocityMultiplier = 1.0;
@@ -62,20 +62,12 @@ public class SingularityDrive {
 	public SingularityDrive(int frontLeftMotor, int rearLeftMotor, int frontRightMotor, int rearRightMotor,
 			int talonType, double slowSpeedConstant, double normalSpeedConstant, double fastSpeedConstant) {
 
-		if (talonType == CANTALON_DRIVE) {
+		
 			m_frontLeftMotor = new CANTalon(frontLeftMotor);
 			m_rearLeftMotor = new CANTalon(rearLeftMotor);
 			m_frontRightMotor = new CANTalon(frontRightMotor);
 			m_rearRightMotor = new CANTalon(rearRightMotor);
 
-		} else if (talonType == TALON_SR_DRIVE) {
-			m_frontLeftMotor = new Talon(frontLeftMotor);
-			m_rearLeftMotor = new Talon(rearLeftMotor);
-			m_frontRightMotor = new Talon(frontRightMotor);
-			m_rearRightMotor = new Talon(rearRightMotor);
-		} else {
-			SmartDashboard.putNumber("INVALID VALUE FOR TALON TYPE.      value=", talonType);
-		}
 
 		this.velocityMultiplier = normalSpeedConstant;
 		this.talonType = talonType;
@@ -209,7 +201,10 @@ public class SingularityDrive {
 
 		translationVelocity = threshold(translationVelocity);
 		rotationVelocity = threshold(rotationVelocity);
-
+		
+		SmartDashboard.putNumber("m_frontRightMotor Velocity", m_frontRightMotor.getSpeed());
+		SmartDashboard.putNumber("m_frontLeftMotor Velocity", m_frontLeftMotor.getSpeed());
+		
 		// Set the motors
 		m_frontLeftMotor.set(this.velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
 		m_rearLeftMotor.set(this.velocityMultiplier * ((-translationVelocity + rotationVelocity) / maximum));
