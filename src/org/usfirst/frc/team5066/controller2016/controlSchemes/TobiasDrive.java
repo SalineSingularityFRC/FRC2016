@@ -28,7 +28,7 @@ LogitechController logitech;
 
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
-		sd.arcade(xbox.getTriggerRight() - xbox.getTriggerLeft(), xbox.getLS_X(), squaredInputs);
+		sd.arcade(xbox.getTriggerRight() - xbox.getTriggerLeft(), xbox.getLS_X(), squaredInputs, xbox.getPOV());
 		
 		// TODO Auto-generated method stub
 	}

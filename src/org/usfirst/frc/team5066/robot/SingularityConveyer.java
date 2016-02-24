@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5066.robot;
 
+import org.usfirst.frc.team5066.library.SingularityDrive;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SingularityConveyer {
 
 	CANTalon left, right;
+	double spd;
+	
 
 	/**
 	 * Constructor for singularity conveyer.
@@ -41,15 +45,20 @@ public class SingularityConveyer {
 		// Checks for illegal values (and deports them back to where they came,
 		// those bastards)
 		if ((speed < -1)) {
-			left.set(1);
-			right.set(-1);
+			spd = -1;
 		} else if (speed > 1) {
-			left.set(-1);
-			right.set(1);
+			spd = 1;
 		} else {
-			// sets both motor speeds to move in the same direction
-			left.set(-speed);
-			right.set(speed);
+			spd = speed;
+		}
+		
+		// sets reverse drive for conveyer when necessary
+		if (SingularityDrive.isreverse) {
+			left.set(spd);
+			right.set(-spd);
+		} else if (!SingularityDrive.isreverse) {
+			left.set(-spd);
+			right.set(spd);
 		}
 		
 		SmartDashboard.putNumber("left encoder speed", left.getSpeed());

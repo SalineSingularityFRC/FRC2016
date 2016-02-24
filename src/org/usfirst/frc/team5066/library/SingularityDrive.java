@@ -26,6 +26,8 @@ public class SingularityDrive {
 	private double reducedVelocity;
 
 	private final static double DEFAULT_MINIMUM_THRESHOLD = 0.09;
+	
+	public static boolean isreverse = false;
 
 	// Talon type enum
 	public static final int CANTALON_DRIVE = 0;
@@ -173,6 +175,16 @@ public class SingularityDrive {
 		}
 		return velocity;
 	}
+	
+	// reverse drive method for booleans. You have to hold the button to
+	// reverse. This method is used in control schemes to plug-in to SingDrive
+	public static int booleanReverse(boolean reverse) {
+		if (reverse) {
+			return 180;
+		} else {
+			return 0;
+		}
+	}
 
 	/**
 	 * So called "arcade drive" method for driving a robot around. Drives much
@@ -189,7 +201,7 @@ public class SingularityDrive {
 	 *            The enum value corrresponding to the current speed mode: slow,
 	 *            normal, or fast
 	 */
-	public void arcade(double translation, double rotation, boolean squaredInputs, SpeedMode speedMode) {
+	public void arcade(double translation, double rotation, boolean squaredInputs, SpeedMode speedMode, int reverse) {
 		double translationVelocity = translation, rotationVelocity = rotation;
 		
 		setVelocityMultiplerBasedOnSpeedMode(speedMode);
@@ -198,6 +210,14 @@ public class SingularityDrive {
 		if (squaredInputs) {
 			translationVelocity *= Math.abs(translation);
 			rotationVelocity *= Math.abs(rotation);
+		}
+		
+		//do reverse drive when necessary
+		if (reverse == 180) isreverse = true;
+		else if (reverse == 0) isreverse = false;
+		if (isreverse) {
+			translationVelocity = -translationVelocity;
+			rotationVelocity = -rotationVelocity;
 		}
 
 		// Guard against illegal values
@@ -217,8 +237,8 @@ public class SingularityDrive {
 		m_rearRightMotor.set(this.velocityMultiplier * ((translationVelocity + rotationVelocity) / maximum));
 	}
 
-	public void arcade(double translation, double rotation, boolean squaredInputs) {
-		this.arcade(translation, rotation, squaredInputs, SpeedMode.NORMAL);
+	public void arcade(double translation, double rotation, boolean squaredInputs, int reverse) {
+		this.arcade(translation, rotation, squaredInputs, SpeedMode.NORMAL, reverse);
 	}
 	
 	private void setVelocityMultiplerBasedOnSpeedMode(SpeedMode speedMode) {
@@ -250,8 +270,9 @@ public class SingularityDrive {
 	 *            Speed and direction at which to rotate clockwise
 	 */
 	public void arcade(double translation, double rotation) {
-		// Just do the arcade without squared inputs at normal speed mode
-		this.arcade(translation, rotation, false, SpeedMode.NORMAL);
+		// Just do the arcade without squared inputs at normal speed mode,
+		//and without reverse
+		this.arcade(translation, rotation, false, SpeedMode.NORMAL, 0);
 	}
 
 	/**

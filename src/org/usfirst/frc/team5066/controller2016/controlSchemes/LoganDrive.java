@@ -28,7 +28,7 @@ public class LoganDrive implements ControlScheme{
 
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
-		sd.arcade(xbox.getLS_Y(),xbox.getLS_X(), squaredInputs);
+		sd.arcade(xbox.getLS_Y(),xbox.getLS_X(), squaredInputs, xbox.getPOV());
 		
 		// TODO Auto-generated method stub
 		
