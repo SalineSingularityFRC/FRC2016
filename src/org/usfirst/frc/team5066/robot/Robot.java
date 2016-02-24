@@ -49,7 +49,7 @@ public class Robot extends IterativeRobot {
 
 	CANTalon talon;
 
-	double position;
+	double position, velocity;
 
 	Ultrasonic googleUltron;
 
@@ -158,13 +158,15 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
-		//talon.changeControlMode(CANTalon.TalonControlMode.Voltage);
+		talon.changeControlMode(CANTalon.TalonControlMode.Position);
 
 		talon.setPosition(0);
 
 		//talon.reverseSensor(true);
 
 		SmartDashboard.putNumber("Position to go to", 0);
+		SmartDashboard.putNumber("Velocity to go to", 0.2);
+		
 	}
 
 	public void teleopPeriodic() {
@@ -181,13 +183,19 @@ public class Robot extends IterativeRobot {
 		 */
 
 		position = SmartDashboard.getNumber("Position to go to", 0);
+		velocity = SmartDashboard.getNumber("Velocity to go to", 0);
 
+		
 		SmartDashboard.putNumber("Position", talon.getPosition());
 		SmartDashboard.putNumber("Velocity", talon.getSpeed());
 
-		setCANTalonPositionWithMaxSpeed(talon, position, 0.2);
+//		setPositionWithMaxSpeed(talon, -js.getRawAxis(5) * 512, velocity);
 
+		talon.set(-js.getRawAxis(5) * 512);
+		
 		SmartDashboard.putNumber("Sensor", googleUltron.getRangeInches());
+		
+		
 	}
 
 	public void disabledInit() {
@@ -264,18 +272,20 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	private void setCANTalonPositionWithMaxSpeed(CANTalon talon, double position, double maxSpeed) {		
+	private void setPositionWithMaxSpeed(CANTalon talon, double position, double maxSpeed) {		
 		maxSpeed /= Math.max(Math.abs(maxSpeed), 1);
 		double difference = talon.getPosition() - position, toReturn = 0;
 
+		difference *= -1;
+		
 		CANTalon.TalonControlMode mode = talon.getControlMode();
 		
 		talon.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 		
-		if (Math.abs(difference) > 1024) {
+		if (Math.abs(difference) > 256 * maxSpeed / 0.2) {
 			toReturn = maxSpeed * difference / Math.abs(difference);
 		} else {
-			toReturn = maxSpeed * difference / 1024;
+			toReturn = 0.2 * difference / 256;
 		}
 
 		talon.set(toReturn);
