@@ -28,6 +28,7 @@ public class SingularityDrive {
 	private final static double DEFAULT_MINIMUM_THRESHOLD = 0.09;
 	
 	public static boolean isreverse = false;
+	private static boolean reverseB = false;
 
 	// Talon type enum
 	public static final int CANTALON_DRIVE = 0;
@@ -177,13 +178,19 @@ public class SingularityDrive {
 	}
 	
 	// reverse drive method for booleans. You have to hold the button to
-	// reverse. This method is used in control schemes to plug-in to SingDrive
-	public static int booleanReverse(boolean reverse) {
+	// reverse. This method is used in control schemes to plug-in to SingDrive.
+	public static int booleanHoldReverse(boolean reverse) {
 		if (reverse) {
 			return 180;
 		} else {
 			return 0;
 		}
+	} // In the next method, you can toggle using 2 boolean buttons.
+	public static int booleanToggleReverse(boolean forward, boolean reverse) {
+		if (reverse) reverseB = true;
+		else if (forward) reverseB = false;
+		if (reverseB) return 180;
+		else return 0;
 	}
 
 	/**
@@ -212,7 +219,8 @@ public class SingularityDrive {
 			rotationVelocity *= Math.abs(rotation);
 		}
 		
-		//do reverse drive when necessary
+		// Do reverse drive when necessary. The reason that this uses 180 and 0 is because POV gives angles in
+		// degrees. If you want to use buttons instead, you can find methods for conversion to 180  0 above.
 		if (reverse == 180) isreverse = true;
 		else if (reverse == 0) isreverse = false;
 		if (isreverse) {
@@ -416,7 +424,7 @@ public class SingularityDrive {
 	 *            Whether or not to square the magnitude of the input values in
 	 *            order to provide for finer motor control at lower velocities
 	 */
-	public void tank(double left, double right, boolean squaredInputs, SpeedMode speedMode) {
+	public void tank(double left, double right, boolean squaredInputs, SpeedMode speedMode, int reverse) {
 		double leftVelocity = left, rightVelocity = right;
 		
 		this.setVelocityMultiplerBasedOnSpeedMode(speedMode);
@@ -447,6 +455,14 @@ public class SingularityDrive {
 
 		SmartDashboard.putNumber("Reduced Velocity - Left", leftVelocity);
 		SmartDashboard.putNumber("Reduced Velocity - Right", rightVelocity);
+		
+		//reverse drive for tank. :D
+		if (reverse == 180) isreverse = true;
+		else if (reverse == 0) isreverse = false;
+		if (isreverse) {
+			leftVelocity = -leftVelocity;
+			rightVelocity = -rightVelocity;
+		}
 
 		leftVelocity = threshold(leftVelocity);
 		rightVelocity = threshold(rightVelocity);
@@ -470,13 +486,13 @@ public class SingularityDrive {
 	 *            Velocity at which to rotate the right set of wheels (clockwise
 	 *            i.e. forwards)
 	 */
-	public void tank(double left, double right, SpeedMode speedMode) {
+	public void tank(double left, double right, SpeedMode speedMode, int reverse) {
 		// Just ignore squared inputs
-		this.tank(left, right, false, speedMode);
+		this.tank(left, right, false, speedMode, reverse);
 	}
 	
 	public void tank(double left, double right, boolean squaredInputs) {
-		// Just ignore squared speedMode
-		this.tank(left, right, true, SpeedMode.NORMAL);
+		// Just ignore squared speedMode and reverse
+		this.tank(left, right, true, SpeedMode.NORMAL, 0);
 	}
 }

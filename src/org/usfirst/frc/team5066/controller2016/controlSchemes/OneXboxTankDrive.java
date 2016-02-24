@@ -49,13 +49,6 @@ public class OneXboxTankDrive implements ControlScheme {
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
 		
-		//Set isReversed
-		if (xbox.getPOV() == 180) {
-			isreversed = true;
-		} else if (xbox.getPOV() == 0) {
-			isreversed = false;
-		}
-
 		//Set speedMode
 		if(xbox.getLB()){
 			speedMode = SpeedMode.SLOW;
@@ -68,10 +61,7 @@ public class OneXboxTankDrive implements ControlScheme {
 		}
 
 		//Drive
-		if (isreversed == false) {
-			sd.tank(-1 * xbox.getLS_Y(), -1 * xbox.getRS_Y(), squaredInputs, speedMode);
-		} else {
-			sd.tank(xbox.getLS_Y(), xbox.getRS_Y(), squaredInputs, speedMode);
-		}
+		sd.tank(-1 * xbox.getLS_Y(), -1 * xbox.getRS_Y(), squaredInputs, speedMode,
+				SingularityDrive.booleanToggleReverse(xbox.getBackButton(), xbox.getStartButton()));
 	}
 }

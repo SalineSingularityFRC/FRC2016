@@ -56,7 +56,7 @@ public class OneXboxArcadeDrive implements ControlScheme {
 			SmartDashboard.putString("DB/String 6", "NORMAL -- nothing pressed");
 		}
 		
-			sd.arcade(xbox.getLS_Y(), xbox.getLS_X(), squaredInputs, speedMode, SingularityDrive.booleanReverse(xbox.getAButton()));
+			sd.arcade(xbox.getLS_Y(), xbox.getLS_X(), squaredInputs, speedMode, xbox.getPOV());
 	}
 
 }
