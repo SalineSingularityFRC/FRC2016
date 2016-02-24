@@ -67,7 +67,7 @@ public class SingularityClimb {
 				
 				
 				SmartDashboard.putNumber(" left get Position" ,left.getPosition() );
-			
+			 
 				SmartDashboard.putNumber(" right get Position" ,left.getPosition() );
 				
 	}
