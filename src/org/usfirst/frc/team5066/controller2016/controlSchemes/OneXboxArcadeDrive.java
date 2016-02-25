@@ -7,6 +7,8 @@ import org.usfirst.frc.team5066.library.SpeedMode;
 import org.usfirst.frc.team5066.robot.SingularityArm;
 import org.usfirst.frc.team5066.robot.SingularityConveyer;
 
+import com.sun.webkit.Timer;
+
 import edu.wpi.first.wpilibj.Joystick;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,7 +16,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class OneXboxArcadeDrive implements ControlScheme {
 
 	XboxController xbox;
+	long Timer;
+	
 	SpeedMode speedMode;
+	
+	boolean isAutoshooting;
+	
+	long t;
 
 	boolean isreversed = false;
 
@@ -33,11 +41,65 @@ public class OneXboxArcadeDrive implements ControlScheme {
 
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
+		Timer = System.nanoTime();
+		
+		
+		
+		//Auto-shoot code
+		
+		if(xbox.getAButton()){
+			
+			isAutoshooting = true;
+		}
+		
+		  if(isAutoshooting == true){
+			
+		
+			  if( Timer < 200000 && Timer == 200000){
+		        conveyer.setSpeed(0.5);
+		    }
 
-		if (isreversed == false) {
-			conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
-		} else {
-			conveyer.setSpeed(xbox.getTriggerLeft() - xbox.getTriggerRight());
+		    
+		      else {
+		    	conveyer.setSpeed(0.0);
+		        
+		    }//Dive conveyer forward for 2 seconds, then turn off and set isAutoshooting to false;
+				
+			  
+			  
+		if(xbox.getXButton()){
+				
+				isAutoshooting = true;
+			}
+			
+			if(isAutoshooting == true){
+				
+			
+				if( Timer < 200000 && Timer == 200000){
+			        conveyer.setSpeed(0.0);
+			    }
+
+			    
+			    else {
+			    	
+			    	 conveyer.setSpeed(0.0);
+			    } // Press x button to cancel auto shooting
+			  
+			
+			//TODO add a break method for the X button that sets isAutoshooting to false if x button is pressed
+		}
+			
+		//TODO Add arm move if arm is in the way of shooting
+		//TODO add wait until arm is out of the way
+		
+		if (!isAutoshooting) {
+			if (isreversed == false) {
+				conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
+			} 
+			else {
+				conveyer.setSpeed(xbox.getTriggerLeft() - xbox.getTriggerRight());
+			}
+		}
 		}
 	}
 
