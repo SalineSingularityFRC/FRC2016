@@ -220,7 +220,7 @@ public class SingularityDrive {
 		}
 		
 		// Do reverse drive when necessary. The reason that this uses 180 and 0 is because POV gives angles in
-		// degrees. If you want to use buttons instead, you can find methods for conversion to 180  0 above.
+		// degrees. If you want to use buttons instead, you can find methods for conversion 180 to 0 above.
 		if (reverse == 180) isreverse = true;
 		else if (reverse == 0) isreverse = false;
 		if (isreverse) {

@@ -16,8 +16,6 @@ public class OneXboxArcadeDrive implements ControlScheme {
 	XboxController xbox;
 	SpeedMode speedMode;
 
-	boolean isreversed = false;
-
 	public OneXboxArcadeDrive(Joystick j) {
 		xbox = (XboxController) j;
 	}
@@ -33,12 +31,7 @@ public class OneXboxArcadeDrive implements ControlScheme {
 
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-
-		if (isreversed == false) {
-			conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
-		} else {
-			conveyer.setSpeed(xbox.getTriggerLeft() - xbox.getTriggerRight());
-		}
+		conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
 	}
 
 	@Override
@@ -56,7 +49,7 @@ public class OneXboxArcadeDrive implements ControlScheme {
 			SmartDashboard.putString("DB/String 6", "NORMAL -- nothing pressed");
 		}
 		
-			sd.arcade(xbox.getLS_Y(), xbox.getLS_X(), squaredInputs, speedMode, xbox.getPOV());
+		sd.arcade(xbox.getLS_Y(), xbox.getLS_X(), squaredInputs, speedMode, xbox.getPOV());
 	}
 
 }

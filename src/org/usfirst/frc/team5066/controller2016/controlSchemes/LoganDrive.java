@@ -14,7 +14,7 @@ public class LoganDrive implements ControlScheme{
 	public LoganDrive(int xboxPort, int LogitechController){
 		xbox = new XboxController(xboxPort);
 		logitech = new LogitechController(LogitechController);
-		}
+	}
 	
 	
 	
@@ -36,7 +36,7 @@ public class LoganDrive implements ControlScheme{
 
 	@Override
 	public void controlArm(SingularityArm arm) {
-	arm.setSpeed(logitech.getStickY());
+		arm.setSpeed(logitech.getStickY());
 		// TODO Auto-generated method stub
 		
 	}
