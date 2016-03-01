@@ -139,21 +139,21 @@ public class Robot extends IterativeRobot {
     	
     	// Use SmartDashboard to setup autonomous chooser
     	
+    	/*
     	autonomousCommand = (Command) autochooser.getSelected();
 		autonomousCommand.start();
-		
+		*/
     	
     	
     	
     }
 	public void autonomousPeriodic() {
-		
-		//Autonomous part
-		
-		
+				
+		/*
 		Scheduler.getInstance(); // Schedule all the autonomous for SmartDashboard
 		
 		updateCamera(session, frame);
+		*/
 	}
 
 	public void teleopPeriodic() {
