@@ -65,7 +65,11 @@ public class SingularityArm {
 		} else if (speed > 1) {
 			speed = 1;
 		}
-
+		
+		if (speed <= speedThreshold) {
+			speed = getBrakeConstant();
+		}
+		
 		// sets both motor speeds to move in the same direction
 		//Note - becuse of the wiring, we actually tell them all to have thee same direction
 		leftWorm.set(speed);
@@ -93,5 +97,14 @@ public class SingularityArm {
 	 */
 	public double getSpeed() {
 		return rightWorm.get();
+	}
+	
+	private double getBrakeConstant() {
+		if(rightWorm.getPosition() <= armBrakeThreshold) {
+			return brakeConstant;
+		}
+		else{
+			return 0;
+		}
 	}
 }
