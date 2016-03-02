@@ -47,8 +47,7 @@ public class Robot extends IterativeRobot {
 	SingularityArm arm;
 	SingularityConveyer conveyer;
 	int driveControllerType;
-	SingularityClimb climb;
-	
+
 	/*
 	 * NOTE
 	 * 
@@ -102,8 +101,7 @@ public class Robot extends IterativeRobot {
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(2, 9, 7, 5, .25);
 			conveyer = new SingularityConveyer(8, 6);
-            climb = new SingularityClimb(11 ,12, 1);
-            
+
 			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
 
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
@@ -166,8 +164,9 @@ public class Robot extends IterativeRobot {
 		currentScheme.drive(drive, true);
 		currentScheme.controlArm(arm);
 		currentScheme.controlConveyer(conveyer);
-	
+        
 		drive.setReducedVelocity(0.5);
+		
 	}
 
 	public void testPeriodic() {
