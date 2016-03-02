@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;
 
+import org.json.simple.JSONObject;
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxArcadeDrive;
 import org.usfirst.frc.team5066.controller2016.controlSchemes.TwoJoystickTankXboxAssist;
@@ -19,29 +20,29 @@ import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxTankDrive;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
 import org.usfirst.frc.team5066.library.SingularityPropertyNotFoundException;
+import org.usfirst.frc.team5066.library.playback.Reader;
+import org.usfirst.frc.team5066.library.playback.Recorder;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
 public class Robot extends IterativeRobot {
-	
+
 	Command autonomousCommand;
 	SendableChooser autochooser;
-	
-	
+
 	ControlScheme currentScheme;
 	Image frame;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
 	int armLeftWorm, armLeftPlanetary, armRightWorm, armRightPlanetary;
 	int leftConveyerMotor, rightConveyerMotor;
 	int session;
-	
+
 	double slowSpeedConstant;
 	double normalSpeedConstant;
 	double fastSpeedConstant;
-	
+
 	Joystick js;
-	long initialTime;
 	SingularityDrive drive;
 	SingularityProperties properties;
 	SingularityArm arm;
@@ -60,6 +61,15 @@ public class Robot extends IterativeRobot {
 	final int BIG_JOYSTICK_PORT = 1;
 	final int SMALL_JOYSTICK_PORT = 2;
 
+	/*
+	 * Here are the options for using recordable autonomous mode.
+	 */
+	boolean record, play;
+	long initialTime;
+	Reader reader;
+	Recorder recorder;
+	String recordingURL;
+
 	public void robotInit() {
 
 		// TODO change this so that default properties are loaded first and then
@@ -67,38 +77,41 @@ public class Robot extends IterativeRobot {
 		// encounters an error, it just keeps the default value and moves on to
 		// the next property
 
-  
-		//    setup auto chooser in SmartDashboard 
-		//	autochooser = new SendableChooser();
-		//	autochooser.addDefault("default programm",  object);
-		//	autochooser.addObject("object programm111", object);
-		//	autochooser.addObject("object programm222", object);
-		//	autochooser.addObject("object programm333", object);
-		//	autochooser.addObject("object programm444", object);
-		//	autochooser.addObject("object programm555", object);
-		//	autochooser.addObject("object programm666", object);
-		//	autochooser.addObject("object programm777", object);
-		//		
-		//	SmartDashboard.putData("Autonomous Chooser", autochooser);
-			
+		// setup auto chooser in SmartDashboard
+		// autochooser = new SendableChooser();
+		// autochooser.addDefault("default programm", object);
+		// autochooser.addObject("object programm111", object);
+		// autochooser.addObject("object programm222", object);
+		// autochooser.addObject("object programm333", object);
+		// autochooser.addObject("object programm444", object);
+		// autochooser.addObject("object programm555", object);
+		// autochooser.addObject("object programm666", object);
+		// autochooser.addObject("object programm777", object);
+		//
+		// SmartDashboard.putData("Autonomous Chooser", autochooser);
+
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 		} catch (Exception e) {
-			//TODO is getInstance() necessary?
-			//DriverStation.getInstance();
-			DriverStation.reportError("It looks like there was an error finding the properties file... probably. \n", true);
+			// TODO is getInstance() necessary?
+			// DriverStation.getInstance();
+			DriverStation.reportError("It looks like there was an error finding the properties file... probably. \n",
+					true);
 		} finally {
-			//This must always come before loadProperties
+			// This must always come before loadProperties
 			setDefaultProperties();
-			
-			//LoadProperties should no longer throw errors.
-			//It also includes automatic fallback to default properties for each property individually if a file property is not found, as long as they have been set already.
+
+			// LoadProperties should no longer throw errors.
+			// It also includes automatic fallback to default properties for
+			// each property individually if a file property is not found, as
+			// long as they have been set already.
 			loadProperties();
-			
+
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
-			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
+			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
+					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(2, 9, 7, 5, .25);
 			conveyer = new SingularityConveyer(8, 6);
 
@@ -106,7 +119,7 @@ public class Robot extends IterativeRobot {
 
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
 
-			//Camera setup code
+			// Camera setup code
 			try {
 
 				CameraServer server = CameraServer.getInstance();
@@ -117,7 +130,6 @@ public class Robot extends IterativeRobot {
 				// web interface
 
 				frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-				
 
 				session = NIVision.IMAQdxOpenCamera("cam0",
 						NIVision.IMAQdxCameraControlMode.CameraControlModeController);
@@ -125,40 +137,74 @@ public class Robot extends IterativeRobot {
 				NIVision.IMAQdxConfigureGrab(session);
 				NIVision.IMAQdxStartAcquisition(session);
 
-
 			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			// Initialization code for recordable autonomous
+			record = false;
+			play = false;
+			recorder = null;
+			reader = null;
+			recordingURL = "/home/lvuser/recording.json";
+		}
+	}
+
+	public void disabledPeriodic() {
+		// Keeps the camera going even if the robot is not enabled
+		updateCamera(session, frame);
+
+		// Closes all readers and recorder (allows files to close and/or save
+		if (recorder != null) {
+			recorder.close();
+			recorder = null;
+		}
+		if (reader != null) {
+			reader.close();
+			reader = null;
+		}
+	}
+
+	public void autonomousInit() {
+		// Use SmartDashboard to setup autonomous chooser
+		autonomousCommand = (Command) autochooser.getSelected();
+		autonomousCommand.start();
+
+		// Recordable autonomous
+		if (play) {
+			try {
+				reader = new Reader(recordingURL);
+				initialTime = System.currentTimeMillis();
+			} catch (Exception e) {
+				reader = null;
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void disabledPeriodic() {
-		updateCamera(session, frame);
-	}
-    public void autonomousInit(){
-    	
-    	// Use SmartDashboard to setup autonomous chooser
-    	
-    	autonomousCommand = (Command) autochooser.getSelected();
-		autonomousCommand.start();
-		
-    	
-    	
-    	
-    }
 	public void autonomousPeriodic() {
-		
-		//Autonomous part
-		
-		
-		Scheduler.getInstance(); // Schedule all the autonomous for SmartDashboard
-		
+
+		// Autonomous part
+
+		Scheduler.getInstance(); // Schedule all the autonomous for
+									// SmartDashboard
+
+		// Recordable autonomous
+		if (reader != null) {
+			JSONObject current = reader.getDataAtTime(System.currentTimeMillis() - initialTime);
+			// TODO here is where we actually implement the code using current
+		}
+
+		// Keeps the camera going so the driver can always see what the robot
+		// can
 		updateCamera(session, frame);
+
 	}
 
 	public void teleopPeriodic() {
 
-		//TODO try removing/ throttling this line to speed up robot response to controls
+		// TODO try removing/ throttling this line to speed up robot response to
+		// controls
 		updateCamera(session, frame);
 
 		currentScheme.drive(drive, true);
@@ -168,7 +214,23 @@ public class Robot extends IterativeRobot {
 		drive.setReducedVelocity(0.5);
 	}
 
+	public void testInit() {
+		if (record) {
+			// This initializes the recorder. The former parameter is the keys,
+			// and the latter is the defaults to use.
+			recorder = new Recorder(new String[] {"v", "omega", "arm", "intake"}, new Object[] {0.0, 0.0, 0.0, 0.0});
+		}
+	}
+
 	public void testPeriodic() {
+		if (recorder != null) {
+			// TODO make this stuff workable. What do we actually want to record?
+			// Object input = new Object[] {data1, data2, data3, data4};
+			// Do stuff to drive with the inputs.
+			// recorder.appendData(input);
+		}
+		
+		// Yeah, you go camera!
 		updateCamera(session, frame);
 
 	}
@@ -176,38 +238,40 @@ public class Robot extends IterativeRobot {
 	private void loadProperties() {
 		SmartDashboard.putString("DB/String 0", "No");
 
-		
-		try{
-		// Ports
-		frontLeftMotor = properties.getInt("frontLeftMotor");
-		rearLeftMotor = properties.getInt("rearLeftMotor");
-		frontRightMotor = properties.getInt("frontRightMotor");
-		rearRightMotor = properties.getInt("rearRightMotor");
+		try {
+			// Ports
+			frontLeftMotor = properties.getInt("frontLeftMotor");
+			rearLeftMotor = properties.getInt("rearLeftMotor");
+			frontRightMotor = properties.getInt("frontRightMotor");
+			rearRightMotor = properties.getInt("rearRightMotor");
 
-		// CANTalon or Talon drive?
-		driveControllerType = properties.getInt("driveControllerType");
+			// CANTalon or Talon drive?
+			driveControllerType = properties.getInt("driveControllerType");
 
+			armLeftWorm = properties.getInt("armLeftWorm");
+			armLeftPlanetary = properties.getInt("armLeftPlanetary");
+			armRightWorm = properties.getInt("armRightWorm");
+			armRightPlanetary = properties.getInt("armRightPlanetary");
 
-		armLeftWorm = properties.getInt("armLeftWorm");
-		armLeftPlanetary = properties.getInt("armLeftPlanetary");
-		armRightWorm = properties.getInt("armRightWorm");
-		armRightPlanetary = properties.getInt("armRightPlanetary");
+			slowSpeedConstant = properties.getDouble("slowSpeedConstant");
+			normalSpeedConstant = properties.getDouble("normalSpeedConstant");
+			fastSpeedConstant = properties.getDouble("fastSpeedConstant");
 
-		slowSpeedConstant = properties.getDouble("slowSpeedConstant");
-		normalSpeedConstant = properties.getDouble("normalSpeedConstant");
-		fastSpeedConstant = properties.getDouble("fastSpeedConstant");
-				
-		} catch(SingularityPropertyNotFoundException e) {
-			DriverStation.reportError("The property \"" + e.getPropertyName() + " was not found --> code crashed \n _POSSIBLE CAUSES:\n - Property missing in file and defaults"
-					+ "\n - Typo in property name in code or file\n - using a different properties file than the one that actually contains the property ou are looking for", false);
+		} catch (SingularityPropertyNotFoundException e) {
+			DriverStation.reportError(
+					"The property \"" + e.getPropertyName()
+							+ " was not found --> code crashed \n _POSSIBLE CAUSES:\n - Property missing in file and defaults"
+							+ "\n - Typo in property name in code or file\n - using a different properties file than the one that actually contains the property ou are looking for",
+					false);
 			e.printStackTrace();
 		}
-		
-		SmartDashboard.putString("DB/String 9", "slow: " + slowSpeedConstant + " | normal: " + normalSpeedConstant + " | fast: " + fastSpeedConstant);
+
+		SmartDashboard.putString("DB/String 9",
+				"slow: " + slowSpeedConstant + " | normal: " + normalSpeedConstant + " | fast: " + fastSpeedConstant);
 
 	}
 
-	//TODO Soon to be deprecated
+	// TODO Soon to be deprecated
 	private void loadDefaultProperties() {
 		SmartDashboard.putString("DB/String 0", "Yes  -- Defaults were loaded");
 
@@ -230,38 +294,38 @@ public class Robot extends IterativeRobot {
 		// arm objects
 		leftConveyerMotor = 8;
 		rightConveyerMotor = 6;
-		
+
 		slowSpeedConstant = 0.4;
 		normalSpeedConstant = 0.8;
 		fastSpeedConstant = 1.0;
-		
-		//TODO add armSpeedConstant and conveyerSpeedConstant
-		
+
+		// TODO add armSpeedConstant and conveyerSpeedConstant
+
 	}
-	
+
 	private void setDefaultProperties() {
-		
-		//Drive ports
+
+		// Drive ports
 		properties.addDefualtProp("frontLeftMotor", 10);
 		properties.addDefualtProp("rearLeftMotor", 4);
 		properties.addDefualtProp("frontRightMotor", 1);
 		properties.addDefualtProp("rearRightMotor", 3);
-		
-		//Arm ports
+
+		// Arm ports
 		properties.addDefualtProp("armLeftWorm", 2);
 		properties.addDefualtProp("armLeftPlanetary", 9);
 		properties.addDefualtProp("armRightWorm", 7);
 		properties.addDefualtProp("armRightPlanetary", 5);
-		
-		//Conveyer Ports
+
+		// Conveyer Ports
 		properties.addDefualtProp("leftConveyerMotor", 8);
 		properties.addDefualtProp("rightConveyerMotor", 6);
-		
-		//Speed Constants
+
+		// Speed Constants
 		properties.addDefualtProp("slowSpeedConstant", 0.4);
 		properties.addDefualtProp("normalSpeedConstant", 0.8);
 		properties.addDefualtProp("fastSpeedConstant", 1.0);
-				
+
 	}
 
 	private void updateCamera(int session, Image frame) {
@@ -269,7 +333,7 @@ public class Robot extends IterativeRobot {
 			NIVision.IMAQdxGrab(session, frame, 1);
 			CameraServer.getInstance().setImage(frame);
 		} catch (Exception e) {
-			
+
 		}
 	}
 }
