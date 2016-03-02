@@ -114,11 +114,20 @@ public class Recorder {
 		return openFile(fileURL);
 	}
 
+	/**
+	 * Adds a global attribute to the recording
+	 * @param key Key to use
+	 * @param data What to associate with the key
+	 */
 	@SuppressWarnings("unchecked")
 	public void addAttribute(String key, String data) {
 		completeObject.put(key, data);
 	}
 
+	/**
+	 * Adds the essentials to the json object
+	 * @return The finalized json object
+	 */
 	@SuppressWarnings("unchecked")
 	private JSONObject makeFinalJSON() {
 		JSONObject recording = new JSONObject();
