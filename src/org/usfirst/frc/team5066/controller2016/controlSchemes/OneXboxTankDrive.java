@@ -39,7 +39,7 @@ public class OneXboxTankDrive implements ControlScheme {
 	
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-		conveyer.setSpeed(xbox.getTriggerRight(), xbox.getTriggerLeft(), xbox.getR3());
+		conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
 	}
 
 	@Override

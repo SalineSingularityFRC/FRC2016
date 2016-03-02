@@ -54,12 +54,10 @@ public class SingularityConveyer {
 		
 		// sets reverse drive for conveyer when necessary
 		if (SingularityDrive.isreverse) {
-			left.set(spd);
-			right.set(-spd);
-		} else if (!SingularityDrive.isreverse) {
-			left.set(-spd);
-			right.set(spd);
+			spd = -spd;
 		}
+		left.set(-spd);
+		right.set(spd);
 		
 		SmartDashboard.putNumber("left encoder speed", left.getSpeed());
 		SmartDashboard.putNumber("right Encoder speed", right.getSpeed());
