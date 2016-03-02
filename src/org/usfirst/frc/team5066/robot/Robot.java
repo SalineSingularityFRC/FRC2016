@@ -1,10 +1,10 @@
 package org.usfirst.frc.team5066.robot;
 
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -47,6 +47,8 @@ public class Robot extends IterativeRobot {
 	SingularityArm arm;
 	SingularityConveyer conveyer;
 	int driveControllerType;
+	
+	CANTalon right, left;
 
 	/*
 	 * NOTE
@@ -99,10 +101,13 @@ public class Robot extends IterativeRobot {
 			// need to make this use the new controller classes later.
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor, this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
-			arm = new SingularityArm(2, 9, 7, 5, .25);
+			arm = new SingularityArm(2, 9, 7, 5, .5);
 			conveyer = new SingularityConveyer(8, 6);
 
 			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
+			
+			right = new CANTalon(12);
+			left = new CANTalon(11);
 
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
 
@@ -161,11 +166,14 @@ public class Robot extends IterativeRobot {
 		//TODO try removing/ throttling this line to speed up robot response to controls
 		updateCamera(session, frame);
 
-		currentScheme.drive(drive, true);
+		//currentScheme.drive(drive, true);
 		currentScheme.controlArm(arm);
-		currentScheme.controlConveyer(conveyer);
+		//currentScheme.controlConveyer(conveyer);
 
 		drive.setReducedVelocity(0.5);
+		
+		right.set(js.getRawAxis(3) - js.getRawAxis(2));
+		left.set(-js.getRawAxis(3) + js.getRawAxis(2));
 	}
 
 	public void testPeriodic() {

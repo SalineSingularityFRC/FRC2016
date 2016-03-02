@@ -43,6 +43,8 @@ public class SingularityArm {
 		rightPlanet = new CANTalon(rPlanet);
 		limitSwitchesOverride = false;
 		this.armSpeed = armSpeed;
+		
+		SmartDashboard.putBoolean("zero right worm", false);
 	}
 
 	/**
@@ -85,6 +87,11 @@ public class SingularityArm {
 		
 		SmartDashboard.putNumber("rightWorm Position" , rightWorm.getPosition() );
 		SmartDashboard.putNumber("rightWorm Speed" , rightWorm.getSpeed() );
+		
+		if(SmartDashboard.getBoolean("zero right worm")) {
+			rightWorm.setPosition(0);
+			SmartDashboard.putBoolean("zero right worm", true);
+		}
 	}
 
 	/**
