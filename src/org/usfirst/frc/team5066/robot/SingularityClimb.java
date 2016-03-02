@@ -14,8 +14,9 @@ public class SingularityClimb {
 
 	private CANTalon left, right;
 
-	double clicksPerRevolution = right.getPosition();
-	double encoderRevolution = (clicksPerRevolution/ 4000);
+	
+	
+	double climberSpeedConstant;
 	
 
 	
@@ -29,7 +30,7 @@ public class SingularityClimb {
 	 *            <b>int</b> The right side motor channel
 	 */
 
-	public SingularityClimb(int l, int r){
+	public SingularityClimb(int l, int r, double climberSpeedConstant){
 		left = new CANTalon(l);
 		right = new CANTalon(r);
 		
@@ -51,10 +52,10 @@ public class SingularityClimb {
 		
 				// Checks for illegal values (and deports them back to where they came, those bastards)
 		
-		if (encoderRevolution < 5.0) {
+		if (speed < -1) {
 			left.set(1);
 			right.set(-1);
-		} else if (encoderRevolution< -3.0) {
+		} else if (speed > 1) {
 			left.set(-1);
 			right.set(1);
 		} else {
