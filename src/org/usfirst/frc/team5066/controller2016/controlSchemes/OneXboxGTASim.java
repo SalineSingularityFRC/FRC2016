@@ -4,6 +4,7 @@ import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.XboxController;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.robot.SingularityArm;
+import org.usfirst.frc.team5066.robot.SingularityClimber;
 import org.usfirst.frc.team5066.robot.SingularityConveyer;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -28,6 +29,12 @@ public class OneXboxGTASim implements ControlScheme {
 	}
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
+	}
+
+	@Override
+	public void controlClimber(SingularityClimber climber) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
