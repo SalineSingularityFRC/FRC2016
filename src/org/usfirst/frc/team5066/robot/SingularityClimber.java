@@ -28,7 +28,7 @@ public class SingularityClimber {
 		left.setPosition(0.0);
 		right.setPosition(0.0);
 
-		left.changeControlMode(CANTalon.TalonControlMode.Position);
+		//left.changeControlMode(CANTalon.TalonControlMode.Position);
 	}
 
 	/**
@@ -43,18 +43,21 @@ public class SingularityClimber {
 		// Checks for illegal values (and deports them back to where they came,
 		// those bastards)
 		if (speed < -1) {
+			left.set(1);
 			right.set(-1);
 		} else if (speed > 1) {
+			left.set(-1);
 			right.set(1);
 		} else {
 			// sets both motor speeds to move in the same direction
+			left.set(-speed);
 			right.set(speed);
 		}
 
-		left.set(right.getPosition());
+		//left.set(right.getPosition());
 
-		SmartDashboard.putNumber(" left get Position", left.getPosition());
-		SmartDashboard.putNumber(" right get Position", left.getPosition());
+		SmartDashboard.putNumber("left get Position", left.getPosition());
+		SmartDashboard.putNumber("right get Position", right.getPosition());
 	}
 
 	/**
