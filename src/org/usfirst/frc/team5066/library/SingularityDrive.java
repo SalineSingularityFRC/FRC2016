@@ -207,6 +207,9 @@ public class SingularityDrive {
 	 * @param speedMode
 	 *            The enum value corrresponding to the current speed mode: slow,
 	 *            normal, or fast
+	 * @param reverse
+	 *            The value (180 or 0) to control reverse drive. 180 is reverse,
+	 *            0 is forward
 	 */
 	public void arcade(double translation, double rotation, boolean squaredInputs, SpeedMode speedMode, int reverse) {
 		double translationVelocity = translation, rotationVelocity = rotation;
