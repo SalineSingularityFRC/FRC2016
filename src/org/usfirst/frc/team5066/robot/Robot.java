@@ -218,21 +218,23 @@ public class Robot extends IterativeRobot {
 		if (record) {
 			// This initializes the recorder. The former parameter is the keys,
 			// and the latter is the defaults to use.
-			recorder = new Recorder(new String[] {"v", "omega", "arm", "intake"}, new Object[] {0.0, 0.0, 0.0, 0.0});
+			recorder = new Recorder(new String[] { "v", "omega", "arm", "intake" },
+					new Object[] { 0.0, 0.0, 0.0, 0.0 });
 		}
 	}
 
 	public void testPeriodic() {
 		if (recorder != null) {
-			// TODO make this stuff workable. What do we actually want to record?
+			// TODO make this stuff workable. What do we actually want to
+			// record?
+
 			// Object input = new Object[] {data1, data2, data3, data4};
 			// Do stuff to drive with the inputs.
 			// recorder.appendData(input);
 		}
-		
+
 		// Yeah, you go camera!
 		updateCamera(session, frame);
-
 	}
 
 	private void loadProperties() {
