@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot {
 	SingularityDrive drive;
 	SingularityProperties properties;
 	SingularityArm arm;
-	SingularityConveyer conveyer;
+	SingularityConveyer conveyor;
 	SingularityClimber climber;
 	int driveControllerType;
 	private boolean aButtonWasPressed = false;
@@ -116,7 +116,7 @@ public class Robot extends IterativeRobot {
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(2, 9, 7, 5, .5);
-			conveyer = new SingularityConveyer(8, 6);
+			conveyor = new SingularityConveyer(8, 6);
 			climber = new SingularityClimber(11, 12 , 0.69);
 			
 			xbox = new XboxController(1);
@@ -196,6 +196,8 @@ public class Robot extends IterativeRobot {
 		if (reader != null) {
 			JSONObject current = reader.getDataAtTime(System.currentTimeMillis() - initialTime);
 			drive.arcade((double) current.get("v"), (double) current.get("omega"), true, 0);
+			arm.setRawSpeed((double) current.get("arm"));
+			conveyor.setSpeed((double) current.get("intake"));
 		}
 
 		// Keeps the camera going so the driver can always see what the robot
@@ -212,7 +214,7 @@ public class Robot extends IterativeRobot {
 
 		currentScheme.drive(drive, true);
 		currentScheme.controlArm(arm);
-		currentScheme.controlConveyer(conveyer);
+		currentScheme.controlConveyer(conveyor);
 		currentScheme.controlClimber(climber);
 
 		toggleDriveMode();
@@ -244,6 +246,8 @@ public class Robot extends IterativeRobot {
 
 			// Do stuff to drive with the inputs.
 			drive.arcade((double) input[0], (double) input[1], true, 0); 
+			arm.setRawSpeed((double) input[2]);
+			conveyor.setSpeed((double) input[3]);
 			
 			recorder.appendData(input);
 		}
