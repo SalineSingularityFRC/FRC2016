@@ -4,6 +4,7 @@ import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.LogitechController;
 import org.usfirst.frc.team5066.controller2016.XboxController;
 import org.usfirst.frc.team5066.library.SingularityDrive;
+import org.usfirst.frc.team5066.library.SpeedMode;
 import org.usfirst.frc.team5066.robot.SingularityArm;
 import org.usfirst.frc.team5066.robot.SingularityClimber;
 import org.usfirst.frc.team5066.robot.SingularityConveyer;
@@ -12,6 +13,8 @@ public class RegularDrive implements ControlScheme{
 	
 	XboxController xbox;
 	LogitechController logitech;
+	
+	SpeedMode speedMode;
 	
 	public RegularDrive(int LogitechController, int xboxPort){
 		xbox = new XboxController(xboxPort);
@@ -27,7 +30,16 @@ public class RegularDrive implements ControlScheme{
 
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
-		sd.arcade(xbox.getLS_Y(),xbox.getRS_X(), squaredInputs, xbox.getPOV());
+		if(xbox.getLB())
+			speedMode = SpeedMode.SLOW;
+		else if(xbox.getRB())
+			speedMode = SpeedMode.FAST;
+		else
+			speedMode = speedMode.NORMAL;
+		
+		//drive
+		sd.arcade(xbox.getLS_Y(),xbox.getRS_X(), squaredInputs, speedMode, xbox.getPOV());
+
 	}
 
 	@Override
