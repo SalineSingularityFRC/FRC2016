@@ -40,29 +40,10 @@ public class SingularityConveyer {
 	 *            1.0]
 	 */
 	public void setSpeed(double speed) {
-
-//		// Checks for illegal values (and deports them back to where they came,
-//		// those bastards)
-//		if (speed < -1) {
-//			left.set(1);
-//			right.set(-1);
-//		} else if (speed > 1) {
-//			left.set(-1);
-//			right.set(1);
-//		} else {
-//			// sets both motor speeds to move in the same direction
-//			left.set(-speed);
-//			right.set(speed);
-//		}
-//
-//		// sets reverse drive for conveyer when necessary
-//		if (SingularityDrive.isreverse) {
-//			spd = -spd;
-//		}
-//		left.set(-spd);
-//		right.set(spd);
-
+		// Calculates the correct speed
 		speed /= Math.max(1, Math.abs(speed)) * (SingularityDrive.isreverse ? -1 : 1);
+		
+		// Sets the speed to the robot
 		right.set(speed);
 		left.set(-speed);
 		

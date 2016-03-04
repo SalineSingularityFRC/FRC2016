@@ -192,20 +192,10 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		
-		
-		
-		// Autonomous part
-
-		//Scheduler.getInstance(); // Schedule all the autonomous for
-									// SmartDashboard
-
 		// Recordable autonomous
 		if (reader != null) {
 			JSONObject current = reader.getDataAtTime(System.currentTimeMillis() - initialTime);
-			
 			drive.arcade((double) current.get("v"), (double) current.get("omega"), true, 0);
-			// TODO here is where we actually implement the code using current
 		}
 
 		// Keeps the camera going so the driver can always see what the robot
@@ -242,7 +232,7 @@ public class Robot extends IterativeRobot {
 			// This initializes the recorder. The former parameter is the keys,
 			// and the latter is the defaults to use.
 			recorder = new Recorder(new String[] { "v", "omega", "arm", "intake" },
-					new Object[] { 0.0, 0.0, 0.0, 0.0 });
+					new Object[] { 0.0, 0.0, 0.0, 0.0 }, recordingURL);
 		}
 	}
 
