@@ -191,10 +191,12 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-
+		
+		
+		
 		// Autonomous part
 
-		Scheduler.getInstance(); // Schedule all the autonomous for
+		//Scheduler.getInstance(); // Schedule all the autonomous for
 									// SmartDashboard
 
 		// Recordable autonomous
@@ -205,7 +207,7 @@ public class Robot extends IterativeRobot {
 
 		// Keeps the camera going so the driver can always see what the robot
 		// can
-		updateCamera(session, frame);
+		//updateCamera(session, frame);
 
 	}
 

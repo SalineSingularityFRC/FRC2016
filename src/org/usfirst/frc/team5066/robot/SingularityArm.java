@@ -27,8 +27,8 @@ public class SingularityArm {
 	 * 
 	 * @param lWorm
 	 *            <b>int</b> The left side worm motor channel
-     * @param lPlanet
-     * 			  <b>int</b> The left side planetary motor channel
+	 * @param lPlanet
+	 *            <b>int</b> The left side planetary motor channel
 	 * @param rWorm
 	 *            <b>int</b> The right side worm motor channel
 	 * @param rPlanet
@@ -55,23 +55,30 @@ public class SingularityArm {
 	 */
 	public void setSpeed(double speed) {
 
-		// Checks for illegal values (and deports them back to where they came,
-		// those bastards. It also can can take a-button and y-button as controls.
 		speed *= armSpeed;
-		
-		//clamp
-		if ((speed < -1)) {
-			speed = -1;
-		} else if (speed > 1) {
-			speed = 1;
-		}
+		setRawSpeed(speed);
+
+	}
+
+	/**
+	 * Use this method in situations like auton code because it sets the speed
+	 * of the arm without taking into account the arm multiplier
+	 * 
+	 * @param speed
+	 *            <b>double</b> The desired raw speed for the arm.
+	 */
+	public void setRawSpeed(double speed) {
+
+		// clamp
+		speed /= Math.max(1, Math.abs(speed));
 
 		// sets both motor speeds to move in the same direction
-		//Note - becuse of the wiring, we actually tell them all to have thee same direction
+		// Note - becuse of the wiring, we actually tell them all to have thee
+		// same direction
 		leftWorm.set(speed);
 		leftPlanet.set(speed);
 		rightWorm.set(speed);
-		rightPlanet.set(speed);		
+		rightPlanet.set(speed);
 
 		// code for limit switches
 		if (limitSwitchesOverride) {
@@ -79,12 +86,13 @@ public class SingularityArm {
 				speed = 0;
 		}
 
-		//put arm encoder data into smartDash
-		SmartDashboard.putNumber("leftWorm Position" , leftWorm.getPosition() );
-		SmartDashboard.putNumber("leftWorm Speed" , leftWorm.getSpeed() );
-		
-		SmartDashboard.putNumber("rightWorm Position" , rightWorm.getPosition() );
-		SmartDashboard.putNumber("rightWorm Speed" , rightWorm.getSpeed() );
+		// put arm encoder data into smartDash
+		SmartDashboard.putNumber("leftWorm Position", leftWorm.getPosition());
+		SmartDashboard.putNumber("leftWorm Speed", leftWorm.getSpeed());
+
+		SmartDashboard.putNumber("rightWorm Position", rightWorm.getPosition());
+		SmartDashboard.putNumber("rightWorm Speed", rightWorm.getSpeed());
+
 	}
 
 	/**
