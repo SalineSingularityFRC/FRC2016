@@ -43,7 +43,6 @@ public class Robot extends IterativeRobot {
 
 	Joystick js;
 	XboxController xbox;
-	long initialTime;
 	SingularityDrive drive;
 	SingularityProperties properties;
 	SingularityArm arm;
