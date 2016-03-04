@@ -117,7 +117,7 @@ public class Robot extends IterativeRobot {
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(2, 9, 7, 5, .5);
 			conveyor = new SingularityConveyer(8, 6);
-			climber = new SingularityClimber(11, 12 , 0.69);
+			//climber = new SingularityClimber(11, 12 , 0.69);
 			
 			xbox = new XboxController(1);
 
@@ -215,7 +215,7 @@ public class Robot extends IterativeRobot {
 		currentScheme.drive(drive, true);
 		currentScheme.controlArm(arm);
 		currentScheme.controlConveyer(conveyor);
-		currentScheme.controlClimber(climber);
+		//currentScheme.controlClimber(climber);
 
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode",

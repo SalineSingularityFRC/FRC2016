@@ -44,8 +44,8 @@ public class SingularityConveyer {
 		speed /= Math.max(1, Math.abs(speed)) * (SingularityDrive.isreverse ? 1 : -1);
 		
 		// Sets the speed to the robot
-		right.set(speed);
-		left.set(-speed);
+		right.set(-speed);
+		left.set(speed);
 		
 		SmartDashboard.putNumber("left encoder speed", left.getSpeed());
 		SmartDashboard.putNumber("right Encoder speed", right.getSpeed());

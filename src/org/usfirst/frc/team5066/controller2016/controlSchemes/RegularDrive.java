@@ -22,7 +22,11 @@ public class RegularDrive implements ControlScheme{
 	
 	@Override
 	public void controlConveyer(SingularityConveyer conveyer) {
-		conveyer.setSpeed(xbox.getTriggerRight() - xbox.getTriggerLeft());
+		if(xbox.getRB())
+			conveyer.setSpeed(0.5 * (xbox.getTriggerRight() - xbox.getTriggerLeft()));
+		else
+			conveyer.setSpeed(1.0 * (xbox.getTriggerRight() - xbox.getTriggerLeft()));
+			
 	}
 
 	@Override
