@@ -70,7 +70,7 @@ public class SingularityArm {
 	public void setRawSpeed(double speed) {
 
 		// clamp
-		speed /= Math.max(1, Math.abs(speed));
+		speed /= -Math.max(1, Math.abs(speed));
 
 		// sets both motor speeds to move in the same direction
 		// Note - becuse of the wiring, we actually tell them all to have thee
