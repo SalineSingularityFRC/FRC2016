@@ -9,6 +9,7 @@ import org.usfirst.frc.team5066.robot.SingularityClimber;
 import org.usfirst.frc.team5066.robot.SingularityConveyer;
 
 public class RegularDrive implements ControlScheme{
+	
 	XboxController xbox;
 	LogitechController logitech;
 	

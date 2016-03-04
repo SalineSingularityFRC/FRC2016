@@ -95,6 +95,7 @@ public class Robot extends IterativeRobot {
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 		} catch (Exception e) {
+			properties = new SingularityProperties();
 			// TODO is getInstance() necessary?
 			// DriverStation.getInstance();
 			DriverStation.reportError("It looks like there was an error finding the properties file... probably. \n",
@@ -296,7 +297,7 @@ public class Robot extends IterativeRobot {
 		} catch (SingularityPropertyNotFoundException e) {
 			DriverStation.reportError(
 					"The property \"" + e.getPropertyName()
-							+ " was not found --> code crashed \n _POSSIBLE CAUSES:\n - Property missing in file and defaults"
+							+ " was not found --> CODE CRASHED!!!!!! \n _POSSIBLE CAUSES:\n - Property missing in file and defaults"
 							+ "\n - Typo in property name in code or file\n - using a different properties file than the one that actually contains the property ou are looking for",
 					false);
 			e.printStackTrace();
