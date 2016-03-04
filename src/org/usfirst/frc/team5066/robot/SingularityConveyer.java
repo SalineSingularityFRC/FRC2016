@@ -41,27 +41,31 @@ public class SingularityConveyer {
 	 */
 	public void setSpeed(double speed) {
 
-		// Checks for illegal values (and deports them back to where they came,
-		// those bastards)
-		if ((speed < -1)) {
-			left.set(1);
-			right.set(-1);
-		} else if (speed > 1) {
-			left.set(-1);
-			right.set(1);
-		} else {
-			// sets both motor speeds to move in the same direction
-			left.set(-speed);
-			right.set(speed);
-		}
+//		// Checks for illegal values (and deports them back to where they came,
+//		// those bastards)
+//		if (speed < -1) {
+//			left.set(1);
+//			right.set(-1);
+//		} else if (speed > 1) {
+//			left.set(-1);
+//			right.set(1);
+//		} else {
+//			// sets both motor speeds to move in the same direction
+//			left.set(-speed);
+//			right.set(speed);
+//		}
+//
+//		// sets reverse drive for conveyer when necessary
+//		if (SingularityDrive.isreverse) {
+//			spd = -spd;
+//		}
+//		left.set(-spd);
+//		right.set(spd);
 
-		// sets reverse drive for conveyer when necessary
-		if (SingularityDrive.isreverse) {
-			spd = -spd;
-		}
-		left.set(-spd);
-		right.set(spd);
-
+		speed /= Math.max(1, Math.abs(speed)) * (SingularityDrive.isreverse ? -1 : 1);
+		right.set(speed);
+		left.set(-speed);
+		
 		SmartDashboard.putNumber("left encoder speed", left.getSpeed());
 		SmartDashboard.putNumber("right Encoder speed", right.getSpeed());
 	}

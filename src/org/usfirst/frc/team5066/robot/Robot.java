@@ -202,12 +202,14 @@ public class Robot extends IterativeRobot {
 		// Recordable autonomous
 		if (reader != null) {
 			JSONObject current = reader.getDataAtTime(System.currentTimeMillis() - initialTime);
+			
+			drive.arcade((double) current.get("v"), (double) current.get("omega"), true, 0);
 			// TODO here is where we actually implement the code using current
 		}
 
 		// Keeps the camera going so the driver can always see what the robot
 		// can
-		//updateCamera(session, frame);
+		updateCamera(session, frame);
 
 	}
 
@@ -245,10 +247,12 @@ public class Robot extends IterativeRobot {
 		if (recorder != null) {
 			// TODO make this stuff workable. What do we actually want to
 			// record?
+			Object[] input = new Object[] {xbox.getLS_Y(), xbox.getRS_X(), js.getY(), xbox.getTriggerLeft() - xbox.getTriggerRight()};
 
-			// Object input = new Object[] {data1, data2, data3, data4};
 			// Do stuff to drive with the inputs.
-			// recorder.appendData(input);
+			drive.arcade((double) input[0], (double) input[1], true, 0); 
+			
+			recorder.appendData(input);
 		}
 
 		// Yeah, you go camera!
