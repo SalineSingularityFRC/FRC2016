@@ -294,6 +294,10 @@ public class Robot extends IterativeRobot {
 			normalSpeedConstant = properties.getDouble("normalSpeedConstant");
 			fastSpeedConstant = properties.getDouble("fastSpeedConstant");
 
+            play = properties.getBoolean("play");
+            record = properties.getBoolean("record");
+            recordingURL = properties.getString("recordingURL");
+
 		} catch (SingularityPropertyNotFoundException e) {
 			DriverStation.reportError(
 					"The property \"" + e.getPropertyName()
@@ -343,26 +347,29 @@ public class Robot extends IterativeRobot {
 	private void setDefaultProperties() {
 
 		// Drive ports
-		properties.addDefualtProp("frontLeftMotor", 10);
-		properties.addDefualtProp("rearLeftMotor", 4);
-		properties.addDefualtProp("frontRightMotor", 1);
-		properties.addDefualtProp("rearRightMotor", 3);
+		properties.addDefaultProp("frontLeftMotor", 10);
+		properties.addDefaultProp("rearLeftMotor", 4);
+		properties.addDefaultProp("frontRightMotor", 1);
+		properties.addDefaultProp("rearRightMotor", 3);
 
 		// Arm ports
-		properties.addDefualtProp("armLeftWorm", 2);
-		properties.addDefualtProp("armLeftPlanetary", 9);
-		properties.addDefualtProp("armRightWorm", 7);
-		properties.addDefualtProp("armRightPlanetary", 5);
+		properties.addDefaultProp("armLeftWorm", 2);
+		properties.addDefaultProp("armLeftPlanetary", 9);
+		properties.addDefaultProp("armRightWorm", 7);
+		properties.addDefaultProp("armRightPlanetary", 5);
 
 		// Conveyer Ports
-		properties.addDefualtProp("leftConveyerMotor", 8);
-		properties.addDefualtProp("rightConveyerMotor", 6);
+		properties.addDefaultProp("leftConveyerMotor", 8);
+		properties.addDefaultProp("rightConveyerMotor", 6);
 
 		// Speed Constants
-		properties.addDefualtProp("slowSpeedConstant", 0.4);
-		properties.addDefualtProp("normalSpeedConstant", 0.8);
-		properties.addDefualtProp("fastSpeedConstant", 1.0);
+		properties.addDefaultProp("slowSpeedConstant", 0.4);
+		properties.addDefaultProp("normalSpeedConstant", 0.8);
+		properties.addDefaultProp("fastSpeedConstant", 1.0);
 
+		properties.addDefaultProp("play", true);
+		properties.addDefaultProp("record", false);
+		properties.addDefaultProp("recordingURL", "/home/lvuser/recording.json");
 	}
 
 	private void updateCamera(int session, Image frame) {

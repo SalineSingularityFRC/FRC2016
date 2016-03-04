@@ -62,7 +62,7 @@ public class SingularityProperties {
 	 *            The value to which the default property will be set The value
 	 *            to which the default property will be set
 	 */
-	public void addDefualtProp(String propName, int value) {
+	public void addDefaultProp(String propName, int value) {
 		defaultProps.setProperty(propName, "" + value);
 	}
 
@@ -78,7 +78,7 @@ public class SingularityProperties {
 	 * @param value
 	 *            The value to which the default property will be set
 	 */
-	public void addDefualtProp(String propName, double value) {
+	public void addDefaultProp(String propName, double value) {
 		defaultProps.setProperty(propName, "" + value);
 	}
 
@@ -94,7 +94,7 @@ public class SingularityProperties {
 	 * @param value
 	 *            The value to which the default property will be set
 	 */
-	public void addDefualtProp(String propName, float value) {
+	public void addDefaultProp(String propName, float value) {
 		defaultProps.setProperty(propName, "" + value);
 	}
 
@@ -110,7 +110,7 @@ public class SingularityProperties {
 	 * @param value
 	 *            The value to which the default property will be set
 	 */
-	public void addDefualtProp(String propName, boolean value) {
+	public void addDefaultProp(String propName, boolean value) {
 		defaultProps.setProperty(propName, "" + value);
 	}
 
@@ -126,7 +126,7 @@ public class SingularityProperties {
 	 * @param value
 	 *            The value to which the default property will be set
 	 */
-	public void addDefualtProp(String propName, String value) {
+	public void addDefaultProp(String propName, String value) {
 		if (defaultProps.containsKey(propName)) {
 			DriverStation.reportError("Default property with name \"" + propName + "\n aready exists... Overwriting",
 					false);
