@@ -56,7 +56,7 @@ public class SingularityArm {
 	public void setSpeed(double speed) {
 
 		speed *= armSpeed;
-		setRawSpeed(speed);
+		setRawSpeed(-speed);
 
 	}
 
