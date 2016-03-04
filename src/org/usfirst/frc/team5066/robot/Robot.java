@@ -151,8 +151,8 @@ public class Robot extends IterativeRobot {
 			}
 
 			// Initialization code for recordable autonomous
-			record = false;
-			play = false;
+			record = true;
+			play = true;
 			recorder = null;
 			reader = null;
 			recordingURL = "/home/lvuser/recording.json";
@@ -228,6 +228,8 @@ public class Robot extends IterativeRobot {
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode",
 				currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
+		
+		
 		SmartDashboard.putBoolean("A", xbox.getAButton());
 		
 		
