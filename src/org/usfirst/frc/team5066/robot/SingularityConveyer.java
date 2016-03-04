@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5066.robot;
 
+import org.usfirst.frc.team5066.library.SingularityDrive;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SingularityConveyer {
 
 	CANTalon left, right;
+	double spd;
 
 	/**
 	 * Constructor for singularity conveyer.
@@ -51,26 +54,36 @@ public class SingularityConveyer {
 			left.set(-speed);
 			right.set(speed);
 		}
-		
+
+		// sets reverse drive for conveyer when necessary
+		if (SingularityDrive.isreverse) {
+			spd = -spd;
+		}
+		left.set(-spd);
+		right.set(spd);
+
 		SmartDashboard.putNumber("left encoder speed", left.getSpeed());
 		SmartDashboard.putNumber("right Encoder speed", right.getSpeed());
 	}
 
 	/**
-	 * 			
+	 * 
 	 * @return The current speed of the conveyer motors (right motor)
 	 */
 	public double getSpeed() {
 		return right.get();
 	}
-	 /**  @param leftspeed
-		 *            <b>double</b> The desired analog speed of the left motor. [-1.0,
-		 *            1.0]
-		 *             @param rightspeed
-		 *            <b>double</b> The desired analog speed of the right motor. [-1.0,
-		 *            1.0]
-		 **/
-	//same as the setSpeed method above, but with two different speeds for inputs
+
+	/**
+	 * @param leftspeed
+	 *            <b>double</b> The desired analog speed of the left motor.
+	 *            [-1.0, 1.0]
+	 * @param rightspeed
+	 *            <b>double</b> The desired analog speed of the right motor.
+	 *            [-1.0, 1.0]
+	 **/
+	// same as the setSpeed method above, but with two different speeds for
+	// inputs
 	public void setSpeed(double leftSpeed, double rightSpeed, boolean reverse) {
 		double leftS = leftSpeed, rightS = -rightSpeed;
 		if (reverse) {
@@ -85,7 +98,8 @@ public class SingularityConveyer {
 			left.set(1);
 		} else {
 			left.set(leftS);
-		} if (rightS < -1) {
+		}
+		if (rightS < -1) {
 			right.set(-1);
 		} else if (rightS > 1) {
 			right.set(1);

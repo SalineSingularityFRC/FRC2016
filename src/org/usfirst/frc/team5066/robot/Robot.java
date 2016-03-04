@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -14,9 +13,9 @@ import java.io.IOException;
 
 import org.json.simple.JSONObject;
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
-import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxArcadeDrive;
-import org.usfirst.frc.team5066.controller2016.controlSchemes.TwoJoystickTankXboxAssist;
-import org.usfirst.frc.team5066.controller2016.controlSchemes.OneXboxTankDrive;
+import org.usfirst.frc.team5066.controller2016.XboxController;
+import org.usfirst.frc.team5066.controller2016.controlSchemes.GTADrive;
+import org.usfirst.frc.team5066.controller2016.controlSchemes.RegularDrive;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.library.SingularityProperties;
 import org.usfirst.frc.team5066.library.SingularityPropertyNotFoundException;
@@ -43,11 +42,15 @@ public class Robot extends IterativeRobot {
 	double fastSpeedConstant;
 
 	Joystick js;
+	XboxController xbox;
+	long initialTime;
 	SingularityDrive drive;
 	SingularityProperties properties;
 	SingularityArm arm;
 	SingularityConveyer conveyer;
+	SingularityClimber climber;
 	int driveControllerType;
+	private boolean aButtonWasPressed = false;
 
 	/*
 	 * NOTE
@@ -112,10 +115,16 @@ public class Robot extends IterativeRobot {
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
-			arm = new SingularityArm(2, 9, 7, 5, .25);
+			arm = new SingularityArm(2, 9, 7, 5, .5);
 			conveyer = new SingularityConveyer(8, 6);
+			climber = new SingularityClimber(11, 12 , 0.69);
+			
+			xbox = new XboxController(1);
 
-			currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
+			// currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
+
+			currentScheme = new RegularDrive(0, 1);
+			aButtonWasPressed = false;
 
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
 
@@ -167,8 +176,8 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousInit() {
 		// Use SmartDashboard to setup autonomous chooser
-		autonomousCommand = (Command) autochooser.getSelected();
-		autonomousCommand.start();
+		//autonomousCommand = (Command) autochooser.getSelected();
+		//autonomousCommand.start();
 
 		// Recordable autonomous
 		if (play) {
@@ -210,7 +219,15 @@ public class Robot extends IterativeRobot {
 		currentScheme.drive(drive, true);
 		currentScheme.controlArm(arm);
 		currentScheme.controlConveyer(conveyer);
+		currentScheme.controlClimber(climber);
 
+		toggleDriveMode();
+		SmartDashboard.putString("Drive Mode",
+				currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
+		SmartDashboard.putBoolean("A", xbox.getAButton());
+		
+		
+		drive.reduceVelocity(xbox.getRB());
 		drive.setReducedVelocity(0.5);
 	}
 
@@ -235,6 +252,22 @@ public class Robot extends IterativeRobot {
 
 		// Yeah, you go camera!
 		updateCamera(session, frame);
+	}
+
+	private void toggleDriveMode() {
+		if (xbox.getAButton()) {
+			if (!aButtonWasPressed) {
+				if (currentScheme instanceof RegularDrive) {
+					currentScheme = new GTADrive(0, 1);
+				} else {
+					currentScheme = new RegularDrive(0, 1);
+				}
+			}
+			aButtonWasPressed = true;
+		} else {
+			aButtonWasPressed = false;
+		}
+
 	}
 
 	private void loadProperties() {
