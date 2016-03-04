@@ -229,8 +229,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putBoolean("A", xbox.getAButton());
 		
 		
-		drive.reduceVelocity(xbox.getRB());
-		drive.setReducedVelocity(0.5);
+		//drive.reduceVelocity(xbox.getRB());
+		//drive.setReducedVelocity(0.5);
 	}
 
 	public void testInit() {
