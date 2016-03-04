@@ -41,7 +41,7 @@ public class SingularityConveyer {
 	 */
 	public void setSpeed(double speed) {
 		// Calculates the correct speed
-		speed /= Math.max(1, Math.abs(speed)) * (SingularityDrive.isreverse ? -1 : 1);
+		speed /= Math.max(1, Math.abs(speed)) * (SingularityDrive.isreverse ? 1 : -1);
 		
 		// Sets the speed to the robot
 		right.set(speed);
