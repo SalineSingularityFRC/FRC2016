@@ -4,12 +4,7 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.io.IOException;
 
 import org.json.simple.JSONObject;
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
@@ -26,10 +21,6 @@ import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
 public class Robot extends IterativeRobot {
-
-	Command autonomousCommand;
-	SendableChooser autochooser;
-
 	ControlScheme currentScheme;
 	Image frame;
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
@@ -49,7 +40,7 @@ public class Robot extends IterativeRobot {
 	SingularityConveyer conveyor;
 	SingularityClimber climber;
 	int driveControllerType;
-	private boolean aButtonWasPressed = false;
+	private boolean aButtonWasPressed;
 
 	/*
 	 * NOTE
@@ -73,25 +64,6 @@ public class Robot extends IterativeRobot {
 	String recordingURL;
 
 	public void robotInit() {
-
-		// TODO change this so that default properties are loaded first and then
-		// the other properties are applied one by one. If one of them
-		// encounters an error, it just keeps the default value and moves on to
-		// the next property
-
-		// setup auto chooser in SmartDashboard
-		// autochooser = new SendableChooser();
-		// autochooser.addDefault("default programm", object);
-		// autochooser.addObject("object programm111", object);
-		// autochooser.addObject("object programm222", object);
-		// autochooser.addObject("object programm333", object);
-		// autochooser.addObject("object programm444", object);
-		// autochooser.addObject("object programm555", object);
-		// autochooser.addObject("object programm666", object);
-		// autochooser.addObject("object programm777", object);
-		//
-		// SmartDashboard.putData("Autonomous Chooser", autochooser);
-
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 		} catch (Exception e) {
@@ -149,13 +121,7 @@ public class Robot extends IterativeRobot {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			// Initialization code for recordable autonomous
-			record = true;
-			play = true;
-			recorder = null;
-			reader = null;
-			recordingURL = "/home/lvuser/recording.json";
+			SmartDashboard.putString("recordingURL", recordingURL);
 		}
 	}
 
@@ -175,10 +141,6 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
-		// Use SmartDashboard to setup autonomous chooser
-		//autonomousCommand = (Command) autochooser.getSelected();
-		//autonomousCommand.start();
-
 		// Recordable autonomous
 		if (play) {
 			try {
@@ -220,10 +182,6 @@ public class Robot extends IterativeRobot {
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode",
 				currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
-		
-		
-		SmartDashboard.putBoolean("A", xbox.getAButton());
-		
 		
 		drive.reduceVelocity(xbox.getRB());
 		drive.setReducedVelocity(0.5);
@@ -273,8 +231,6 @@ public class Robot extends IterativeRobot {
 	}
 
 	private void loadProperties() {
-		SmartDashboard.putString("DB/String 0", "No");
-
 		try {
 			// Ports
 			frontLeftMotor = properties.getInt("frontLeftMotor");
@@ -312,40 +268,7 @@ public class Robot extends IterativeRobot {
 
 	}
 
-	// TODO Soon to be deprecated
-	private void loadDefaultProperties() {
-		SmartDashboard.putString("DB/String 0", "Yes  -- Defaults were loaded");
-
-		SmartDashboard.putString("DB/String 9", "Defaults loaded");
-
-		driveControllerType = SingularityDrive.CANTALON_DRIVE;
-
-		// Ports
-		frontLeftMotor = 10;
-		rearLeftMotor = 4;
-		frontRightMotor = 1;
-		rearRightMotor = 3;
-
-		armLeftWorm = 2;
-		armLeftPlanetary = 9;
-		armRightWorm = 7;
-		armRightPlanetary = 5;
-
-		// TODO add these variables to the initialization of the conveyer and
-		// arm objects
-		leftConveyerMotor = 8;
-		rightConveyerMotor = 6;
-
-		slowSpeedConstant = 0.4;
-		normalSpeedConstant = 0.8;
-		fastSpeedConstant = 1.0;
-
-		// TODO add armSpeedConstant and conveyerSpeedConstant
-
-	}
-
 	private void setDefaultProperties() {
-
 		// Drive ports
 		properties.addDefaultProp("frontLeftMotor", 10);
 		properties.addDefaultProp("rearLeftMotor", 4);
@@ -377,7 +300,7 @@ public class Robot extends IterativeRobot {
 			NIVision.IMAQdxGrab(session, frame, 1);
 			CameraServer.getInstance().setImage(frame);
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 }
