@@ -24,10 +24,9 @@ public class SingularityArm {
 	TalonControlMode defaultControlMode = TalonControlMode.PercentVbus;
 
 	private double armSpeed;
-	private double armLimit;
 	private double armSpeedFAST;
-
-	double lowerLimit;
+	private double upperLimit;
+	private double lowerLimit;
 
 	/**
 	 * Constructor for singularity conveyer.
@@ -42,7 +41,7 @@ public class SingularityArm {
 	 *            <b>int</b> The right side planetary motor channel
 	 */
 
-	public SingularityArm(int lWorm, int lPlanet, int rWorm, int rPlanet, double armSpeed, double armSpeedFAST, double armLimit) {
+	public SingularityArm(int lWorm, int lPlanet, int rWorm, int rPlanet, double armSpeed, double armSpeedFAST, double upperLimit, double lowerLimit) {
 
 		leftWorm = new CANTalon(lWorm);
 		leftPlanet = new CANTalon(lPlanet);
@@ -52,7 +51,8 @@ public class SingularityArm {
 		this.armSpeed = armSpeed;
 		this.armSpeedFAST = armSpeedFAST;
 		
-		this.armLimit = armLimit;
+		this.upperLimit = upperLimit;
+		this.lowerLimit = lowerLimit;
 		
 		rightPlanet.enableBrakeMode(true);
 		leftPlanet.enableBrakeMode(true);
@@ -76,13 +76,15 @@ public class SingularityArm {
 		
 		SmartDashboard.putNumber("Arm Speed", speed);
 		
-		if(rightWorm.getPosition() < armLimit && limitSwitchesOverride == false && speed > 0.1) {
+		if(limitSwitchesOverride == false && ((rightPlanet.getPosition() < upperLimit  && speed > 0 ) || (rightPlanet.getPosition() > lowerLimit && speed < 0))) 
+		{
+			setRawSpeed(0);
 			
 			//defaultControlMode = rightWorm.getControlMode();
-			rightWorm.changeControlMode(TalonControlMode.Position);
-			leftWorm.set(armLimit);
-			rightPlanet.enableBrakeMode(false);
-			leftPlanet.enableBrakeMode(false);
+//			rightWorm.changeControlMode(TalonControlMode.Position);
+//			leftWorm.set(armLimit);
+//			rightPlanet.enableBrakeMode(false);
+//			leftPlanet.enableBrakeMode(false);
 			
 			/*
 			leftPlanet.set(0.0);
@@ -92,11 +94,11 @@ public class SingularityArm {
 			//rightWorm.changeControlMode(defaultControlMode);
 		} else {
 			//positive is going up
-			
-			rightWorm.changeControlMode(defaultControlMode);
-			
-			rightPlanet.enableBrakeMode(true);
-			leftPlanet.enableBrakeMode(true);
+//			
+//			rightWorm.changeControlMode(defaultControlMode);
+//			
+//			rightPlanet.enableBrakeMode(true);
+//			leftPlanet.enableBrakeMode(true);
 			speed = fast ? speed * armSpeedFAST : speed * armSpeed;
 			setRawSpeed(speed);
 			
@@ -104,8 +106,8 @@ public class SingularityArm {
 		}
 		
 
-		SmartDashboard.putNumber("rightWorm Position", rightWorm.getPosition());
-		SmartDashboard.putNumber("rightWorm Speed", rightWorm.getSpeed());
+		SmartDashboard.putNumber("rightWorm Position", rightPlanet.getPosition());
+		SmartDashboard.putNumber("rightWorm Speed", rightPlanet.getSpeed());
 	}
 	
 	/**
