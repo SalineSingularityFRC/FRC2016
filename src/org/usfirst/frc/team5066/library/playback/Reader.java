@@ -93,7 +93,7 @@ public class Reader {
 
 		// If we have moved past the previous element's time, find the next
 		// element
-		if ((long) currentObject.get("time") <= time) {
+		if ((Long) currentObject.get("time") <= time) {
 			// Repeat this until the time variable falls between the previous
 			// and current elements' times
 			do {
@@ -105,7 +105,7 @@ public class Reader {
 				} else {
 					currentObject = null;
 				}
-			} while (currentObject != null && (long) currentObject.get("time") <= time);
+			} while (currentObject != null && (Long) currentObject.get("time") <= time);
 
 			// Return the object which the time has passed
 			return previousObject;
@@ -115,8 +115,8 @@ public class Reader {
 		}
 	}
 	
-	public boolean isDone() {
-		return iterator.hasNext();
+	public boolean isDone(long time) {
+		return currentObject == null;
 	}
 	
 	public void close() {

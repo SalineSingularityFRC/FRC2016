@@ -163,22 +163,21 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		// Recordable autonomous
 		if (reader != null) {
-			if (reader.isDone() && currentRecordingIndex != playbackURLs.length - 1) {
+			if (reader.isDone(System.currentTimeMillis() - initialTime) && currentRecordingIndex != playbackURLs.length - 1) {
 				reader.close();
 				currentRecordingIndex++;
 				reader = initializeReader(playbackURLs[currentRecordingIndex]);
 			}
 
 			JSONObject current = reader.getDataAtTime(System.currentTimeMillis() - initialTime);
-			drive.arcade((double) current.get("v"), (double) current.get("omega"), true, 0);
-			arm.setRawSpeed((double) current.get("arm"));
-			conveyor.setSpeed((double) current.get("intake"));
+			drive.arcade((Double) current.get("v"), (Double) current.get("omega"), true, 0);
+			arm.setRawSpeed((Double) current.get("arm"));
+			conveyor.setSpeed((Double) current.get("intake"));
 		}
 
 		// Keeps the camera going so the driver can always see what the robot
 		// can
 		updateCamera(session, frame);
-
 	}
 
 	public void teleopPeriodic() {
@@ -211,9 +210,9 @@ public class Robot extends IterativeRobot {
 					xbox.getTriggerLeft() - xbox.getTriggerRight() };
 
 			// Do stuff to drive with the inputs.
-			drive.arcade((double) input[0], (double) input[1], true, 0);
-			arm.setRawSpeed((double) input[2]);
-			conveyor.setSpeed((double) input[3]);
+			drive.arcade((Double) input[0], (Double) input[1], true, 0);
+			arm.setRawSpeed((Double) input[2]);
+			conveyor.setSpeed((Double) input[3]);
 
 			recorder.appendData(input);
 		}
@@ -264,6 +263,7 @@ public class Robot extends IterativeRobot {
 			record = properties.getBoolean("record");
 			recordingURL = properties.getString("recordingURL");
 			playbackURLs = properties.getString("playbackURLs").split(",");
+			DriverStation.reportWarning(playbackURLs[0], false);
 
 		} catch (SingularityPropertyNotFoundException e) {
 			DriverStation.reportError(
