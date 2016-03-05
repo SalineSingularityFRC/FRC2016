@@ -22,6 +22,10 @@ public class SingularityArm {
 
 	private double armSpeed;
 
+	private double armSpeedFAST;
+
+	double lowerLimit;
+
 	/**
 	 * Constructor for singularity conveyer.
 	 * 
@@ -35,7 +39,7 @@ public class SingularityArm {
 	 *            <b>int</b> The right side planetary motor channel
 	 */
 
-	public SingularityArm(int lWorm, int lPlanet, int rWorm, int rPlanet, double armSpeed) {
+	public SingularityArm(int lWorm, int lPlanet, int rWorm, int rPlanet, double armSpeed, double armSpeedFAST) {
 
 		leftWorm = new CANTalon(lWorm);
 		leftPlanet = new CANTalon(lPlanet);
@@ -43,6 +47,46 @@ public class SingularityArm {
 		rightPlanet = new CANTalon(rPlanet);
 		limitSwitchesOverride = false;
 		this.armSpeed = armSpeed;
+		this.armSpeedFAST = armSpeedFAST;
+	}
+	
+	/**
+	 * Sets the speed of both motors in the same direction. Positive is forward,
+	 * negative is backwards.
+	 * 
+	 * @param speed
+	 *            <b>double</b> The desired analog speed of the motors. [-1.0,
+	 *            1.0]
+	 * @param fast
+	 *            Controls whether the arm is in high-power mode or not. Useful
+	 *            for raising the portcullis
+	 */
+	public void setSpeed(double speed, boolean fast, boolean limitSwitchesOverride) {
+		/*if(rightWorm.getPosition() < 0) {
+			rightWorm.setPosition(0);
+		} else {
+		*/
+			speed = fast ? speed * armSpeedFAST : speed * armSpeed;
+			setRawSpeed(speed);
+		//}
+	}
+	
+	/**
+	 * Sets the speed of both motors in the same direction. Positive is forward,
+	 * negative is backwards.
+	 * 
+	 * @param speed
+	 *            <b>double</b> The desired analog speed of the motors. [-1.0,
+	 *            1.0]
+	 * @param fast
+	 *            Controls whether the arm is in high-power mode or not. Useful
+	 *            for raising the portcullis
+	 */
+	public void setSpeed(double speed, boolean fast) {
+
+		speed = fast ? speed * armSpeedFAST : speed * armSpeed;
+		setRawSpeed(speed);
+
 	}
 
 	/**
