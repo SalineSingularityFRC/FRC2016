@@ -62,7 +62,9 @@ public class Robot extends IterativeRobot {
 	long initialTime;
 	Reader reader;
 	Recorder recorder;
+	int currentRecordingIndex;
 	String recordingURL;
+	String[] playbackURLs;
 
 	public void robotInit() {
 		try {
@@ -103,11 +105,6 @@ public class Robot extends IterativeRobot {
 
 			// Camera setup code
 			try {
-
-				CameraServer server = CameraServer.getInstance();
-				server.setQuality(50);
-				server.startAutomaticCapture("cam0");
-
 				// the camera name (ex. cam0) can be found through the roborio
 				// web interface
 
@@ -122,10 +119,10 @@ public class Robot extends IterativeRobot {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			SmartDashboard.putString("recordingURL", recordingURL);
+			SmartDashboard.putString("recordingURL", playbackURLs[currentRecordingIndex]);
 		}
 	}
-	
+
 	public void disabledInit() {
 		// Closes all readers and recorder (allows files to close and/or save
 		if (recorder != null) {
@@ -144,21 +141,34 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
+		currentRecordingIndex = 0;
 		// Recordable autonomous
 		if (play) {
-			try {
-				reader = new Reader(recordingURL);
-				initialTime = System.currentTimeMillis();
-			} catch (Exception e) {
-				reader = null;
-				e.printStackTrace();
-			}
+			reader = initializeReader(playbackURLs[currentRecordingIndex]);
 		}
+	}
+
+	public Reader initializeReader(String playbackURL) {
+		Reader reader;
+		try {
+			reader = new Reader(playbackURL);
+			initialTime = System.currentTimeMillis();
+		} catch (Exception e) {
+			reader = null;
+			e.printStackTrace();
+		}
+		return reader;
 	}
 
 	public void autonomousPeriodic() {
 		// Recordable autonomous
 		if (reader != null) {
+			if (reader.isDone() && currentRecordingIndex != playbackURLs.length - 1) {
+				reader.close();
+				currentRecordingIndex++;
+				reader = initializeReader(playbackURLs[currentRecordingIndex]);
+			}
+
 			JSONObject current = reader.getDataAtTime(System.currentTimeMillis() - initialTime);
 			drive.arcade((double) current.get("v"), (double) current.get("omega"), true, 0);
 			arm.setRawSpeed((double) current.get("arm"));
@@ -182,7 +192,7 @@ public class Robot extends IterativeRobot {
 
 		drive.reduceVelocity(xbox.getRB());
 		drive.setReducedVelocity(0.5);
-		
+
 		updateCamera(session, frame);
 	}
 
@@ -253,6 +263,7 @@ public class Robot extends IterativeRobot {
 			play = properties.getBoolean("play");
 			record = properties.getBoolean("record");
 			recordingURL = properties.getString("recordingURL");
+			playbackURLs = properties.getString("playbackURLs").split(",");
 
 		} catch (SingularityPropertyNotFoundException e) {
 			DriverStation.reportError(
@@ -293,6 +304,7 @@ public class Robot extends IterativeRobot {
 		properties.addDefaultProp("play", true);
 		properties.addDefaultProp("record", false);
 		properties.addDefaultProp("recordingURL", "/home/lvuser/default.json");
+		properties.addDefaultProp("playbackURLs", "/home/lvuser/default.json");
 
 		properties.addDefaultProp("armSpeedConstant", 0.5);
 		properties.addDefaultProp("armSpeedConstantFAST", 0.75);

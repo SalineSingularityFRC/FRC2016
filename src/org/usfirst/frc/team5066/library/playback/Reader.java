@@ -115,6 +115,10 @@ public class Reader {
 		}
 	}
 	
+	public boolean isDone() {
+		return iterator.hasNext();
+	}
+	
 	public void close() {
 		try {
 			br.close();
