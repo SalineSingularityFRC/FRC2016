@@ -125,11 +125,8 @@ public class Robot extends IterativeRobot {
 			SmartDashboard.putString("recordingURL", recordingURL);
 		}
 	}
-
-	public void disabledPeriodic() {
-		// Keeps the camera going even if the robot is not enabled
-		updateCamera(session, frame);
-
+	
+	public void disabledInit() {
 		// Closes all readers and recorder (allows files to close and/or save
 		if (recorder != null) {
 			recorder.close();
@@ -139,6 +136,11 @@ public class Robot extends IterativeRobot {
 			reader.close();
 			reader = null;
 		}
+	}
+
+	public void disabledPeriodic() {
+		// Keeps the camera going even if the robot is not enabled
+		updateCamera(session, frame);
 	}
 
 	public void autonomousInit() {

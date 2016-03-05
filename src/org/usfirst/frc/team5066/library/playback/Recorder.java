@@ -173,7 +173,7 @@ public class Recorder {
 			return true;
 		} catch (IOException ioe) {
 			bw = null;
-			SmartDashboard.putString("asdfasdf", "adlfaksljdf");
+			ioe.printStackTrace();
 			return false;
 		}
 
@@ -256,11 +256,10 @@ public class Recorder {
 			// Actually writes the data to the file
 			if (readable) {
 				bw.write(quickFormat(makeFinalJSON().toString()));
-				bw.newLine();
 			} else {
 				bw.write(makeFinalJSON().toString());
-				bw.newLine();
 			}
+			bw.newLine();
 			bw.close();
 			bw = null;
 		} catch (IOException ioe) {
