@@ -104,8 +104,8 @@ public class SingularityArm {
 		}
 		
 
-		SmartDashboard.putNumber("rightWorm Position", rightWorm.getPosition());
-		SmartDashboard.putNumber("rightWorm Speed", rightWorm.getSpeed());
+		//SmartDashboard.putNumber("rightWorm Position", rightWorm.getPosition());
+		//SmartDashboard.putNumber("rightWorm Speed", rightWorm.getSpeed());
 	}
 	
 	/**
