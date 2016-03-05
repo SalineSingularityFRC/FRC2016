@@ -31,7 +31,7 @@ public class Robot extends IterativeRobot {
 	double slowSpeedConstant;
 	double normalSpeedConstant;
 	double fastSpeedConstant;
-	
+
 	double armSpeedConstant;
 	double armSpeedConstantFAST;
 
@@ -51,8 +51,6 @@ public class Robot extends IterativeRobot {
 	 * Xbox Controller is always port 0 Big Joystick is always port 1 Little
 	 * joystick is always port 2
 	 */
-
-	// enum for controller ports
 	final int XBOX_PORT = 0;
 	final int BIG_JOYSTICK_PORT = 1;
 	final int SMALL_JOYSTICK_PORT = 2;
@@ -92,8 +90,8 @@ public class Robot extends IterativeRobot {
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(2, 9, 7, 5, armSpeedConstant, armSpeedConstantFAST);
 			conveyor = new SingularityConveyer(8, 6);
-			climber = new SingularityClimber(11, 12 , 0.69);
-			
+			climber = new SingularityClimber(11, 12, 0.69);
+
 			xbox = new XboxController(1);
 
 			// currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
@@ -172,44 +170,39 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
-
-		// TODO try removing/ throttling this line to speed up robot response to
-		// controls
-		updateCamera(session, frame);
-
 		currentScheme.drive(drive, true);
 		currentScheme.controlArm(arm);
 		currentScheme.controlConveyer(conveyor);
 		currentScheme.controlClimber(climber);
 
 		toggleDriveMode();
-		SmartDashboard.putString("Drive Mode",
-				currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
-		
+		SmartDashboard.putString("Drive Mode", currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
+
 		drive.reduceVelocity(xbox.getRB());
 		drive.setReducedVelocity(0.5);
+		
+		updateCamera(session, frame);
 	}
 
 	public void testInit() {
 		if (record) {
 			// This initializes the recorder. The former parameter is the keys,
 			// and the latter is the defaults to use.
-			recorder = new Recorder(new String[] { "v", "omega", "arm", "intake" },
-					new Object[] { 0.0, 0.0, 0.0, 0.0 }, recordingURL);
+			recorder = new Recorder(new String[] { "v", "omega", "arm", "intake" }, new Object[] { 0.0, 0.0, 0.0, 0.0 },
+					recordingURL);
 		}
 	}
 
 	public void testPeriodic() {
 		if (recorder != null) {
-			// TODO make this stuff workable. What do we actually want to
-			// record?
-			Object[] input = new Object[] {xbox.getLS_Y(), xbox.getRS_X(), js.getY(), xbox.getTriggerLeft() - xbox.getTriggerRight()};
+			Object[] input = new Object[] { xbox.getLS_Y(), xbox.getRS_X(), js.getY(),
+					xbox.getTriggerLeft() - xbox.getTriggerRight() };
 
 			// Do stuff to drive with the inputs.
-			drive.arcade((double) input[0], (double) input[1], true, 0); 
+			drive.arcade((double) input[0], (double) input[1], true, 0);
 			arm.setRawSpeed((double) input[2]);
 			conveyor.setSpeed((double) input[3]);
-			
+
 			recorder.appendData(input);
 		}
 
@@ -230,7 +223,6 @@ public class Robot extends IterativeRobot {
 		} else {
 			aButtonWasPressed = false;
 		}
-
 	}
 
 	private void loadProperties() {
@@ -252,13 +244,13 @@ public class Robot extends IterativeRobot {
 			slowSpeedConstant = properties.getDouble("slowSpeedConstant");
 			normalSpeedConstant = properties.getDouble("normalSpeedConstant");
 			fastSpeedConstant = properties.getDouble("fastSpeedConstant");
-			
+
 			armSpeedConstant = properties.getDouble("armSpeedConstant");
 			armSpeedConstantFAST = properties.getDouble("armSpeedConstantFAST");
-			
-            play = properties.getBoolean("play");
-            record = properties.getBoolean("record");
-            recordingURL = properties.getString("recordingURL");
+
+			play = properties.getBoolean("play");
+			record = properties.getBoolean("record");
+			recordingURL = properties.getString("recordingURL");
 
 		} catch (SingularityPropertyNotFoundException e) {
 			DriverStation.reportError(
@@ -299,11 +291,11 @@ public class Robot extends IterativeRobot {
 		properties.addDefaultProp("play", true);
 		properties.addDefaultProp("record", false);
 		properties.addDefaultProp("recordingURL", "/home/lvuser/default.json");
-		
+
 		properties.addDefaultProp("armSpeedConstant", 0.5);
 		properties.addDefaultProp("armSpeedConstantFAST", 0.75);
 	}
-	
+
 	private void updateCamera(int session, Image frame) {
 		try {
 			NIVision.IMAQdxGrab(session, frame, 1);
