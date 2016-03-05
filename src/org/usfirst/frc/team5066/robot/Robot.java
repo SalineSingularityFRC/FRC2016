@@ -40,6 +40,9 @@ public class Robot extends IterativeRobot {
 	double slowSpeedConstant;
 	double normalSpeedConstant;
 	double fastSpeedConstant;
+	
+	double armSpeedConstant;
+	double armSpeedConstantFAST;
 
 	Joystick js;
 	XboxController xbox;
@@ -115,9 +118,9 @@ public class Robot extends IterativeRobot {
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
-			arm = new SingularityArm(2, 9, 7, 5, .5);
+			arm = new SingularityArm(2, 9, 7, 5, armSpeedConstant, armSpeedConstantFAST);
 			conveyor = new SingularityConveyer(8, 6);
-			//climber = new SingularityClimber(11, 12 , 0.69);
+			climber = new SingularityClimber(11, 12 , 0.69);
 			
 			xbox = new XboxController(1);
 
@@ -215,7 +218,7 @@ public class Robot extends IterativeRobot {
 		currentScheme.drive(drive, true);
 		currentScheme.controlArm(arm);
 		currentScheme.controlConveyer(conveyor);
-		//currentScheme.controlClimber(climber);
+		currentScheme.controlClimber(climber);
 
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode",
@@ -293,7 +296,10 @@ public class Robot extends IterativeRobot {
 			slowSpeedConstant = properties.getDouble("slowSpeedConstant");
 			normalSpeedConstant = properties.getDouble("normalSpeedConstant");
 			fastSpeedConstant = properties.getDouble("fastSpeedConstant");
-
+			
+			armSpeedConstant = properties.getDouble("armSpeedConstant");
+			armSpeedConstantFAST = properties.getDouble("armSpeedConstantFAST");
+			
             play = properties.getBoolean("play");
             record = properties.getBoolean("record");
             recordingURL = properties.getString("recordingURL");
@@ -369,9 +375,12 @@ public class Robot extends IterativeRobot {
 
 		properties.addDefaultProp("play", true);
 		properties.addDefaultProp("record", false);
-		properties.addDefaultProp("recordingURL", "/home/lvuser/recording.json");
+		properties.addDefaultProp("recordingURL", "/home/lvuser/default.json");
+		
+		properties.addDefaultProp("armSpeedConstant", 0.5);
+		properties.addDefaultProp("armSpeedConstantFAST", 0.75);
 	}
-
+	
 	private void updateCamera(int session, Image frame) {
 		try {
 			NIVision.IMAQdxGrab(session, frame, 1);
