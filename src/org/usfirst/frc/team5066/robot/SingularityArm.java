@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -26,6 +27,10 @@ public class SingularityArm {
 
 	double lowerLimit;
 
+	double position;
+	
+	TalonControlMode controlMode;
+	
 	/**
 	 * Constructor for singularity conveyer.
 	 * 
@@ -62,8 +67,8 @@ public class SingularityArm {
 	 *            for raising the portcullis
 	 */
 	public void setSpeed(double speed, boolean fast, boolean limitSwitchesOverride) {
-		/*if(rightWorm.getPosition() < 0) {
-			rightWorm.setPosition(0);
+		/*if(rightPlanet.getPosition() < 0) {
+			rightPlanet.setPosition(0);
 		} else {
 		*/
 			speed = fast ? speed * armSpeedFAST : speed * armSpeed;
@@ -116,26 +121,42 @@ public class SingularityArm {
 		// clamp
 		speed /= -Math.max(1, Math.abs(speed));
 
-		// sets both motor speeds to move in the same direction
-		// Note - becuse of the wiring, we actually tell them all to have thee
-		// same direction
-		leftWorm.set(speed);
-		leftPlanet.set(speed);
-		rightWorm.set(speed);
-		rightPlanet.set(speed);
+		
 
 		// code for limit switches
 		if (limitSwitchesOverride) {
 			if (speed > 0)
 				speed = 0;
 		}
+		
+		if(Math.abs(speed) > 0.07){
+			// sets both motor speeds to move in the same direction
+			// Note - becuse of the wiring, we actually tell them all to have thee
+			// same direction
+			leftWorm.set(speed);
+			leftPlanet.set(speed);
+			rightWorm.set(speed);
+			rightPlanet.set(speed);
+			
+			position = rightPlanet.getPosition();
+		} else {
+			controlMode = rightPlanet.getControlMode();
+			rightPlanet.changeControlMode(TalonControlMode.Position);
+			rightPlanet.set(position);
+			rightPlanet.changeControlMode(controlMode);			
+			
+			rightWorm.set(rightPlanet.get());
+			leftWorm.set(rightPlanet.get());
+			leftPlanet.set(rightPlanet.get());
+
+		}
 
 		// put arm encoder data into smartDash
-		SmartDashboard.putNumber("leftWorm Position", leftWorm.getPosition());
-		SmartDashboard.putNumber("leftWorm Speed", leftWorm.getSpeed());
+		/*SmartDashboard.putNumber("leftWorm Position", leftWorm.getPosition());
+		SmartDashboard.putNumber("leftWorm Speed", leftWorm.getSpeed());*/
 
-		SmartDashboard.putNumber("rightWorm Position", rightWorm.getPosition());
-		SmartDashboard.putNumber("rightWorm Speed", rightWorm.getSpeed());
+		SmartDashboard.putNumber("rightPlanet Position", rightPlanet.getPosition());
+		SmartDashboard.putNumber("rightPlanet Speed", rightPlanet.getSpeed());
 
 	}
 
@@ -144,6 +165,6 @@ public class SingularityArm {
 	 * @return The current speed of the conveyer motors (right motor)
 	 */
 	public double getSpeed() {
-		return rightWorm.get();
+		return rightPlanet.get();
 	}
 }
