@@ -2,6 +2,7 @@ package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -19,9 +20,11 @@ public class SingularityArm {
 	 * moving. The input and effect of the switches must coded elsewhere.
 	 */
 	private boolean limitSwitchesOverride;
+	
+	TalonControlMode defaultControlMode = TalonControlMode.PercentVbus;
 
 	private double armSpeed;
-
+	private double armLimit;
 	private double armSpeedFAST;
 
 	double lowerLimit;
@@ -39,7 +42,7 @@ public class SingularityArm {
 	 *            <b>int</b> The right side planetary motor channel
 	 */
 
-	public SingularityArm(int lWorm, int lPlanet, int rWorm, int rPlanet, double armSpeed, double armSpeedFAST) {
+	public SingularityArm(int lWorm, int lPlanet, int rWorm, int rPlanet, double armSpeed, double armSpeedFAST, double armLimit) {
 
 		leftWorm = new CANTalon(lWorm);
 		leftPlanet = new CANTalon(lPlanet);
@@ -48,6 +51,11 @@ public class SingularityArm {
 		limitSwitchesOverride = false;
 		this.armSpeed = armSpeed;
 		this.armSpeedFAST = armSpeedFAST;
+		
+		this.armLimit = armLimit;
+		
+		rightPlanet.enableBrakeMode(true);
+		leftPlanet.enableBrakeMode(true);
 	}
 	
 	/**
@@ -60,15 +68,44 @@ public class SingularityArm {
 	 * @param fast
 	 *            Controls whether the arm is in high-power mode or not. Useful
 	 *            for raising the portcullis
+	 *            
+	 *            Be especially careful! This does not work yet!
 	 */
 	public void setSpeed(double speed, boolean fast, boolean limitSwitchesOverride) {
-		/*if(rightWorm.getPosition() < 0) {
-			rightWorm.setPosition(0);
+		
+		
+		SmartDashboard.putNumber("Arm Speed", speed);
+		
+		if(rightWorm.getPosition() < armLimit && limitSwitchesOverride == false && speed > 0.1) {
+			
+			//defaultControlMode = rightWorm.getControlMode();
+			rightWorm.changeControlMode(TalonControlMode.Position);
+			leftWorm.set(armLimit);
+			rightPlanet.enableBrakeMode(false);
+			leftPlanet.enableBrakeMode(false);
+			
+			/*
+			leftPlanet.set(0.0);
+			rightPlanet.set(0.0);
+			*/
+			
+			//rightWorm.changeControlMode(defaultControlMode);
 		} else {
-		*/
+			//positive is going up
+			
+			rightWorm.changeControlMode(defaultControlMode);
+			
+			rightPlanet.enableBrakeMode(true);
+			leftPlanet.enableBrakeMode(true);
 			speed = fast ? speed * armSpeedFAST : speed * armSpeed;
 			setRawSpeed(speed);
-		//}
+			
+			
+		}
+		
+
+		//SmartDashboard.putNumber("rightWorm Position", rightWorm.getPosition());
+		//SmartDashboard.putNumber("rightWorm Speed", rightWorm.getSpeed());
 	}
 	
 	/**
@@ -129,14 +166,13 @@ public class SingularityArm {
 			if (speed > 0)
 				speed = 0;
 		}
+	}
 
 		// put arm encoder data into smartDash
-		SmartDashboard.putNumber("leftWorm Position", leftWorm.getPosition());
-		SmartDashboard.putNumber("leftWorm Speed", leftWorm.getSpeed());
 
+		/*
 		SmartDashboard.putNumber("rightWorm Position", rightWorm.getPosition());
 		SmartDashboard.putNumber("rightWorm Speed", rightWorm.getSpeed());
-
 	}
 
 	/**
@@ -145,5 +181,9 @@ public class SingularityArm {
 	 */
 	public double getSpeed() {
 		return rightWorm.get();
+	}
+	
+	public void zero() {
+		rightWorm.setPosition(0.0);
 	}
 }

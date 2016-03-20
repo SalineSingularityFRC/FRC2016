@@ -34,6 +34,8 @@ public class Robot extends IterativeRobot {
 
 	double armSpeedConstant;
 	double armSpeedConstantFAST;
+	
+	double armLimit;
 
 	Joystick js;
 	XboxController xbox;
@@ -90,7 +92,7 @@ public class Robot extends IterativeRobot {
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
-			arm = new SingularityArm(2, 9, 7, 5, armSpeedConstant, armSpeedConstantFAST);
+			arm = new SingularityArm(2, 9, 7, 5, armSpeedConstant, armSpeedConstantFAST, armLimit);
 			conveyor = new SingularityConveyer(8, 6);
 			climber = new SingularityClimber(11, 12, 0.69);
 
@@ -257,6 +259,8 @@ public class Robot extends IterativeRobot {
 
 			armSpeedConstant = properties.getDouble("armSpeedConstant");
 			armSpeedConstantFAST = properties.getDouble("armSpeedConstantFAST");
+			
+			armLimit = properties.getDouble("armLimit");
 
 			play = properties.getBoolean("play");
 			record = properties.getBoolean("record");
@@ -307,6 +311,8 @@ public class Robot extends IterativeRobot {
 
 		properties.addDefaultProp("armSpeedConstant", 0.5);
 		properties.addDefaultProp("armSpeedConstantFAST", 0.75);
+		
+		properties.addDefaultProp("armLimit", -4700.0);
 	}
 
 	private void updateCamera(int session, Image frame) {

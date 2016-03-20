@@ -37,6 +37,9 @@ public class RegularDrive implements ControlScheme{
 	@Override
 	public void controlArm(SingularityArm arm) {
 		arm.setSpeed(logitech.getStickY(), logitech.getTrigger());
+		if(logitech.getRawButton(7)) {
+			arm.zero();
+		}
 	}
 
 
