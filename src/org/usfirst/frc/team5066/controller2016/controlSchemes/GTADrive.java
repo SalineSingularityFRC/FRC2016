@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5066.controller2016.controlSchemes;
+ package org.usfirst.frc.team5066.controller2016.controlSchemes;
 
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.LogitechController;

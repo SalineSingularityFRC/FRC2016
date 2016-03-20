@@ -90,9 +90,9 @@ public class Robot extends IterativeRobot {
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
-			arm = new SingularityArm(2, 9, 7, 5, armSpeedConstant, armSpeedConstantFAST, armLimit);
+			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, armLimit);
 			conveyor = new SingularityConveyer(8, 6);
-			climber = new SingularityClimber(11, 12, 0.69);
+			climber = new SingularityClimber(11, 0.69); //Might be 11 or 12
 
 			xbox = new XboxController(1);
 

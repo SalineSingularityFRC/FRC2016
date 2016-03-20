@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class SingularityClimber {
-	private CANTalon left, right;
+	private CANTalon talon;
 	double climberSpeedConstant;
 
 	/**
@@ -21,12 +21,10 @@ public class SingularityClimber {
 	 * @param r
 	 *            <b>int</b> The right side motor channel
 	 */
-	public SingularityClimber(int l, int r, double climberSpeedConstant) {
-		left = new CANTalon(l);
-		right = new CANTalon(r);
+	public SingularityClimber(int t, double climberSpeedConstant) {
+		talon = new CANTalon(t);
 
-		left.setPosition(0.0);
-		right.setPosition(0.0);
+		talon.setPosition(0.0);
 
 		//left.changeControlMode(CANTalon.TalonControlMode.Position);
 	}
@@ -43,21 +41,16 @@ public class SingularityClimber {
 		// Checks for illegal values (and deports them back to where they came,
 		// those bastards)
 		if (speed < -1) {
-			left.set(1);
-			right.set(-1);
+			talon.set(-1);
 		} else if (speed > 1) {
-			left.set(-1);
-			right.set(1);
+			talon.set(1);
 		} else {
 			// sets both motor speeds to move in the same direction
-			left.set(-speed);
-			right.set(speed);
+			talon.set(-speed);
 		}
 
-		//left.set(right.getPosition());
 
-		SmartDashboard.putNumber("left get Position", left.getPosition());
-		SmartDashboard.putNumber("right get Position", right.getPosition());
+		SmartDashboard.putNumber("left get Position", talon.getPosition());
 	}
 
 	/**
@@ -65,10 +58,10 @@ public class SingularityClimber {
 	 * @return The current speed of the Climb motors (right motor)
 	 */
 	public double getSpeed() {
-		return right.get();
+		return talon.get();
 	}
 	
 	public double getPosition() {
-		return right.getPosition();
+		return talon.getPosition();
 	}
 }
