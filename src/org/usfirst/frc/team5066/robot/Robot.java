@@ -119,7 +119,6 @@ public class Robot extends IterativeRobot {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			SmartDashboard.putString("recordingURL", playbackURLs[currentRecordingIndex]);
 		}
 	}
 
@@ -148,7 +147,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	public Reader initializeReader(String playbackURL) {
+	private Reader initializeReader(String playbackURL) {
 		Reader reader;
 		try {
 			reader = new Reader(playbackURL);
@@ -163,10 +162,10 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		// Recordable autonomous
 		if (reader != null) {
-			if (reader.isDone(System.currentTimeMillis() - initialTime) && currentRecordingIndex != playbackURLs.length - 1) {
+			if (reader.isDone(System.currentTimeMillis() - initialTime)
+					&& currentRecordingIndex < playbackURLs.length - 1) {
 				reader.close();
-				currentRecordingIndex++;
-				reader = initializeReader(playbackURLs[currentRecordingIndex]);
+				reader = initializeReader(playbackURLs[++currentRecordingIndex]);
 			}
 
 			JSONObject current = reader.getDataAtTime(System.currentTimeMillis() - initialTime);

@@ -116,7 +116,7 @@ public class Reader {
 	}
 	
 	public boolean isDone(long time) {
-		return currentObject == null;
+		return currentObject == null || (Long) currentObject.get("time") > time || !iterator.hasNext();
 	}
 	
 	public void close() {
