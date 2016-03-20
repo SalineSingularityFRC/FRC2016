@@ -46,8 +46,9 @@ public class Robot extends IterativeRobot {
 	SingularityClimber climber;
 	int driveControllerType;
 	private boolean aButtonWasPressed;
+	
 	boolean armOnly;
-
+	boolean noCamera;
 	/*
 	 * NOTE
 	 * 
@@ -68,6 +69,8 @@ public class Robot extends IterativeRobot {
 	String recordingURL;
 
 	public void robotInit() {
+		noCamera = false;
+		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 		} catch (Exception e) {
@@ -119,6 +122,8 @@ public class Robot extends IterativeRobot {
 
 			} catch (Exception e) {
 				e.printStackTrace();
+				noCamera = true;
+				DriverStation.reportError("No Camera found on code startup", false);
 			}
 			SmartDashboard.putString("recordingURL", recordingURL);
 		}
@@ -138,7 +143,9 @@ public class Robot extends IterativeRobot {
 
 	public void disabledPeriodic() {
 		// Keeps the camera going even if the robot is not enabled
-		updateCamera(session, frame);
+		if(noCamera = false) {
+			updateCamera(session, frame);
+		}
 	}
 
 	public void autonomousInit() {
@@ -309,11 +316,13 @@ public class Robot extends IterativeRobot {
 	}
 
 	private void updateCamera(int session, Image frame) {
-		try {
-			NIVision.IMAQdxGrab(session, frame, 1);
-			CameraServer.getInstance().setImage(frame);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (noCamera = false) {
+			try {
+				NIVision.IMAQdxGrab(session, frame, 1);
+				CameraServer.getInstance().setImage(frame);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

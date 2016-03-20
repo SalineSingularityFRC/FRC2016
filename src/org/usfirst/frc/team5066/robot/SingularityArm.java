@@ -70,34 +70,35 @@ public class SingularityArm {
 	public void setSpeed(double speed, boolean fast, boolean limitSwitchesOverride) {
 		
 		
-		/*SmartDashboard.putNumber("Arm Speed", speed);
+		SmartDashboard.putNumber("Arm Speed", speed);
 		
-		if(rightWorm.getPosition() < armLimit && limitSwitchesOverride == false && speed > 0.1) {
+		if(talon.getPosition() < armLimit && limitSwitchesOverride == false && speed > 0.05 /*0.05 is the threshold value*/) {
 			
+			/*
 			//defaultControlMode = rightWorm.getControlMode();
 			rightWorm.changeControlMode(TalonControlMode.Position);
 			leftWorm.set(armLimit);
 			rightPlanet.enableBrakeMode(false);
 			leftPlanet.enableBrakeMode(false);
+			*/
 			
-			
-			//leftPlanet.set(0.0);
-			//rightPlanet.set(0.0);
+			talon.set(0.0);
 			
 			
 			//rightWorm.changeControlMode(defaultControlMode);
 		} else {
 			//positive is going up
-			
-			rightWorm.changeControlMode(defaultControlMode);
+			/*
+			talon.changeControlMode(defaultControlMode);
 			
 			rightPlanet.enableBrakeMode(true);
 			leftPlanet.enableBrakeMode(true);
+			*/
 			speed = fast ? speed * armSpeedFAST : speed * armSpeed;
 			setRawSpeed(speed);
 			
 			
-		}*/
+		}
 		
 		
 
@@ -117,7 +118,9 @@ public class SingularityArm {
 	 *            for raising the portcullis
 	 */
 	public void setSpeed(double speed, boolean fast) {
-
+		
+		//TODO this should be calling the setSpeed method that includes the limit
+		
 		speed = fast ? speed * armSpeedFAST : speed * armSpeed;
 		setRawSpeed(speed);
 
