@@ -27,6 +27,9 @@ public class SingularityDrive {
 
 	private final static double DEFAULT_MINIMUM_THRESHOLD = 0.09;
 
+	public static boolean isreverse = false;
+	private static boolean reverseB = false;
+
 	// Talon type enum
 	public static final int CANTALON_DRIVE = 0;
 	public static final int TALON_SR_DRIVE = 1;
@@ -131,15 +134,11 @@ public class SingularityDrive {
 	 * rearRightMotor) { this(frontLeftMotor, rearLeftMotor, frontRightMotor,
 	 * rearRightMotor, DEFAULT_VELOCITY_MULTIPLIER); }
 	 */
-	
-	/*Possible methods to use:
-	 * configEncoderCodesPerRev()
-	 * getP / setP
-	 * getI / setI
-	 * getD / setD
-	 * pidGet
+
+	/*
+	 * Possible methods to use: configEncoderCodesPerRev() getP / setP getI /
+	 * setI getD / setD pidGet
 	 */
-	
 
 	private double clamp(double velocityMultiplier) {
 		if (velocityMultiplier > 1.0) {
@@ -174,6 +173,27 @@ public class SingularityDrive {
 		return velocity;
 	}
 
+	// reverse drive method for booleans. You have to hold the button to
+	// reverse. This method is used in control schemes to plug-in to SingDrive.
+	public static int booleanHoldReverse(boolean reverse) {
+		if (reverse) {
+			return 180;
+		} else {
+			return 0;
+		}
+	} // In the next method, you can toggle using 2 boolean buttons.
+
+	public static int booleanToggleReverse(boolean forward, boolean reverse) {
+		if (reverse)
+			reverseB = true;
+		else if (forward)
+			reverseB = false;
+		if (reverseB)
+			return 180;
+		else
+			return 0;
+	}
+
 	/**
 	 * So called "arcade drive" method for driving a robot around. Drives much
 	 * like one would expect a vehicle to move with a joy stick.
@@ -188,18 +208,28 @@ public class SingularityDrive {
 	 * @param speedMode
 	 *            The enum value corrresponding to the current speed mode: slow,
 	 *            normal, or fast
+	 * @param reverse
+	 *            The value (180 or 0) to control reverse drive. 180 is reverse,
+	 *            0 is forward           
 	 */
-	public void arcade(double translation, double rotation, boolean squaredInputs, SpeedMode speedMode) {
+	public void arcade(double translation, double rotation, boolean squaredInputs, SpeedMode speedMode, int reverse) {
 		double translationVelocity = translation, rotationVelocity = rotation;
-		
+
 		setVelocityMultiplerBasedOnSpeedMode(speedMode);
-		
+
 		// Do squared inputs if necessary
 		if (squaredInputs) {
 			translationVelocity *= Math.abs(translation);
 			rotationVelocity *= Math.abs(rotation);
 		}
 
+		if (reverse == 180) isreverse = true;
+		else if (reverse == 0) isreverse = false;
+		if (isreverse) {
+			translationVelocity = -translationVelocity;
+			rotationVelocity = -rotationVelocity;
+		}
+		
 		// Guard against illegal values
 		double maximum = Math.max(1, Math.abs(translationVelocity) + Math.abs(rotationVelocity));
 
@@ -217,13 +247,13 @@ public class SingularityDrive {
 		m_rearRightMotor.set(this.velocityMultiplier * ((translationVelocity + rotationVelocity) / maximum));
 	}
 
-	public void arcade(double translation, double rotation, boolean squaredInputs) {
-		this.arcade(translation, rotation, squaredInputs, SpeedMode.NORMAL);
+	public void arcade(double translation, double rotation, boolean squaredInputs, int reverse) {
+		this.arcade(translation, rotation, squaredInputs, SpeedMode.NORMAL, reverse);
 	}
-	
+
 	private void setVelocityMultiplerBasedOnSpeedMode(SpeedMode speedMode) {
-		
-		switch(speedMode) {
+
+		switch (speedMode) {
 		case SLOW:
 			velocityMultiplier = this.slowSpeedConstant;
 			SmartDashboard.putString("DB/String 8", "Using slow speed constant");
@@ -251,7 +281,7 @@ public class SingularityDrive {
 	 */
 	public void arcade(double translation, double rotation) {
 		// Just do the arcade without squared inputs at normal speed mode
-		this.arcade(translation, rotation, false, SpeedMode.NORMAL);
+		this.arcade(translation, rotation, false, SpeedMode.NORMAL, 0);
 	}
 
 	/**
@@ -397,9 +427,9 @@ public class SingularityDrive {
 	 */
 	public void tank(double left, double right, boolean squaredInputs, SpeedMode speedMode) {
 		double leftVelocity = left, rightVelocity = right;
-		
+
 		this.setVelocityMultiplerBasedOnSpeedMode(speedMode);
-		
+
 		// Do squared inputs if necessary
 		if (squaredInputs) {
 			leftVelocity *= Math.abs(left);
@@ -408,7 +438,6 @@ public class SingularityDrive {
 		SmartDashboard.putNumber("Post-sqaring inputs - Left Velocity", leftVelocity);
 		SmartDashboard.putNumber("Post-sqaring inputs - Right Velocity", rightVelocity);
 
-		
 		// Guard against illegal inputs
 		leftVelocity /= Math.max(1, Math.abs(leftVelocity));
 		rightVelocity /= Math.max(1, Math.abs(rightVelocity));
@@ -419,10 +448,9 @@ public class SingularityDrive {
 			leftVelocity *= reducedVelocity;
 			rightVelocity *= reducedVelocity;
 		}
-		
+
 		SmartDashboard.putNumber("Reduced Velocity - Left", leftVelocity);
 		SmartDashboard.putNumber("Reduced Velocity - Right", rightVelocity);
-		
 
 		SmartDashboard.putNumber("Reduced Velocity - Left", leftVelocity);
 		SmartDashboard.putNumber("Reduced Velocity - Right", rightVelocity);
@@ -453,7 +481,7 @@ public class SingularityDrive {
 		// Just ignore squared inputs
 		this.tank(left, right, false, speedMode);
 	}
-	
+
 	public void tank(double left, double right, boolean squaredInputs) {
 		// Just ignore squared speedMode
 		this.tank(left, right, true, SpeedMode.NORMAL);

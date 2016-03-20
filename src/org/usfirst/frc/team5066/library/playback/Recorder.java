@@ -114,11 +114,20 @@ public class Recorder {
 		return openFile(fileURL);
 	}
 
+	/**
+	 * Adds a global attribute to the recording
+	 * @param key Key to use
+	 * @param data What to associate with the key
+	 */
 	@SuppressWarnings("unchecked")
 	public void addAttribute(String key, String data) {
 		completeObject.put(key, data);
 	}
 
+	/**
+	 * Adds the essentials to the json object
+	 * @return The finalized json object
+	 */
 	@SuppressWarnings("unchecked")
 	private JSONObject makeFinalJSON() {
 		JSONObject recording = new JSONObject();
@@ -164,7 +173,7 @@ public class Recorder {
 			return true;
 		} catch (IOException ioe) {
 			bw = null;
-			SmartDashboard.putString("asdfasdf", "adlfaksljdf");
+			ioe.printStackTrace();
 			return false;
 		}
 
@@ -247,11 +256,10 @@ public class Recorder {
 			// Actually writes the data to the file
 			if (readable) {
 				bw.write(quickFormat(makeFinalJSON().toString()));
-				bw.newLine();
 			} else {
 				bw.write(makeFinalJSON().toString());
-				bw.newLine();
 			}
+			bw.newLine();
 			bw.close();
 			bw = null;
 		} catch (IOException ioe) {

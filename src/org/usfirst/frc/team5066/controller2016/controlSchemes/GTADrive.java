@@ -5,17 +5,18 @@ import org.usfirst.frc.team5066.controller2016.LogitechController;
 import org.usfirst.frc.team5066.controller2016.XboxController;
 import org.usfirst.frc.team5066.library.SingularityDrive;
 import org.usfirst.frc.team5066.robot.SingularityArm;
+import org.usfirst.frc.team5066.robot.SingularityClimber;
 import org.usfirst.frc.team5066.robot.SingularityConveyer;
 
-public class TobiasDrive implements ControlScheme{
+public class GTADrive implements ControlScheme{
 XboxController xbox;
 LogitechController logitech;
 	
 	
 	
-	public TobiasDrive(int xboxPort, int LogitechController){
-	xbox = new XboxController(xboxPort);
-	logitech = new LogitechController(LogitechController);
+	public GTADrive(int LogitechController, int xboxPort){
+		xbox = new XboxController(xboxPort);
+		logitech = new LogitechController(LogitechController);
 	}
 	
 	
@@ -28,7 +29,7 @@ LogitechController logitech;
 
 	@Override
 	public void drive(SingularityDrive sd, boolean squaredInputs) {
-		sd.arcade(xbox.getTriggerRight() - xbox.getTriggerLeft(), xbox.getLS_X(), squaredInputs);
+		sd.arcade(xbox.getTriggerLeft() - xbox.getTriggerRight(), xbox.getLS_X(), squaredInputs, xbox.getPOV());
 		
 		// TODO Auto-generated method stub
 	}
@@ -39,6 +40,19 @@ LogitechController logitech;
 		
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public void controlClimber(SingularityClimber climber) {
+		
+		if(logitech.getStickBackLeft()){
+			climber.setSpeed(-1);
+		} else if(logitech.getStickFrontLeft()){
+			climber.setSpeed(1);
+		} else {
+			climber.setSpeed(0);
+		}
 	}
 
 }
