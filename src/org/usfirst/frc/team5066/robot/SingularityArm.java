@@ -154,7 +154,8 @@ public class SingularityArm {
 		// Note - becuse of the wiring, we actually tell them all to have thee
 		// same direction
 		talon.set(speed);
-
+		SmartDashboard.putNumber("Arm Speed Value", speed);
+		SmartDashboard.putNumber("Arm Encoder", talon.getPosition());
 		// code for limit switches
 		if (limitSwitchesOverride) {
 			if (speed > 0)
