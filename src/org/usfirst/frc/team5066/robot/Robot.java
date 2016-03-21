@@ -95,7 +95,7 @@ public class Robot extends IterativeRobot {
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, armLimit);
 			conveyor = new SingularityConveyer(8, 6);
-			climber = new SingularityClimber(11, 0.69); // Might be 11 or 12
+			climber = new SingularityClimber(11, 0, 0.69);
 
 			xbox = new XboxController(1);
 
