@@ -1,5 +1,8 @@
 package org.usfirst.frc.team5066.robot;
 
+import org.usfirst.frc.team5066.library.SingularityProperties;
+import org.usfirst.frc.team5066.library.SingularityPropertyNotFoundException;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
@@ -28,7 +31,11 @@ public class SingularityArm {
 	private double armSpeedFAST;
 
 	double lowerLimit;
+	
+	double armPosition;
 
+	SingularityProperties properties = org.usfirst.frc.team5066.robot.Robot.properties;
+	
 	/**
 	 * Constructor for singularity conveyer.
 	 * 
@@ -105,6 +112,26 @@ public class SingularityArm {
 		//SmartDashboard.putNumber("rightWorm Speed", rightWorm.getSpeed());
 	}
 	
+	public void limitArm(){
+		try {
+			armPosition = properties.getDouble("Last Arm Position");
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SingularityPropertyNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(Math.abs(armPosition) < armLimit){
+			setRawSpeed(0);
+		}
+	}
+	
+	public double getPosition(){
+		return talon.getPosition();
+	}
+	
 	/**
 	 * Sets the speed of both motors in the same direction. Positive is forward,
 	 * negative is backwards.
@@ -113,7 +140,7 @@ public class SingularityArm {
 	 *            <b>double</b> The desired analog speed of the motors. [-1.0,
 	 *            1.0]
 	 * @param fast
-	 *            Controls whether the arm is in high-power mode or not. Useful
+	 *            Controls whether the arm is in high-power m8ode or not. Useful
 	 *            for raising the portcullis
 	 */
 	public void setSpeed(double speed, boolean fast) {

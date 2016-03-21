@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.io.IOException;
+
 import org.json.simple.JSONObject;
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.XboxController;
@@ -40,7 +42,7 @@ public class Robot extends IterativeRobot {
 	Joystick js;
 	XboxController xbox;
 	SingularityDrive drive;
-	SingularityProperties properties;
+	static SingularityProperties properties;
 	SingularityArm arm;
 	SingularityConveyer conveyor;
 	SingularityClimber climber;
@@ -134,9 +136,17 @@ public class Robot extends IterativeRobot {
 			reader.close();
 			reader = null;
 		}
+		
+		try {
+			properties.setProperty("Last Arm Position", arm.getPosition());
+		} catch (IOException e) {
+			DriverStation.reportError("Error in setting last arm position within org.usfirst.frc.team5066.robot.Robot.disabledInit()",
+					false);
+			e.printStackTrace();
+		}
 	}
 
-	public void disabledPeriodic() {
+	public void disabledPeriodic(){
 		// Keeps the camera going even if the robot is not enabled
 		updateCamera(session, frame);
 	}
@@ -306,6 +316,7 @@ public class Robot extends IterativeRobot {
 
 		properties.addDefaultProp("armLimit", -4700.0);
 		properties.addDefaultProp("armOnly", false);
+		properties.addDefaultProp("Last Arm Position", 0);
 	}
 
 	private void updateCamera(int session, Image frame) {

@@ -58,6 +58,7 @@ public class SingularityConveyer {
 	public double getSpeed() {
 		return right.get();
 	}
+	
 
 	/**
 	 * @param leftspeed
