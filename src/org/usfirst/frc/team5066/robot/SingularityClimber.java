@@ -50,7 +50,7 @@ public class SingularityClimber {
 		}
 
 
-		SmartDashboard.putNumber("left get Position", talon.getPosition());
+		//SmartDashboard.putNumber("left get Position", talon.getPosition());
 	}
 
 	/**

@@ -27,10 +27,10 @@ public class SingularityArm {
 	TalonControlMode defaultControlMode = TalonControlMode.PercentVbus;
 
 	private double armSpeed;
-	private double armLimit;
+	private double lowerLimit = 25919;
 	private double armSpeedFAST;
 
-	double lowerLimit;
+	double upperLimit;
 	
 	double armPosition;
 
@@ -39,14 +39,14 @@ public class SingularityArm {
 	/**
 	 * Constructor for singularity conveyer.
 	 * 
-	 * @param lWorm
-	 *            <b>int</b> The left side worm motor channel
-	 * @param lPlanet
-	 *            <b>int</b> The left side planetary motor channel
-	 * @param rWorm
-	 *            <b>int</b> The right side worm motor channel
-	 * @param rPlanet
-	 *            <b>int</b> The right side planetary motor channel
+	 * @param t
+	 *  		  <b>int</b> The motor ID number of the motorcontroller of the arm
+	 * @param armSpeed
+	 *            <b>double</b> The default speed multiplier of the arm
+	 * @param armSpeedFAST
+	 *            <b>double</b> The fast mode speed multiplier of the arm
+	 * @param armLimit
+	 *            <b>double</b> The minimum and maxmimum value of the position of the arm. armLimit/2 = arm at 45 degree angle
 	 */
 
 	public SingularityArm(int t, double armSpeed, double armSpeedFAST, double armLimit) {
@@ -56,7 +56,14 @@ public class SingularityArm {
 		this.armSpeed = armSpeed;
 		this.armSpeedFAST = armSpeedFAST;
 		
-		this.armLimit = armLimit;
+		//this.lowerLimit = armLimit;
+		/*
+		lowerLimit = -60000;
+		upperLimit = 43467;
+		*/
+		
+		lowerLimit = -30000;
+		upperLimit = 30000;
 		
 		talon.enableBrakeMode(true);
 	}
@@ -112,24 +119,13 @@ public class SingularityArm {
 		//SmartDashboard.putNumber("rightWorm Speed", rightWorm.getSpeed());
 	}
 	
-	public void limitArm(){
-		try {
-			armPosition = properties.getDouble("Last Arm Position");
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SingularityPropertyNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if(Math.abs(armPosition) < armLimit){
-			setRawSpeed(0);
-		}
-	}
 	
 	public double getPosition(){
 		return talon.getPosition();
+	}
+	
+	public void setPosition(double p){
+		talon.setPosition(p);
 	}
 	
 	/**
@@ -145,6 +141,7 @@ public class SingularityArm {
 	 */
 	public void setSpeed(double speed, boolean fast) {
 
+		
 		speed = fast ? speed * armSpeedFAST : speed * armSpeed;
 		setRawSpeed(speed);
 
@@ -159,10 +156,10 @@ public class SingularityArm {
 	 *            1.0]
 	 */
 	public void setSpeed(double speed) {
-
+		
 		speed *= armSpeed;
 		setRawSpeed(speed);
-
+		
 	}
 
 	/**
@@ -173,16 +170,35 @@ public class SingularityArm {
 	 *            <b>double</b> The desired raw speed for the arm.
 	 */
 	public void setRawSpeed(double speed) {
-
+		
+		armPosition = talon.getPosition();
+		
 		// clamp
 		speed /= -Math.max(1, Math.abs(speed));
 
 		// sets both motor speeds to move in the same direction
 		// Note - becuse of the wiring, we actually tell them all to have thee
 		// same direction
-		talon.set(speed);
+		
+		//lower limit
+		if(armPosition < lowerLimit && speed > 0){
+			talon.set(0);
+			SmartDashboard.putString("Arm Status: ", "Lower limit");
+		}
+		//upper limit
+		else if(armPosition > upperLimit && speed < 0) {
+			talon.set(0);
+			SmartDashboard.putString("Arm Status: ", "Upper limit");
+		}
+		//if not touching a limit
+		else{
+			talon.set(speed);
+			SmartDashboard.putString("Arm Status: ", "Not touching any limit");
+		}
+		
+		
 		SmartDashboard.putNumber("Arm Speed Value", speed);
-		SmartDashboard.putNumber("Arm Encoder", talon.getPosition());
+		SmartDashboard.putNumber("Arm Encoder", armPosition);
 		// code for limit switches
 		if (limitSwitchesOverride) {
 			if (speed > 0)

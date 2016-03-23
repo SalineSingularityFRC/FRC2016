@@ -36,7 +36,7 @@ public class Robot extends IterativeRobot {
 
 	double armSpeedConstant;
 	double armSpeedConstantFAST;
-
+    
 	double armLimit;
 
 	Joystick js;
@@ -48,8 +48,9 @@ public class Robot extends IterativeRobot {
 	SingularityClimber climber;
 	int driveControllerType;
 	private boolean aButtonWasPressed;
+	
 	boolean armOnly;
-
+	boolean cameraExists;
 	/*
 	 * NOTE
 	 * 
@@ -70,6 +71,9 @@ public class Robot extends IterativeRobot {
 	String recordingURL;
 
 	public void robotInit() {
+		
+		cameraExists = true;
+		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 		} catch (Exception e) {
@@ -93,8 +97,8 @@ public class Robot extends IterativeRobot {
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
-			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, armLimit);
-			conveyor = new SingularityConveyer(8, 6);
+			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, armLimit);//6
+			conveyor = new SingularityConveyer(8, 9);//left: 8 right: 9
 			climber = new SingularityClimber(11, 0.69); // Might be 11 or 12
 
 			xbox = new XboxController(1);
@@ -103,6 +107,16 @@ public class Robot extends IterativeRobot {
 
 			currentScheme = new RegularDrive(0, 1);
 			aButtonWasPressed = false;
+			
+			try {
+				arm.setPosition(properties.getDouble("Last Arm Position"));
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SingularityPropertyNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
 
@@ -120,6 +134,9 @@ public class Robot extends IterativeRobot {
 				NIVision.IMAQdxStartAcquisition(session);
 
 			} catch (Exception e) {
+				
+				DriverStation.reportError("NO CAMERA FOUND or error starting camera... Deactivating camera code to avoid further errors", false);
+				cameraExists = false;
 				e.printStackTrace();
 			}
 			SmartDashboard.putString("recordingURL", recordingURL);
@@ -181,14 +198,12 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 
-		if (armOnly) {
-			currentScheme.controlArm(arm);
-		} else {
+		
+	    currentScheme.controlArm(arm);
 
-			currentScheme.drive(drive, true);
-			currentScheme.controlConveyer(conveyor);
-			currentScheme.controlClimber(climber);
-		}
+		currentScheme.drive(drive, true);
+		currentScheme.controlConveyer(conveyor);
+		currentScheme.controlClimber(climber); 
 
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode", currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
@@ -320,11 +335,13 @@ public class Robot extends IterativeRobot {
 	}
 
 	private void updateCamera(int session, Image frame) {
+		if(cameraExists){
 		try {
 			NIVision.IMAQdxGrab(session, frame, 1);
 			CameraServer.getInstance().setImage(frame);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
 		}
 	}
 }
