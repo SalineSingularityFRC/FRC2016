@@ -1,7 +1,6 @@
 package org.usfirst.frc.team5066.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * A class that represents our climb from the 2016 year.
@@ -11,7 +10,6 @@ import edu.wpi.first.wpilibj.Solenoid;
  */
 public class SingularityClimber {
 	private CANTalon talon;
-	private Solenoid solenoid;
 	private double climberSpeedConstant;
 
 	/**
@@ -20,12 +18,10 @@ public class SingularityClimber {
 	 * @param solenoidPort Which port the solenoid is on
 	 * @param climberSpeedConstant Constant to scale the winch
 	 */
-	public SingularityClimber(int talonPort, int solenoidPort, double climberSpeedConstant) {
+	public SingularityClimber(int talonPort, double climberSpeedConstant) {
 		talon = new CANTalon(talonPort);
 		talon.setPosition(0.0);
 		this.climberSpeedConstant = climberSpeedConstant;
-
-		solenoid = new Solenoid(solenoidPort);
 	}
 
 	/**
@@ -38,16 +34,6 @@ public class SingularityClimber {
 	public void setSpeed(double speed) {
 		speed *= climberSpeedConstant;
 		talon.set(speed / Math.max(Math.abs(speed), 1));
-	}
-
-	/**
-	 * Whether or not pressure should be applied to the solenoid
-	 * 
-	 * @param release
-	 *            Parameter to set to the solenoid
-	 */
-	public void releaseSolenoid(boolean release) {
-		solenoid.set(release);
 	}
 
 	/**

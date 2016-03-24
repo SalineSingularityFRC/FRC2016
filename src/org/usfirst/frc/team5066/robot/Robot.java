@@ -94,8 +94,8 @@ public class Robot extends IterativeRobot {
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
 			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, armLimit);
-			conveyor = new SingularityConveyer(8, 6);
-			climber = new SingularityClimber(11, 0, 0.69);
+			conveyor = new SingularityConveyer(8, 9);
+			climber = new SingularityClimber(11, 0.69);
 
 			xbox = new XboxController(1);
 
@@ -181,15 +181,13 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 
-		if (armOnly) {
-			currentScheme.controlArm(arm);
-		} else {
-
+		if (!armOnly) {
 			currentScheme.drive(drive, true);
 			currentScheme.controlConveyer(conveyor);
 			currentScheme.controlClimber(climber);
 		}
-
+		currentScheme.controlArm(arm);
+		
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode", currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
 
