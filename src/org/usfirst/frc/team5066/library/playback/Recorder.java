@@ -8,9 +8,6 @@ import java.util.Date;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-
 /**
  * Class for writing a list of values (in JSON) to a file
  * 
@@ -109,6 +106,9 @@ public class Recorder {
 		initialTime = System.currentTimeMillis();
 
 		previousValues = new Object[keys.length];
+		for (int i = 0; i < keys.length; i++) {
+			previousValues[i] = defaults[i];
+		}
 		appendData(defaults, initialTime);
 
 		return openFile(fileURL);
@@ -116,8 +116,11 @@ public class Recorder {
 
 	/**
 	 * Adds a global attribute to the recording
-	 * @param key Key to use
-	 * @param data What to associate with the key
+	 * 
+	 * @param key
+	 *            Key to use
+	 * @param data
+	 *            What to associate with the key
 	 */
 	@SuppressWarnings("unchecked")
 	public void addAttribute(String key, String data) {
@@ -126,6 +129,7 @@ public class Recorder {
 
 	/**
 	 * Adds the essentials to the json object
+	 * 
 	 * @return The finalized json object
 	 */
 	@SuppressWarnings("unchecked")

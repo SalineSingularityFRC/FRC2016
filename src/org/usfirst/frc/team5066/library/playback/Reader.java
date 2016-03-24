@@ -114,11 +114,11 @@ public class Reader {
 			return previousObject;
 		}
 	}
-	
+
 	public boolean isDone(long time) {
-		return currentObject == null || (Long) currentObject.get("time") > time || !iterator.hasNext();
+		return (Long) ((JSONObject) data.get(data.size() - 1)).get("time") < time;
 	}
-	
+
 	public void close() {
 		try {
 			br.close();
