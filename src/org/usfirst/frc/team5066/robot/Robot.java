@@ -198,13 +198,14 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 
+
+		if (!armOnly) {
+			currentScheme.drive(drive, true);
+			currentScheme.controlConveyer(conveyor);
+			currentScheme.controlClimber(climber);
+		}
+		currentScheme.controlArm(arm);
 		
-	    currentScheme.controlArm(arm);
-
-		currentScheme.drive(drive, true);
-		currentScheme.controlConveyer(conveyor);
-		currentScheme.controlClimber(climber); 
-
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode", currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
 

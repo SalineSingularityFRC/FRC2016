@@ -46,11 +46,10 @@ public class RegularDrive implements ControlScheme{
 
 	@Override
 	public void controlClimber(SingularityClimber climber) {
-		
-		if(logitech.getStickBackLeft()){
-			climber.setSpeed(-1);
-		} else if(logitech.getStickFrontLeft()){
+		if(logitech.getPOV() == 0) {
 			climber.setSpeed(1);
+		} else if (logitech.getPOV() == 180){
+			climber.setSpeed(-1);
 		} else {
 			climber.setSpeed(0);
 		}
