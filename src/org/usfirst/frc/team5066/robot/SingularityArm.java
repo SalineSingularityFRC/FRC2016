@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class SingularityArm {
 
-	private CANTalon leftWorm, leftPlanet, rightWorm, rightPlanet;
+	private CANTalon talon;
 
 	/**
 	 * When true, limit switches will not automatically stop the arm from
@@ -42,20 +42,16 @@ public class SingularityArm {
 	 *            <b>int</b> The right side planetary motor channel
 	 */
 
-	public SingularityArm(int lWorm, int lPlanet, int rWorm, int rPlanet, double armSpeed, double armSpeedFAST, double armLimit) {
+	public SingularityArm(int t, double armSpeed, double armSpeedFAST, double armLimit) {
 
-		leftWorm = new CANTalon(lWorm);
-		leftPlanet = new CANTalon(lPlanet);
-		rightWorm = new CANTalon(rWorm);
-		rightPlanet = new CANTalon(rPlanet);
+		talon = new CANTalon(t);
 		limitSwitchesOverride = false;
 		this.armSpeed = armSpeed;
 		this.armSpeedFAST = armSpeedFAST;
 		
 		this.armLimit = armLimit;
 		
-		rightPlanet.enableBrakeMode(true);
-		leftPlanet.enableBrakeMode(true);
+		talon.enableBrakeMode(true);
 	}
 	
 	/**
@@ -76,32 +72,34 @@ public class SingularityArm {
 		
 		SmartDashboard.putNumber("Arm Speed", speed);
 		
-		if(rightWorm.getPosition() < armLimit && limitSwitchesOverride == false && speed > 0.1) {
+		if(talon.getPosition() < armLimit && limitSwitchesOverride == false && speed > 0.05 /*0.05 is the threshold value*/) {
 			
+			/*
 			//defaultControlMode = rightWorm.getControlMode();
 			rightWorm.changeControlMode(TalonControlMode.Position);
 			leftWorm.set(armLimit);
 			rightPlanet.enableBrakeMode(false);
 			leftPlanet.enableBrakeMode(false);
-			
-			/*
-			leftPlanet.set(0.0);
-			rightPlanet.set(0.0);
 			*/
+			
+			talon.set(0.0);
+			
 			
 			//rightWorm.changeControlMode(defaultControlMode);
 		} else {
 			//positive is going up
-			
-			rightWorm.changeControlMode(defaultControlMode);
+			/*
+			talon.changeControlMode(defaultControlMode);
 			
 			rightPlanet.enableBrakeMode(true);
 			leftPlanet.enableBrakeMode(true);
+			*/
 			speed = fast ? speed * armSpeedFAST : speed * armSpeed;
 			setRawSpeed(speed);
 			
 			
 		}
+		
 		
 
 		//SmartDashboard.putNumber("rightWorm Position", rightWorm.getPosition());
@@ -120,7 +118,9 @@ public class SingularityArm {
 	 *            for raising the portcullis
 	 */
 	public void setSpeed(double speed, boolean fast) {
-
+		
+		//TODO this should be calling the setSpeed method that includes the limit
+		
 		speed = fast ? speed * armSpeedFAST : speed * armSpeed;
 		setRawSpeed(speed);
 
@@ -156,11 +156,9 @@ public class SingularityArm {
 		// sets both motor speeds to move in the same direction
 		// Note - becuse of the wiring, we actually tell them all to have thee
 		// same direction
-		leftWorm.set(speed);
-		leftPlanet.set(speed);
-		rightWorm.set(speed);
-		rightPlanet.set(speed);
-
+		talon.set(speed);
+		SmartDashboard.putNumber("Arm Speed Value", speed);
+		SmartDashboard.putNumber("Arm Encoder", talon.getPosition());
 		// code for limit switches
 		if (limitSwitchesOverride) {
 			if (speed > 0)
@@ -180,10 +178,10 @@ public class SingularityArm {
 	 * @return The current speed of the conveyer motors (right motor)
 	 */
 	public double getSpeed() {
-		return rightWorm.get();
+		return talon.get();
 	}
 	
 	public void zero() {
-		rightWorm.setPosition(0.0);
+		talon.setPosition(0.0);
 	}
 }

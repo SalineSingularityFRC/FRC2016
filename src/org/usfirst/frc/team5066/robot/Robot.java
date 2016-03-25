@@ -34,7 +34,7 @@ public class Robot extends IterativeRobot {
 
 	double armSpeedConstant;
 	double armSpeedConstantFAST;
-	
+
 	double armLimit;
 
 	Joystick js;
@@ -46,7 +46,9 @@ public class Robot extends IterativeRobot {
 	SingularityClimber climber;
 	int driveControllerType;
 	private boolean aButtonWasPressed;
-
+	
+	boolean armOnly;
+	boolean noCamera;
 	/*
 	 * NOTE
 	 * 
@@ -69,6 +71,8 @@ public class Robot extends IterativeRobot {
 	String[] playbackURLs;
 
 	public void robotInit() {
+		noCamera = false;
+		
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 		} catch (Exception e) {
@@ -92,9 +96,9 @@ public class Robot extends IterativeRobot {
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
-			arm = new SingularityArm(2, 9, 7, 5, armSpeedConstant, armSpeedConstantFAST, armLimit);
+			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, armLimit);
 			conveyor = new SingularityConveyer(8, 6);
-			climber = new SingularityClimber(11, 12, 0.69);
+			climber = new SingularityClimber(11, 0.69); // Might be 11 or 12
 
 			xbox = new XboxController(1);
 
@@ -120,6 +124,8 @@ public class Robot extends IterativeRobot {
 
 			} catch (Exception e) {
 				e.printStackTrace();
+				noCamera = true;
+				DriverStation.reportError("No Camera found on code startup", false);
 			}
 		}
 	}
@@ -138,7 +144,9 @@ public class Robot extends IterativeRobot {
 
 	public void disabledPeriodic() {
 		// Keeps the camera going even if the robot is not enabled
-		updateCamera(session, frame);
+		if(noCamera = false) {
+			updateCamera(session, frame);
+		}
 	}
 
 	public void autonomousInit() {
@@ -182,10 +190,15 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
-		currentScheme.drive(drive, true);
-		currentScheme.controlArm(arm);
-		currentScheme.controlConveyer(conveyor);
-		currentScheme.controlClimber(climber);
+
+		if (armOnly) {
+			currentScheme.controlArm(arm);
+		} else {
+
+			currentScheme.drive(drive, true);
+			currentScheme.controlConveyer(conveyor);
+			currentScheme.controlClimber(climber);
+		}
 
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode", currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
@@ -259,15 +272,15 @@ public class Robot extends IterativeRobot {
 
 			armSpeedConstant = properties.getDouble("armSpeedConstant");
 			armSpeedConstantFAST = properties.getDouble("armSpeedConstantFAST");
-			
+
 			armLimit = properties.getDouble("armLimit");
 
 			play = properties.getBoolean("play");
 			record = properties.getBoolean("record");
 			recordingURL = properties.getString("recordingURL");
 			playbackURLs = properties.getString("playbackURLs").split(",");
-			DriverStation.reportWarning(playbackURLs[0], false);
-
+			
+			armOnly = properties.getBoolean("armOnly");
 		} catch (SingularityPropertyNotFoundException e) {
 			DriverStation.reportError(
 					"The property \"" + e.getPropertyName()
@@ -310,17 +323,20 @@ public class Robot extends IterativeRobot {
 		properties.addDefaultProp("playbackURLs", "/home/lvuser/default.json");
 
 		properties.addDefaultProp("armSpeedConstant", 0.5);
-		properties.addDefaultProp("armSpeedConstantFAST", 0.75);
-		
+		properties.addDefaultProp("armSpeedConstantFAST", 1.0);
+
 		properties.addDefaultProp("armLimit", -4700.0);
+		properties.addDefaultProp("armOnly", false);
 	}
 
 	private void updateCamera(int session, Image frame) {
-		try {
-			NIVision.IMAQdxGrab(session, frame, 1);
-			CameraServer.getInstance().setImage(frame);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (noCamera = false) {
+			try {
+				NIVision.IMAQdxGrab(session, frame, 1);
+				CameraServer.getInstance().setImage(frame);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

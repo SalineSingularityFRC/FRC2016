@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5066.controller2016.controlSchemes;
+ package org.usfirst.frc.team5066.controller2016.controlSchemes;
 
 import org.usfirst.frc.team5066.controller2016.ControlScheme;
 import org.usfirst.frc.team5066.controller2016.LogitechController;
@@ -36,7 +36,7 @@ LogitechController logitech;
 
 	@Override
 	public void controlArm(SingularityArm arm) {
-		arm.setSpeed(logitech.getStickY());
+		arm.setSpeed(logitech.getStickY(), logitech.getTrigger());
 		
 		// TODO Auto-generated method stub
 		
