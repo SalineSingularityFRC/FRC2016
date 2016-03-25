@@ -102,18 +102,12 @@ public class Robot extends IterativeRobot {
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
 			
-			SmartDashboard.putString("Robot init status:"," Attempting to create Joystick object");
 			js = new Joystick(0);
-			SmartDashboard.putString("Robot init status:"," Attempting to create SingularityDrive object");
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
-			SmartDashboard.putString("Robot init status:"," Attempting to create Arm object");
 			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, lowerLimit, upperLimit);//6
-			SmartDashboard.putString("Robot init status:"," Attempting to create Conveyer object");
 			conveyor = new SingularityConveyer(8, 9);//left: 8 right: 9
-			SmartDashboard.putString("Robot init status:"," Attempting to create climber object");
 			climber = new SingularityClimber(12, 0.69); // Might be 11 or 12
-			SmartDashboard.putString("Robot init status:"," Attempting to creat xbox object");
 
 			xbox = new XboxController(1);
 
