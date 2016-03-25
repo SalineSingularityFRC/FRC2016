@@ -24,7 +24,7 @@ public class SingularityProperties {
 	private String propFileURL;
 	
 	//TODO Remove this and all related functionality (setting properties) before publicizing this
-	private final String armPropertiesURL = "/home/lvuser/armPosition.properties";
+	private final String armPropertiesURL;
 	private Properties armProps;
 
 	/**
@@ -39,6 +39,8 @@ public class SingularityProperties {
 		this.propFileURL = propFileURL;
 		props = readProperties(propFileURL);
 		
+		armPropertiesURL = "/home/lvuser/armPosition.properties";
+		
 		SmartDashboard.putString("Progress", "original props file");
 		
 		armProps = readProperties(armPropertiesURL);
@@ -49,6 +51,8 @@ public class SingularityProperties {
 	}
 
 	public SingularityProperties() {
+		armPropertiesURL = "/home/lvuser/armPosition.properties";
+
 		this.propFileURL = null;
 		defaultProps = new Properties();
 	}
