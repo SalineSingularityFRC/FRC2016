@@ -37,7 +37,8 @@ public class Robot extends IterativeRobot {
 	double armSpeedConstant;
 	double armSpeedConstantFAST;
     
-	double armLimit;
+	double lowerLimit;
+	double upperLimit;
 
 	Joystick js;
 	XboxController xbox;
@@ -69,9 +70,13 @@ public class Robot extends IterativeRobot {
 	Reader reader;
 	Recorder recorder;
 	String recordingURL;
+	
+	double lastArmPosition;
+	boolean initialDisabled;
 
 	public void robotInit() {
 		
+		initialDisabled = true;
 		cameraExists = true;
 		
 		try {
@@ -97,9 +102,9 @@ public class Robot extends IterativeRobot {
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
-			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, armLimit);//6
+			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, lowerLimit, upperLimit);//6
 			conveyor = new SingularityConveyer(8, 9);//left: 8 right: 9
-			climber = new SingularityClimber(11, 0.69); // Might be 11 or 12
+			climber = new SingularityClimber(12, 0.69); // Might be 11 or 12
 
 			xbox = new XboxController(1);
 
@@ -109,11 +114,8 @@ public class Robot extends IterativeRobot {
 			aButtonWasPressed = false;
 			
 			try {
-				arm.setPosition(properties.getDouble("Last Arm Position"));
+				arm.setPosition(lastArmPosition);
 			} catch (NumberFormatException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (SingularityPropertyNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -153,14 +155,19 @@ public class Robot extends IterativeRobot {
 			reader.close();
 			reader = null;
 		}
+
+		if (!initialDisabled) {
+
+			try {
+				properties.setArmProperty("lastArmPosition", arm.getPosition());
+			} catch (IOException e) {
+				DriverStation.reportError("Error in setting last arm position.", false);
+				e.printStackTrace();
+			}
+
+		} else
+			initialDisabled = false;
 		
-		try {
-			properties.setProperty("Last Arm Position", arm.getPosition());
-		} catch (IOException e) {
-			DriverStation.reportError("Error in setting last arm position within org.usfirst.frc.team5066.robot.Robot.disabledInit()",
-					false);
-			e.printStackTrace();
-		}
 	}
 
 	public void disabledPeriodic(){
@@ -186,7 +193,7 @@ public class Robot extends IterativeRobot {
 		if (reader != null) {
 			JSONObject current = reader.getDataAtTime(System.currentTimeMillis() - initialTime);
 			drive.arcade((double) current.get("v"), (double) current.get("omega"), true, 0);
-			arm.setRawSpeed((double) current.get("arm"));
+			arm.setRawSpeed((double) current.get("arm"), false);
 			conveyor.setSpeed((double) current.get("intake"));
 		}
 
@@ -197,7 +204,10 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
-
+		
+		SmartDashboard.putNumber("Lower Limit: ", lowerLimit);
+		SmartDashboard.putNumber("Upper Limit: ", upperLimit);
+		
 
 		if (!armOnly) {
 			currentScheme.drive(drive, true);
@@ -208,9 +218,10 @@ public class Robot extends IterativeRobot {
 		
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode", currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
-
+		/*
 		drive.reduceVelocity(xbox.getRB());
 		drive.setReducedVelocity(0.5);
+		*/
 		
 		updateCamera(session, frame);
 	}
@@ -231,7 +242,7 @@ public class Robot extends IterativeRobot {
 
 			// Do stuff to drive with the inputs.
 			drive.arcade((double) input[0], (double) input[1], true, 0);
-			arm.setRawSpeed((double) input[2]);
+			arm.setRawSpeed((double) input[2], false);
 			conveyor.setSpeed((double) input[3]);
 
 			recorder.appendData(input);
@@ -279,13 +290,17 @@ public class Robot extends IterativeRobot {
 			armSpeedConstant = properties.getDouble("armSpeedConstant");
 			armSpeedConstantFAST = properties.getDouble("armSpeedConstantFAST");
 
-			armLimit = properties.getDouble("armLimit");
+			lowerLimit = properties.getDouble("lowerLimit");
+			upperLimit = properties.getDouble("upperLimit");
 
 			play = properties.getBoolean("play");
 			record = properties.getBoolean("record");
 			recordingURL = properties.getString("recordingURL");
 			
 			armOnly = properties.getBoolean("armOnly");
+			
+			lastArmPosition = properties.getArmPosition();
+			SmartDashboard.putNumber("Arm position from file", lastArmPosition);
 
 		} catch (SingularityPropertyNotFoundException e) {
 			DriverStation.reportError(
@@ -332,7 +347,10 @@ public class Robot extends IterativeRobot {
 
 		properties.addDefaultProp("armLimit", -4700.0);
 		properties.addDefaultProp("armOnly", false);
-		properties.addDefaultProp("Last Arm Position", 0);
+		properties.addDefaultProp("lastArmPosition", 0);
+		
+		properties.addDefaultProp("lowerLimit", -53590.0);
+		properties.addDefaultProp("upperLimit", 30000.0);
 	}
 
 	private void updateCamera(int session, Image frame) {

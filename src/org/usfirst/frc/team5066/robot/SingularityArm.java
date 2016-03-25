@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  * A class that represents our arm from the 2016 year.
  * 
+ * @version 2.0
  * @author Saline Singularity 5066
  *
  */
@@ -27,7 +28,7 @@ public class SingularityArm {
 	TalonControlMode defaultControlMode = TalonControlMode.PercentVbus;
 
 	private double armSpeed;
-	private double lowerLimit = 25919;
+	private double lowerLimit;
 	private double armSpeedFAST;
 
 	double upperLimit;
@@ -45,11 +46,11 @@ public class SingularityArm {
 	 *            <b>double</b> The default speed multiplier of the arm
 	 * @param armSpeedFAST
 	 *            <b>double</b> The fast mode speed multiplier of the arm
-	 * @param armLimit
+	 * @param lowerLimit
 	 *            <b>double</b> The minimum and maxmimum value of the position of the arm. armLimit/2 = arm at 45 degree angle
 	 */
 
-	public SingularityArm(int t, double armSpeed, double armSpeedFAST, double armLimit) {
+	public SingularityArm(int t, double armSpeed, double armSpeedFAST, double lowerLimit, double upperLimit) {
 
 		talon = new CANTalon(t);
 		limitSwitchesOverride = false;
@@ -62,8 +63,8 @@ public class SingularityArm {
 		upperLimit = 43467;
 		*/
 		
-		lowerLimit = -30000;
-		upperLimit = 30000;
+		this.lowerLimit = lowerLimit;
+		this.upperLimit = upperLimit;
 		
 		talon.enableBrakeMode(true);
 	}
@@ -81,8 +82,10 @@ public class SingularityArm {
 	 *            
 	 *            Be especially careful! This does not work yet!
 	 */
-	public void setSpeed(double speed, boolean fast, boolean limitSwitchesOverride) {
-		
+	public void setSpeed(double speed, boolean fast, boolean overrideLimits) {
+
+		speed = fast ? speed * armSpeedFAST : speed * armSpeed;
+		setRawSpeed(speed, overrideLimits);
 		
 		/*SmartDashboard.putNumber("Arm Speed", speed);
 		
@@ -143,7 +146,7 @@ public class SingularityArm {
 
 		
 		speed = fast ? speed * armSpeedFAST : speed * armSpeed;
-		setRawSpeed(speed);
+		setRawSpeed(speed, false);
 
 	}
 
@@ -158,7 +161,7 @@ public class SingularityArm {
 	public void setSpeed(double speed) {
 		
 		speed *= armSpeed;
-		setRawSpeed(speed);
+		setRawSpeed(speed, false);
 		
 	}
 
@@ -169,7 +172,7 @@ public class SingularityArm {
 	 * @param speed
 	 *            <b>double</b> The desired raw speed for the arm.
 	 */
-	public void setRawSpeed(double speed) {
+	public void setRawSpeed(double speed, boolean overrideLimits) {
 		
 		armPosition = talon.getPosition();
 		
@@ -181,19 +184,19 @@ public class SingularityArm {
 		// same direction
 		
 		//lower limit
-		if(armPosition < lowerLimit && speed > 0){
+		if(armPosition < lowerLimit && speed > 0 && overrideLimits == false){
 			talon.set(0);
 			SmartDashboard.putString("Arm Status: ", "Lower limit");
 		}
 		//upper limit
-		else if(armPosition > upperLimit && speed < 0) {
+		else if(armPosition > upperLimit && speed < 0 && overrideLimits == false) {
 			talon.set(0);
 			SmartDashboard.putString("Arm Status: ", "Upper limit");
 		}
 		//if not touching a limit
 		else{
 			talon.set(speed);
-			SmartDashboard.putString("Arm Status: ", "Not touching any limit");
+			SmartDashboard.putString("Arm Status: ", "Not touching any limit OR overriding limits");
 		}
 		
 		
