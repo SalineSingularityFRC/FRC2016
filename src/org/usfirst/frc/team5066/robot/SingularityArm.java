@@ -35,7 +35,7 @@ public class SingularityArm {
 	
 	double armPosition;
 
-	SingularityProperties properties = org.usfirst.frc.team5066.robot.Robot.properties;
+	//SingularityProperties properties = org.usfirst.frc.team5066.robot.Robot.properties;
 	
 	/**
 	 * Constructor for singularity conveyer.

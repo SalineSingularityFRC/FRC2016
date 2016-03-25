@@ -80,8 +80,10 @@ public class Robot extends IterativeRobot {
 		cameraExists = true;
 		
 		try {
+			SmartDashboard.putString("trying to initialize props file", "yeah.");
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 		} catch (Exception e) {
+			SmartDashboard.putString("Caught that properties exception?", "Yeah.");
 			properties = new SingularityProperties();
 			// TODO is getInstance() necessary?
 			// DriverStation.getInstance();
@@ -99,48 +101,40 @@ public class Robot extends IterativeRobot {
 
 			// Implement standard robotics things (input, drive, etc.). We will
 			// need to make this use the new controller classes later.
+			
+			SmartDashboard.putString("Robot init status:"," Attempting to create Joystick object");
 			js = new Joystick(0);
+			SmartDashboard.putString("Robot init status:"," Attempting to create SingularityDrive object");
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
+			SmartDashboard.putString("Robot init status:"," Attempting to create Arm object");
 			arm = new SingularityArm(6, armSpeedConstant, armSpeedConstantFAST, lowerLimit, upperLimit);//6
+			SmartDashboard.putString("Robot init status:"," Attempting to create Conveyer object");
 			conveyor = new SingularityConveyer(8, 9);//left: 8 right: 9
+			SmartDashboard.putString("Robot init status:"," Attempting to create climber object");
 			climber = new SingularityClimber(12, 0.69); // Might be 11 or 12
+			SmartDashboard.putString("Robot init status:"," Attempting to creat xbox object");
 
 			xbox = new XboxController(1);
 
 			// currentScheme = new OneXboxArcadeDrive(this.XBOX_PORT);
 
+			SmartDashboard.putString("Robot init status:"," Attempting to set current scheme");
 			currentScheme = new RegularDrive(0, 1);
 			aButtonWasPressed = false;
-			
+			/*
 			try {
 				arm.setPosition(lastArmPosition);
 			} catch (NumberFormatException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			*/
 
 			SmartDashboard.putString("DB/String 1", "" + driveControllerType);
 
 			// Camera setup code
-			try {
-				// the camera name (ex. cam0) can be found through the roborio
-				// web interface
-
-				frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-				session = NIVision.IMAQdxOpenCamera("cam0",
-						NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-
-				NIVision.IMAQdxConfigureGrab(session);
-				NIVision.IMAQdxStartAcquisition(session);
-
-			} catch (Exception e) {
-				
-				DriverStation.reportError("NO CAMERA FOUND or error starting camera... Deactivating camera code to avoid further errors", false);
-				cameraExists = false;
-				e.printStackTrace();
-			}
+			//setupCamera();
 			SmartDashboard.putString("recordingURL", recordingURL);
 		}
 	}
@@ -155,7 +149,8 @@ public class Robot extends IterativeRobot {
 			reader.close();
 			reader = null;
 		}
-
+		
+		/* TODO commented because suspected of crashing code
 		if (!initialDisabled) {
 
 			try {
@@ -167,6 +162,7 @@ public class Robot extends IterativeRobot {
 
 		} else
 			initialDisabled = false;
+			*/
 		
 	}
 
@@ -209,11 +205,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Upper Limit: ", upperLimit);
 		
 
-		if (!armOnly) {
+		//if (!armOnly) {
 			currentScheme.drive(drive, true);
 			currentScheme.controlConveyer(conveyor);
 			currentScheme.controlClimber(climber);
-		}
+		//}
 		currentScheme.controlArm(arm);
 		
 		toggleDriveMode();
@@ -299,8 +295,8 @@ public class Robot extends IterativeRobot {
 			
 			armOnly = properties.getBoolean("armOnly");
 			
-			lastArmPosition = properties.getArmPosition();
-			SmartDashboard.putNumber("Arm position from file", lastArmPosition);
+			//lastArmPosition = properties.getArmPosition();
+			//SmartDashboard.putNumber("Arm position from file", lastArmPosition);
 
 		} catch (SingularityPropertyNotFoundException e) {
 			DriverStation.reportError(
@@ -337,6 +333,8 @@ public class Robot extends IterativeRobot {
 		properties.addDefaultProp("slowSpeedConstant", 0.4);
 		properties.addDefaultProp("normalSpeedConstant", 0.8);
 		properties.addDefaultProp("fastSpeedConstant", 1.0);
+		
+		properties.addDefaultProp("climberMotor", 12);
 
 		properties.addDefaultProp("play", true);
 		properties.addDefaultProp("record", false);
@@ -345,14 +343,38 @@ public class Robot extends IterativeRobot {
 		properties.addDefaultProp("armSpeedConstant", 0.5);
 		properties.addDefaultProp("armSpeedConstantFAST", 1.0);
 
-		properties.addDefaultProp("armLimit", -4700.0);
+	//	properties.addDefaultProp("armLimit", -4700.0);
 		properties.addDefaultProp("armOnly", false);
-		properties.addDefaultProp("lastArmPosition", 0);
+		properties.addDefaultProp("lastArmPosition", 0.0);
 		
 		properties.addDefaultProp("lowerLimit", -53590.0);
 		properties.addDefaultProp("upperLimit", 30000.0);
 	}
+	
+	private void setupCamera() {
+		
+		cameraExists = true;
+		
+		try {
+			// the camera name (ex. cam0) can be found through the roborio
+			// web interface
 
+			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+
+			session = NIVision.IMAQdxOpenCamera("cam0",
+					NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+
+			NIVision.IMAQdxConfigureGrab(session);
+			NIVision.IMAQdxStartAcquisition(session);
+
+		} catch (Exception e) {
+			
+			DriverStation.reportError("NO CAMERA FOUND or error starting camera... Deactivating camera code to avoid further errors", false);
+			cameraExists = false;
+			e.printStackTrace();
+		}
+	}
+	
 	private void updateCamera(int session, Image frame) {
 		if(cameraExists){
 		try {

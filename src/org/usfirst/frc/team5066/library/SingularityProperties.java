@@ -42,11 +42,13 @@ public class SingularityProperties {
 		armPropertiesURL = "/home/lvuser/armPosition.properties";
 		
 		SmartDashboard.putString("Progress", "original props file");
-		
+		/*
 		armProps = readProperties(armPropertiesURL);
 
 		SmartDashboard.putString("Progress", "arm props file");
 		
+		
+	*/
 		defaultProps = new Properties();
 	}
 
@@ -59,7 +61,7 @@ public class SingularityProperties {
 	
 	public double getArmPosition() {
 		double armPos;
-		String armPosString = armProps.getProperty("armPosition");
+		String armPosString = armProps.getProperty("lastArmPosition");
 		SmartDashboard.putString("armPosString",armPosString);
 		if(armPosString != null) {
 			armPos = Double.parseDouble(armPosString);
@@ -212,7 +214,7 @@ public class SingularityProperties {
 
 		File f = new File(armPropertiesURL);
 		
-		SmartDashboard.putString("setArmProp Status", "pre-constructor call for fileOutputStream");
+		SmartDashboard.putString("setArmProp Status", "pre-constructor call for fileOutputStream. " + "File URL is " + armPropertiesURL);
 		FileOutputStream out = new FileOutputStream(f);
 
 		SmartDashboard.putString("setArmProp Status", "post-file output stream");
