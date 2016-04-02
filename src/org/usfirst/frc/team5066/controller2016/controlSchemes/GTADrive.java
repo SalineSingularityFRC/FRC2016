@@ -36,7 +36,7 @@ LogitechController logitech;
 
 	@Override
 	public void controlArm(SingularityArm arm) {
-		arm.setSpeed(logitech.getStickY());
+		arm.setSpeed(logitech.getStickY(), logitech.getTrigger());
 		
 		// TODO Auto-generated method stub
 		

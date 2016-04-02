@@ -36,7 +36,7 @@ public class RegularDrive implements ControlScheme{
 
 	@Override
 	public void controlArm(SingularityArm arm) {
-		arm.setSpeed(logitech.getStickY(), logitech.getTrigger());
+		arm.setSpeed(logitech.getStickY(), logitech.getTrigger(), logitech.getRawButton(11));
 		if(logitech.getRawButton(7)) {
 			arm.zero();
 		}
@@ -47,13 +47,23 @@ public class RegularDrive implements ControlScheme{
 	@Override
 	public void controlClimber(SingularityClimber climber) {
 		
-		if(logitech.getStickBackLeft()){
-			climber.setSpeed(-1);
-		} else if(logitech.getStickFrontLeft()){
+		if(logitech.getRawButton(5)) {
 			climber.setSpeed(1);
+		} else if(logitech.getRawButton(3)) {
+			climber.setSpeed(-1);
 		} else {
 			climber.setSpeed(0);
 		}
+		
+		/*
+		if(logitech.getPOV() == 0) {
+			climber.setSpeed(1);
+		} else if (logitech.getPOV() == 180){
+			climber.setSpeed(-1);
+		} else {
+			climber.setSpeed(0);
+		}
+		*/
 	}
 
 }

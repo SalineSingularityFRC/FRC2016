@@ -1,11 +1,13 @@
 package org.usfirst.frc.team5066.library;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Class for reading and writing to properties files.
@@ -20,6 +22,10 @@ public class SingularityProperties {
 	private Properties defaultProps;
 	private Properties props;
 	private String propFileURL;
+	
+	//TODO Remove this and all related functionality (setting properties) before publicizing this
+	private final String armPropertiesURL;
+	private Properties armProps;
 
 	/**
 	 * Constructor for SingularityPropsReader
@@ -32,12 +38,38 @@ public class SingularityProperties {
 	public SingularityProperties(String propFileURL) throws IOException {
 		this.propFileURL = propFileURL;
 		props = readProperties(propFileURL);
+		
+		armPropertiesURL = "/home/lvuser/armPosition.properties";
+		
+		SmartDashboard.putString("Progress", "original props file");
+		/*
+		armProps = readProperties(armPropertiesURL);
+
+		SmartDashboard.putString("Progress", "arm props file");
+		
+		
+	*/
 		defaultProps = new Properties();
 	}
 
 	public SingularityProperties() {
+		armPropertiesURL = "/home/lvuser/armPosition.properties";
+
 		this.propFileURL = null;
 		defaultProps = new Properties();
+	}
+	
+	public double getArmPosition() {
+		double armPos;
+		String armPosString = armProps.getProperty("lastArmPosition");
+		SmartDashboard.putString("armPosString",armPosString);
+		if(armPosString != null) {
+			armPos = Double.parseDouble(armPosString);
+		} else {
+			armPos = 0.0;
+			DriverStation.reportWarning("No arm position found, using default zero", false);
+		}
+		return armPos;
 	}
 
 	/**
@@ -176,13 +208,33 @@ public class SingularityProperties {
 	 * @throws IOException
 	 *             If file is not valid or does not allow write access
 	 */
-	public void setProperty(String propName, Object o) throws IOException {
-		FileOutputStream out = new FileOutputStream(propFileURL);
+	public void setArmProperty(String propName, Object o) throws IOException {
+		
+		SmartDashboard.putString("setArmProp Status", "pre-File object creation");
 
-		props.setProperty(propName, o.toString());
-		props.store(out, null);
+		File f = new File(armPropertiesURL);
+		
+		SmartDashboard.putString("setArmProp Status", "pre-constructor call for fileOutputStream. " + "File URL is " + armPropertiesURL);
+		FileOutputStream out = new FileOutputStream(f);
+
+		SmartDashboard.putString("setArmProp Status", "post-file output stream");
+
+		armProps.setProperty(propName, o.toString());
+		
+		SmartDashboard.putString("setArmProp Status", "post-setProperty()");
+
+		armProps.store(out, null);
+		
+		SmartDashboard.putString("setArmProp Status", "post-store()");
+
 		out.close();
+		
+		SmartDashboard.putString("setArmProp Status", "post-close()");
+
 		reloadProperties();
+		SmartDashboard.putString("setArmProp Status", "post-reload()");
+
+		
 	}
 
 	/**
@@ -261,12 +313,14 @@ public class SingularityProperties {
 		} else {
 			// Note - all messages such as the following are automatically
 			// logged by DriverStation
-			DriverStation.reportError("Failed to find property in file: " + name
+			DriverStation.reportWarning("Failed to find property in file: " + name
 					+ "\n - Resorting to default property for " + name + "\n \n .", false);
 			prop = defaultProps.getProperty(name);
 			if (prop != null) {
+				DriverStation.reportWarning("Default property value for \"" + name + "\" is " + prop, false);
 				return prop;
 			} else {
+				
 				// Note - all messages such as the following are automatically
 				// logged by DriverStation
 				DriverStation.reportError(
