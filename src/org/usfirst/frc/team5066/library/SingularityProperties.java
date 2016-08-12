@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Class for reading and writing to properties files.
+ * Represents a properties system with a file and optional (but useful) defaults
+ * Used for making variable editing quick -- removes the time of having to push code every time a variable must be changed
+ * Use default properties for values that are unlikely to change in the near future
  * 
  * @author Saline Singularity 5066
  * 
@@ -186,11 +189,11 @@ public class SingularityProperties {
 	}
 
 	/**
-	 * Method to find access a certain string in the properties file
+	 * Method to find access a certain String in the properties file
 	 * 
 	 * @param name
-	 *            Which string to get
-	 * @return The value of the string
+	 *            Which String to get
+	 * @return The value of the String
 	 * @throws SingularityPropertyNotFoundException
 	 */
 	public String getString(String name) throws SingularityPropertyNotFoundException {
@@ -247,18 +250,29 @@ public class SingularityProperties {
 	public boolean getBoolean(String name) throws SingularityPropertyNotFoundException {
 		return Boolean.parseBoolean(loadProperty(name));
 	}
-
+	
+	/**
+	 * 
+	 * @param name
+	 * 				The name of the property attempting to be loaded
+	 * @return a String form of the property being loaded
+	 * @throws SingularityPropertyNotFoundException when no property with the name is found
+	 */
 	private String loadProperty(String name) throws SingularityPropertyNotFoundException {
 		String prop;
+		
+		//sets prop to null if the propertiesFileURL is null or if props.getProperty(name) doesn't find the property
 		if (propFileURL != null) {
-			prop = props.getProperty(name);
+			prop = props.getProperty(name); //sets prop to null if the property isn't found.
 		} else {
 			prop = null;
 		}
+		
 		// TODO - accomplish this better with a do{} - while()?
 		if (prop != null) {
 			return prop;
-		} else {
+		} else { //runs only if the property wasn't found in the file
+			
 			// Note - all messages such as the following are automatically
 			// logged by DriverStation
 			DriverStation.reportError("Failed to find property in file: " + name
@@ -266,7 +280,8 @@ public class SingularityProperties {
 			prop = defaultProps.getProperty(name);
 			if (prop != null) {
 				return prop;
-			} else {
+			} else { //runs only if the property isn't found in the file nor the defaults
+				
 				// Note - all messages such as the following are automatically
 				// logged by DriverStation
 				DriverStation.reportError(

@@ -21,35 +21,60 @@ import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
 public class Robot extends IterativeRobot {
+	
+	//Holds the current control scheme
 	ControlScheme currentScheme;
+	
+	//used for vision
 	Image frame;
+	int session;
+	
+	//Holds the integer port id's for the motors. The values are assigned when properties are laoded.
 	int frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
 	int armLeftWorm, armLeftPlanetary, armRightWorm, armRightPlanetary;
 	int leftConveyerMotor, rightConveyerMotor;
-	int session;
-
+	
+	//Holds the drive speed constants (loaded from properties file) used in the 3-speed drive
 	double slowSpeedConstant;
 	double normalSpeedConstant;
 	double fastSpeedConstant;
-
+	
+	//Holds the arm speed constants (loaded from properties file) used in the 3-speed drive
 	double armSpeedConstant;
 	double armSpeedConstantFAST;
 
+	//The arm limit (loaded from the properties file) that is passed to the arm object
 	double armLimit;
-
+	
+	
 	Joystick js;
 	XboxController xbox;
-	SingularityDrive drive;
+	
+	//Holds the object representing the properties file
 	SingularityProperties properties;
+	
+	//Variables for the subsystems
+	SingularityDrive drive;
 	SingularityArm arm;
 	SingularityConveyer conveyor;
 	SingularityClimber climber;
+	
+	//
 	int driveControllerType;
+	
+	//Used in drive mode toggling
 	private boolean aButtonWasPressed;
 	
+	//Used when testing the arm - setting 'true' causes only the arm to be driveable
 	boolean armOnly;
+	
+	//Setting to 'true' will disable the camera
 	boolean noCamera;
+	
 	/*
+	 * Constants for the joysticks. Based on the DriverStation configuration
+	 * In order for this code to work, the Joysticks must have these settings in Driver Station
+	 * 
 	 * NOTE
 	 * 
 	 * Xbox Controller is always port 0 Big Joystick is always port 1 Little
@@ -60,7 +85,7 @@ public class Robot extends IterativeRobot {
 	final int SMALL_JOYSTICK_PORT = 2;
 
 	/*
-	 * Here are the options for using recordable autonomous mode.
+	 * Options for using recordable autonomous mode.
 	 */
 	boolean record, play;
 	long initialTime;
@@ -68,9 +93,11 @@ public class Robot extends IterativeRobot {
 	Recorder recorder;
 	String recordingURL;
 
+	
 	public void robotInit() {
 		noCamera = false;
 		
+		//sets the properties variable to the current SingularityProperties object
 		try {
 			properties = new SingularityProperties("/home/lvuser/robot.properties");
 		} catch (Exception e) {
@@ -89,8 +116,7 @@ public class Robot extends IterativeRobot {
 			// long as they have been set already.
 			loadProperties();
 
-			// Implement standard robotics things (input, drive, etc.). We will
-			// need to make this use the new controller classes later.
+			// Implement standard robotics things (input, drive, etc.).
 			js = new Joystick(0);
 			drive = new SingularityDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor,
 					this.driveControllerType, slowSpeedConstant, normalSpeedConstant, fastSpeedConstant);
@@ -149,7 +175,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
-		// Recordable autonomous
+		// Recordable autonomous 
 		if (play) {
 			try {
 				reader = new Reader(recordingURL);
@@ -186,7 +212,7 @@ public class Robot extends IterativeRobot {
 			currentScheme.controlConveyer(conveyor);
 			currentScheme.controlClimber(climber);
 		}
-
+		
 		toggleDriveMode();
 		SmartDashboard.putString("Drive Mode", currentScheme instanceof GTADrive ? "GTA Drive" : "Regular Drive");
 
@@ -222,6 +248,9 @@ public class Robot extends IterativeRobot {
 		updateCamera(session, frame);
 	}
 
+	/**
+	 * Toggles the drive mode when the A buttton on the xbox controller is pressed and wait until it is released to be able to use again
+	 */
 	private void toggleDriveMode() {
 		if (xbox.getAButton()) {
 			if (!aButtonWasPressed) {
@@ -237,6 +266,9 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	/**
+	 * sets all fields to the proper values loaded from properties
+	 */
 	private void loadProperties() {
 		try {
 			// Ports
@@ -282,6 +314,9 @@ public class Robot extends IterativeRobot {
 
 	}
 
+	/**
+	 * Sets all default properties
+	 */
 	private void setDefaultProperties() {
 		// Drive ports
 		properties.addDefaultProp("frontLeftMotor", 10);
@@ -315,6 +350,7 @@ public class Robot extends IterativeRobot {
 		properties.addDefaultProp("armOnly", false);
 	}
 
+	//updates the camera
 	private void updateCamera(int session, Image frame) {
 		if (noCamera = false) {
 			try {
