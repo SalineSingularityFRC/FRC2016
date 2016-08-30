@@ -91,6 +91,8 @@ public class SingularityDrive {
      * Constructor for {@link org.usfirst.frc.team5066.library.SingularityDrive
      * SingularityDrive}. Takes in integers to use for motor ports.
      * 
+     * <b>Uses CANTalons by default.</b>
+     * 
      * @param frontLeftMotor
      *            Channel for front left motor
      * @param rearLeftMotor
